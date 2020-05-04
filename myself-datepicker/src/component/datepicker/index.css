@@ -1,0 +1,152 @@
+.selectPanel {
+    padding: 10px;
+    position: absolute;
+    top: 30px;
+    left: -10px;
+    border: 2px solid #26baee;
+}
+
+.weekContainer, .dateContainer {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+}
+
+.weekContainer {
+    margin-bottom: 20px;
+    color: #0779e4;
+    font-weight: 600;
+}
+
+.datePanel {
+    color: #333;
+    font-size: 16px;
+    line-height: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+
+.datePanel:hover, .year-block:hover {
+    background-color: #4cbbb9;
+    color: #fff;
+    opacity: 0.6;
+}
+
+.isSelected {
+    color: #fff;
+    background-color: #0779e4!important;
+}
+
+.isDisabled {
+    color: #aaa;
+    background: #f0f0f0;
+    pointer-events: none;
+}
+
+.select-header {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #035aa6;
+    margin-bottom: 10px;
+}
+
+.arrow {
+    flex: 0 20px;
+    height: 20px;
+}
+
+.selectTime {
+    flex: 1;
+    font-size: 18px;
+    line-height: 20px;
+    text-align: center;
+}
+
+  
+.dateInput {
+    height: 20px;
+    border: 1px solid #666;
+    display: inline-block;
+    padding: 0 5px 5px;
+    border-radius: 4px;
+}
+
+.dateInput:focus {
+    border: 1px solid #035aa6;
+}
+
+.input {
+    border: 0;
+    outline: 0;
+    margin: 0;
+    height: 20px;
+    text-align: center;
+}
+
+.input-icon {
+    font-size: 18px;
+    line-height: 20px;
+    vertical-align: middle;
+}
+
+.datepicker {
+    position: relative;
+}
+
+@font-face {font-family: "iconfont";
+    src: url('//at.alicdn.com/t/font_1180980_8jzzr2m4ena.eot?t=1588479263862'); /* IE9 */
+    src: url('//at.alicdn.com/t/font_1180980_8jzzr2m4ena.eot?t=1588479263862#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAU0AAsAAAAAC6QAAAToAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDTgqJfIdmATYCJAMcCxAABCAFhG0HZhu0CREVpLuQfZEQTyHvvFEqyUh3JWvWSNq5PylG03kmHv5/v2/73Hvf8xGjDUm0efPVSXgWk9CGkknaIUMlzZqISYj/5/Oyl2TEigs5awwqDmr+WbFISZ+WJ+gkBED5//u+U2v3LQIESCbs4y2/xTO+XdVDebJy4+f35+dBcaHxtNu2HoS7N5AfYmUC635IkOJ3aUKI9T+GU3mVzWasedfpBHrrbYIdOX1RAq1CaINXuaxWOkKbWJQWdmj1dc2uBeIFVNr0AB8HsILvH79hR7BAUmUQZzp69pQLHPgm/qEm0H8EZzKC57tzYbgXGTuAQtyt9VyXc80OxH3dIYoj6LWS9E38zeqtTKn/D3QL1QWler1pyFCk3fzjVWqiBoFHTjuhrW+eXCMK304gEt9OIjLfTiGCH6cQFT8u6NxUSrP2NJZBrIBYY4YdB94jhCSM4zKOEU9sxmDwxAw+n8cTCsUikdie0ZmblKRJ5HAeUijBnYNpEh9SYMR7699Nm5SMmd0zTXPmVeasbXLxKkFhqREhxkRYWtlaLjxPeJSEYXxWnVtQYujDfbSrgfDD4B3aW5xST094Dm+F8rBE6nxELiNdw+fnJQsL0qUl+eKipQv1UE+WqCl7pCtVJj0qQdbeXkRoiPvDUqPjLPaoxBCSi0NmKQWnsFRz+vMLSlBxaO9PZIVGqVn68qKGinQdCUX5TC4Q/DBRLzHTWJ7UtDohw0BC5atGuKVPslPLeKiqabW00Uvl+4LdOAl+FFRoJEvNamvQlaYk6+hQ6qE6vX8YasFSUv3P4Cjh/TcQX55jwmMxPBMOiuagYNZtVjBq3wK+hELULlJgQ6J9ojtzU86GTWLHDRzQ5NR7Kq5IoioS3heD/6y+xOK2JIch+B3ZQXFkYu78R0BEfK5NgYvn9QRr4q0HalW4+ITeOli283Ar7ccPWqsUW7ExtIWal8+vXdu2rC0mhquD3eIBAVxu67KgZUBu3GopQ4p9WLc6Cfx/qa3AEaFYoyAQrsB2btTO8JqKkHIebfOubWiZ9Wz3wRAvKy/bW+I7i2J+epEs9jJXZEd2D+X7Zn4Tp+xDIkbM9Z8OV0mvLAb9p48D6aU+n9XGQNeDK52FV2/lprI+STKzd3iRP2OWMRm9UlfRvoPVFEHSM/k4bCTBzRyuqg9cEPnOklcdfHB2Vn/lq97fCo49a/N9Q15FMSXJfhe9juAxmHwg5HZHAekRngRIH7Ha5BPRQRxp2z0QrK026NkLD31lcf8j41Y/K8yh3uQ5DfJz8KPWIct//XJij7JQCmtTZu1rGdHXePXbekFCr8fvPjDvxe6IJXKK0CbyISSNZchaG0iFtgMqg11Qa+2H3nZn9h4s8JNFYQPb3GEQZlVBMu09ZLMmSIX2HCrrfILabBDQOxbahxxs4gS/HFYMhpnGf+JJslN2e8mqvsOvcdBYiZxvaOE4dXVbzN+QobvYovz43syRU0l0ZWdDjEKLygOT1Xez5dI0ru6W6knS5sVhxWCYyfhPeJLs7Nj2Unr7d/g1DtrS5lz4G1p44aRTawmkG86kNk+ldvnxPYOUI25YWRK5ggtRZoQs9Ss9MFntvkFquWigL0fF9eGJ9DxPA4BDHJMZKXKUqKKOJlrlJkd+vgfRylDumyy/Vrf3sp5vImIoeLvHea6iDDNnv9kA') format('woff2'),
+    url('//at.alicdn.com/t/font_1180980_8jzzr2m4ena.woff?t=1588479263862') format('woff'),
+    url('//at.alicdn.com/t/font_1180980_8jzzr2m4ena.ttf?t=1588479263862') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+    url('//at.alicdn.com/t/font_1180980_8jzzr2m4ena.svg?t=1588479263862#iconfont') format('svg'); /* iOS 4.1- */
+  }
+  
+  .iconfont {
+    font-family: "iconfont" !important;
+    font-size: 16px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  .icon-rili:before {
+    content: "\e65a";
+  }
+  
+  .icon-left-arrow:before {
+    content: "\e658";
+  }
+  
+  .icon-right-arrow:before {
+    content: "\e659";
+  }
+  
+  .icon-gou:before {
+    content: "\e611";
+  }
+  
+  .icon-release:before {
+    content: "\e85a";
+  }
+  
+  .icon-wind-loading:before {
+    content: "\e869";
+  }
+
+
+  
+.year-header {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    height: calc(100% - 20px);
+    padding-bottom: 10px;
+}
+
+.year-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
