@@ -6,7 +6,7 @@ function getPageConfig(current, totalPage) {
 
     if (totalPage <= PAGE_BLOCK) {
         // 全部展示的情况
-        pageConfig = Array.from({ length: PAGE_BLOCK }).map((_, i) => i + 1)
+        pageConfig = Array.from({ length: totalPage }).map((_, i) => i + 1)
     } else if (current + PAGE_INDENT >= totalPage ) {
         // ...只出现在末尾的情况
         pageConfig = [1, '...'].concat(Array.from({ length: PAGE_BLOCK - 2 }).map((_, i) => i + totalPage - PAGE_BLOCK + 3))
@@ -50,9 +50,9 @@ function init(callbacks) {
         }
     })
 
-    render(5, 112)
-    init.CURRENT_PAGE = 5
-    init.TOTAL_PAGE = 112;
+    render(28, 30)
+    init.CURRENT_PAGE = 28
+    init.TOTAL_PAGE = 30;
 }
 
 init()
