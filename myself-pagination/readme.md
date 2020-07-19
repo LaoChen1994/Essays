@@ -9,15 +9,15 @@
 
 ##### 场景1： 总页数小于等于9页  
 
-![image-20200718220759159](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200718220759159.png)
+![image-20200718220759159](./image/image-20200718220759159.png)
 
 > 该场景没啥好说的 所有的分页符均显示就行了
 
 ##### 场景2: 总页数大于9页 且只有一边存在省略情况
 
-![image-20200718221036869](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200718221036869.png)
+![image-20200718221036869](./image/image-20200718221036869.png)
 
-![image-20200718221106689](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200718221106689.png)
+![image-20200718221106689](./image/image-20200718221106689.png)
 
 > 此场景有两种情况 左边省略和右边省略：
 >
@@ -29,7 +29,7 @@
 
 ##### 场景3 两边都存在省略号的场景
 
-![image-20200718221452881](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20200718221452881.png)
+![image-20200718221452881](./image/image-20200718221452881.png)
 
 > 此场景刚好是激活页处于非上述两种场景的情况，即 总页数 > 最大页数 且 激活页数不在首尾边界 7 范围内的场景
 >

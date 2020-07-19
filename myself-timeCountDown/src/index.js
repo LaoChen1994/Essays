@@ -59,10 +59,13 @@ function render() {
     let prevTime = [0, 0, 0, 0]
     
     return function (params = [0, 0, 0, 0]) {
+
+        params = params.map(item => item.toString().padStart(2, "0"))
+
         if (firstRender) {
             const html = params.reduce((p, c) => {
                 return p + `
-                    <div class="count_item" id="count_item">${c.toString().padStart(2, "0")}</div>
+                    <div class="count_item" id="count_item">${c}</div>
                 `
             }, '')
 
@@ -71,7 +74,6 @@ function render() {
         } else {
             const nowCounts = document.getElementsByClassName("count_item")
             const diff = compareList(prevTime, params)
-            console.log(diff)
 
             diff.forEach(i => {
                 nowCounts[i].innerHTML = params[i]

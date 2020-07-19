@@ -1,0 +1,16 @@
+.count_down {
+    display: flex;
+}
+
+.count_item {
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+
+    color: #ff4444;
+    font-weight: 600;
+
+    margin-right: 14px;
+    box-shadow: rgba(33, 33, 33, 0.3) 0 2px 8px;
+}

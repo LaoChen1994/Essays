@@ -51,9 +51,10 @@ function render() {
     var prevTime = [0, 0, 0, 0];
     return function (params) {
         if (params === void 0) { params = [0, 0, 0, 0]; }
+        params = params.map(function (item) { return item.toString().padStart(2, "0"); });
         if (firstRender) {
             var html = params.reduce(function (p, c) {
-                return p + ("\n                    <div class=\"count_item\" id=\"count_item\">" + c.toString().padStart(2, "0") + "</div>\n                ");
+                return p + ("\n                    <div class=\"count_item\" id=\"count_item\">" + c + "</div>\n                ");
             }, '');
             elem.innerHTML = html;
             firstRender = false;
@@ -61,7 +62,6 @@ function render() {
         else {
             var nowCounts_1 = document.getElementsByClassName("count_item");
             var diff = compareList(prevTime, params);
-            console.log(diff);
             diff.forEach(function (i) {
                 nowCounts_1[i].innerHTML = params[i];
             });
