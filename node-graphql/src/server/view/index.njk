@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello Graphql</title>
+  </head>
+  <body>
+    <h1>Hello Graphql</h1>
+    <h2>Graphql Test</h2>
+    <script>
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: "{hello}" }),
+      // })
+      //   .then((r) => r.json())
+      //   .then((data) => console.log(data));
+
+      let query = `query RollDice($dice:Int!, $sides: Int) {
+        rollDise(numDice: $dice, numSides: $sides)
+      }`;
+
+      let query2 = `query MultiRoll($numberSides: Int!) {
+        multiRoll(numberSides: $numberSides){
+          rollOnce
+          roll(numRolls: 3)
+        }
+      }`;
+
+      let query3 = `query StudentInfo {
+        studentInfo {
+          name,
+          age
+        }
+      }`;
+
+      let query4 = `query GetStudentInfo($id: Int!) {
+        getStudentById(id: $id) {
+          name,
+          age
+        }
+      }
+      `;
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query, variables: { dice: 5, sides: 2 } }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: query2, variables: { numberSides: 5 } }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: query3, variables: { numberSides: 5 } }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: query4, variables: { id: 0 } }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql2", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: query4, variables: { id: 1 } }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      let query5 = `
+      mutation AddStudent($name: String!, $age: Int!) {
+        addStudent(name: $name, age: $age) {
+          name,
+          age
+        }
+      }
+      `;
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     query: query3,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     query: query5,
+      //     variables: { name: "李四", age: 16 },
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      let query6 = `
+      query GetAllStudents  {
+        getAllStudents {
+          age
+          name
+        }
+      }`;
+
+      // fetch("/graphql", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({
+      //     query: query6,
+      //   }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log(data));
+
+      // fetch("/graphql2", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: "{ hello }" }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log("new Hello = ", data));
+
+      // fetch("/graphql2", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Accept: "application/json",
+      //   },
+      //   body: JSON.stringify({ query: query3 }),
+      // })
+      //   .then((res) => res.json())
+      //   .then((data) => console.log("get Student = ", data));
+
+      let _query1 = `
+        mutation AddStudent($name: String!, $age: Int!) {
+          addStudent(name: $name, age: $age) {
+            name,
+            age
+          }
+        }
+      `;
+      fetch("/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          query: _query1,
+          variables: { name: "王六", age: 19 },
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("add student 1 = ", data));
+
+      fetch("/graphql2", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          query: _query1,
+          variables: { name: "王七", age: 20 },
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => console.log("add student 2 = ", data));
+    </script>
+  </body>
+</html>

@@ -5,7 +5,7 @@ export default {
     msg: String,
   },
   render(h) {
-    return h("tag", {}, ["123"]);
+    return () => h("tag", {}, ["123"]);
   },
 };
 </script>
