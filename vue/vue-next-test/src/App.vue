@@ -1,13 +1,13 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <hello-world msg="Welcome to Your Vue.js App" />
-    <slot-con>123</slot-con>
-    <button @click="showLifeCircle">show life circle</button>
-    <life-circle v-if="isShowLife" />
-    <Parent />
-    <RefTest />
-  </div>
+<div id="app">
+  <img alt="Vue logo" src="./assets/logo.png" />
+  <hello-world msg="Welcome to Your Vue.js App" />
+  <slot-con>123</slot-con>
+  <button @click="showLifeCircle">show life circle</button>
+  <life-circle v-if="isShowLife" />
+  <Parent />
+  <RefJsx />
+</div>
 </template>
 
 <script>
@@ -15,7 +15,7 @@ import HelloWorld from "./components/HelloWorld.vue";
 import SlotCon from "./components/SlotWrap.vue";
 import LifeCircle from "./components/LifeCircle.vue";
 import Parent from "./components/Provider/Parent";
-import RefTest from "./components/RefTest.vue";
+import RefJsx from "./components/RefTest.vue";
 
 export default {
   name: "App",
@@ -24,7 +24,7 @@ export default {
     SlotCon,
     LifeCircle,
     Parent,
-    RefTest,
+    RefJsx,
   },
   data() {
     return {
