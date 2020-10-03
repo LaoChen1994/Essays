@@ -100,6 +100,9 @@ createConnection(db_config)
     console.log("connection is over");
     conn = connection;
     // getSingleTableTest();
-    oneToOneTest();
+    // oneToOneTest();
+    let gradeRepository = connection.getRepository(Grade);
+    let person = await gradeRepository.find({ relations: ["headTeacher"] });
+    console.log(person);
   })
   .catch((error) => console.log(error));

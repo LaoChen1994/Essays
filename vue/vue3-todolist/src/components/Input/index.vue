@@ -1,21 +1,51 @@
 <template>
 <div class="input">
   <span class="label">{{ label }}<span v-if="showCol">:</span></span>
-  <input type="text" :value="modelValue" @input="handleInpuChange" class="input_bar" />
+  <input type="text" :value="modelValue" @input="handleInpuChange" class="input_bar" @focus="focus" @blur="blur" ref="inputRef" />
 </div>
 </template>
 
 <script>
+import {
+  onMounted,
+  ref
+} from 'vue';
 export default {
   props: {
     label: String,
     modelValue: String,
     showCol: Boolean,
-  },
-  methods: {
-    handleInpuChange(event) {
-      this.$emit("update:modelValue", event.target.value);
+    focus: {
+      type: Function,
+      default: () => {}
     },
+    blur: {
+      type: Function,
+      default: () => {}
+    },
+  },
+  setup(props, {
+    emit
+  }) {
+    const inputRef = ref()
+
+    const handleInpuChange = (event) => {
+      emit("update:modelValue", event.target.value);
+    }
+
+    onMounted(() => {
+      console.log('ref = ', inputRef.value)
+    })
+
+    const inputFocus = () => {
+      inputRef.value && inputRef.value.focus()
+    }
+
+    return {
+      handleInpuChange,
+      inputFocus,
+      inputRef
+    }
   },
 };
 </script>

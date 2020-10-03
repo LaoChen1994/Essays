@@ -3,8 +3,8 @@
   <form class="controller_form">
     <my-input label="输入代办事项" v-model="todoForm.title" showCol="true"></my-input>
     <my-input label="输入目标" v-model="todoForm.target" showCol="true"></my-input>
-    <my-input label="输入完成时间" v-model="todoForm.startTime" showCol="true"></my-input>
-    <my-input label="输入结束时间" v-model="todoForm.endTime" showCol="true"></my-input>
+    <my-date-picker v-model="todoForm.startTime" label="输入起始时间"></my-date-picker>
+    <my-date-picker label="输入结束时间" v-model="todoForm.endTime"></my-date-picker>
   </form>
   <my-button :handleClick="getInputVal" class="confirm_btn">获取值</my-button>
 </div>
@@ -14,32 +14,40 @@
 import {
   reactive,
   ref,
-  watchEffect
+  toRaw
 } from "vue";
-import myButton from "../Button";
 
+import myButton from "../Button";
 import myInput from "../Input";
+import myDatePicker from "../SimpleDatePicker";
+
+import {
+  cloneDeep
+} from "lodash";
+
 export default {
   props: {
     addTodoItem: Function,
   },
   setup(prop) {
-    const todoForm = reactive({
+    const initFormData = {
       title: "",
       target: "",
       startTime: "",
       endTime: "",
-    });
+    };
+
+    const todoForm = reactive(cloneDeep(initFormData));
     const inputVal = ref("");
 
-    watchEffect(() => {
-      console.log(inputVal.value);
-    });
-
-    console.log(prop);
-
     const getInputVal = () => {
-      prop.addTodoItem(todoForm);
+      console.log(toRaw(todoForm));
+      prop.addTodoItem(cloneDeep(toRaw(todoForm)));
+
+      Object.entries(initFormData).map(([key, value]) => {
+        console.log(key, value);
+        todoForm[key] = value;
+      });
     };
 
     return {
@@ -51,6 +59,7 @@ export default {
   components: {
     myInput,
     myButton,
+    myDatePicker,
   },
 };
 </script>
