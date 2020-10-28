@@ -1,0 +1,17 @@
+{
+  "name": "my-event-bus",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.12.1"
+  },
+  "scripts": {
+    "build": "npx babel src -d dist",
+    "dev": "nodemon ./src/index.js"
+  }
+}
