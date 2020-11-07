@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>吸顶滚动特效</title>
+</head>
+<body>
+    <style>
+        .content {
+            height: 3000px;
+            background-color: #333;
+            padding-top: 64px;
+            color: white;
+            font-size: 100px;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav {
+            height: 64px;
+            width: 100%;
+            overflow: hidden;
+            position: fixed;
+            left: 0;
+            top: 0;
+            line-height: 64px;
+            text-align: center;
+        }
+
+        .nav_content {
+            height: 100%;
+            transform: translateY(0);
+            transition: all 1s ease;
+        }
+
+        .slidedown {
+            transform: translateY(-64px);
+        }
+
+        .content_top, .content_bottom {
+            height: 100%;
+            color: #eee;
+        }
+
+        .content_top {
+            background-color: blue;
+        }
+
+        .content_bottom {
+            background-color: red;
+        }
+
+    </style>
+    <div class="nav">
+        <div id="nav" class="nav_content">
+            <div class="content_top">Nav_top</div>
+            <div class="content_bottom">Nav_bottom</div>
+        </div>
+    </div>
+    <div class="content">
+        正文内容
+    </div>
+    <script>
+        var prevDistance = 0;
+        window.onscroll = function(){
+            var scrollDistance = document.documentElement.scrollTop || document.body.scrollTop;
+            var elem = document.getElementById('nav')
+            if(prevDistance < scrollDistance){
+                // 下滑
+                elem.classList.add('slidedown');
+            } else {
+                // 上滑
+                elem.classList.remove('slidedown');
+            }
+            prevDistance = scrollDistance;
+        }
+    </script>
+</body>
+</html>
