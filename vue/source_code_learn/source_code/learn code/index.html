@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app"></div>
+    <div id="btn">click</div>
+    <script src="./index.js"></script>
+    <script>
+        const app = document.getElementById('app');
+        const btn = document.getElementById('btn');
+
+        const count = reactive({
+            count: 1
+        })
+
+        const double = computed(() => count.count * 2)
+
+        effect(() => console.log(`${count.count} is changed`))
+
+        app.innerText = `数字${count.count}的两倍是${double.value}`
+        console.log(double.value)
+
+        btn.addEventListener('click', () => {
+            count.count++
+            app.innerText = `数字${count.count}的两倍是${double.value}`
+        })
+    </script>
+</body>
+</html>

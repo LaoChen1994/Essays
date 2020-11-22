@@ -8,7 +8,8 @@
     "@babel/core": "^7.12.3"
   },
   "dependencies": {
-    "@babel/preset-env": "^7.12.1"
+    "@babel/preset-env": "^7.12.1",
+    "babel-node": "0.0.1-security"
   },
   "scripts": {
     "build": "npx babel src -d dist",

@@ -1,0 +1,28 @@
+<script src="../../dist/vue.global.js"></script>
+
+<div id="demo">
+    <div>{{ count }}</div>
+    <button @click="addCount">+1</button>
+</div>
+
+<script>
+    let { createApp, ref, watchEffect } = Vue
+    createApp({
+        setup() {
+            let count = ref(0)
+
+            watchEffect(() => {
+                console.log(`now count = ${count.value}`)
+            })
+
+            const addCount = () => {
+                count.value++;
+            }
+
+            return {
+                count,
+                addCount
+            }
+        }
+    }).mount('#demo')
+</script>

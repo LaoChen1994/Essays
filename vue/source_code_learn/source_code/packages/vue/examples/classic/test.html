@@ -1,0 +1,27 @@
+
+  <script src="../../dist/vue.global.js"></script>
+  <div id="test">
+  </div>
+
+  <script>
+    const App = {
+      data(){
+        return{
+          name:"vue",
+          items: [
+            { message: 'Foo' },
+            { message: 'Bar' }
+          ]
+        }
+      },
+      template: `
+        <ul id="example-1">
+          <li v-for="item in items" :key="item.message">
+            {{ item.message }}
+          </li>
+        </ul>
+      `
+    }
+    let vm = Vue.createApp(App).mount("#test");
+  </script>
+

@@ -2,8 +2,6 @@
 
 ## 0. 学习环境搭建
 
-### 1. 参考内容
-
 [如何搭建调试vue3源码](https://juejin.im/post/6844903959153344525)中叙述的主要步骤
 
 1. clone vue 3源码
@@ -64,11 +62,202 @@
    
    ```
 
-### 2. 一个vue页面是如何被展示出来的
+## 1. Vue结构
+
+### 1.1 Vue 3源码结构
+
+数据监听的设计模式，观察者模式，vue 3通过proxy代替了原来的Object.defineProperty来实现数据监听，并且加入了新的Composition API，来实现代码的抽离。
+
+Vue 3重构之后，源码大致可以分为以下几个部分：
+
+![image-20201114161127343](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114161127343.png)
+
++ compile -> 将template -> js -> vdom
++ reactivity -> 实现响应式，实现数据监听
++ runtime -> 为vdom提供运行时需要的函数进行执行
+
+### 1.2 Vue 3 vs Vue 2
+
+Vue 3相较于Vue 2做了以下几个改进：
+
+compile：
+
++ 用Proxy代替defineProperty
+  + Object.defineProperty需要遍历或者递归来绑定对象的所有属性，影响首屏渲染
+  + Object.defineProperty无法监听新增和属性和数组操作
++ vdom重写
+  + 静态标记
+  + 标记静态节点
+    + 如果是静态节点就不打标，如果是动态节点就会会动态属性的类型打标例如class, props, text等
+    + 这里是通过位运算进行打标的||组合， &&校验
+  + diff算法的更新(未看)
+    + vue2: 双端比较
+    + vue3: 最长递增子序列
+
+runtime：
+
++ 引入hooks
+
+## 2 Vue 的简单响应实现
+
+### 2.1 vue 3 composition API的使用
+
+简单的一个数据监听的实现，看一看目前的vue 3 + composition API是怎么用的？
+
+```javascript
+const state = ref(1)
+
+effect(() => {
+    console.log('effect = ', state.value)
+})
+
+effect(() => {
+    console.log('effect2 = ', state.value)
+})
+```
+
+需要实现有以下几个点：
+
++ 在state.value更新的时候需要去执行对应的回调
++  使用effect函数的时候需要注册回调
++ 依赖的自动收集
+
+如何实现？
+
++ 发布订阅模式
+
+![image-20201114164759644](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114164759644.png)
+
+![image-20201114211301423](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114211301423.png)
+
+#### 2.1.1 如何自动收集副作用
+
+```javascript
+const param = ref(2)
+effect(fn)
+// 为了方便说明，我们将响应式参数param简称ref
+// effect 称为副作用
+// 称为变量
+```
+
+vue 3主要思路：
+
+1. proxy或者defineProperty监听get方法时，去执行track收集引用ref的依赖
+2. 在track中将回调注册到，store中的回调列表中
+3. 每次effect新建的时候执行fn，**因为fn如果引用到ref一定会触发ref的get方法**，在这里就会注册上对应的副作用
+
+### 2.2 简单实现ref的例子
+
+#### 2.2.1 ref基础实现
+
+```javascript
+// 创建一个effect方法
+function effect (fn) {
+    effect.activeEffect = fn;
+    fn()
+}
+
+effect.activeEffect = null
+
+// event center
+export class Desp {
+    constructor() {
+        this.subs = new Set()
+    }
+
+    depend() {
+        if(effect.activeEffect) {
+            this.subs.add(effect.activeEffect)
+        }
+    }
+
+    notify() {
+        this.subs.forEach(effect => effect())
+    }
+}
+
+
+function ref(initVal) {
+    let _value = initVal;
+    let desp = new Desp()
+
+    return {
+        get value() {
+            // 依赖收集
+            desp.depend()
+            return _value
+        },
+        set value(value) {
+            // 修改的时候通知desp执行回调
+            _value = value
+            desp.notify()
+        }
+    }
+}
+```
+#### 2.2.2 proxy版本
+```javascript
+const getCommonHandler = (desp) =>  ({
+    get(target, property) {
+        desp.depend()
+        return target[property]
+    }, 
+    set() {
+        Reflect.set(...arguments)
+        desp.notify()
+        return true
+    }
+})
+
+function createProxyRef(initVal) {
+    let _value = initVal
+    let desp = new Desp()
+
+    let proxy = new Proxy({ value: _value }, getCommonHandler(desp))
+
+    return proxy
+}
+```
+
+### 2.3 康康源码长啥样
+
+![image-20201114171506685](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114171506685.png)
+
+![image-20201114171654268](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114171654268.png)
+
+### 2.4 拆分源码结构
+
++ track: 用于收集依赖
+
++ trigger: 用于调用副作用
+
++ targetMap: 一个用于收集reactive响应式参数的大数组，**将reactive收集的对象与其对象中参数对应的响应式effect形成1对多的映射关系**，其结构大致如下
+
+   ```javascript
+  targetMap = {
+      {a, b}: {
+          a: [effect1, effect2],
+          b: [effect3]
+      }
+  }
+  ```
+
++ effectStack: 用于缓存多个effect，在一次flush中
+
+
+## 3. Compile
+
+### 3.1 简介
+
+vue compile做了什么？
+
+1. 利用各种类型的parser创建ast (html -> ast)
+2. 通过vFor，vIf等各种基于vue语法编写的transform改写ast节点 (ast -> vue_ast)
+3. 利用generate将生成的代码挂在context上，然后生成运行时的js代码 (vue_ast -> js (vdom))
+
+### 3.2 调试过程
 
 我们在进入页面渲染的createApp打上断点
-
-![image-20201019231319118](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201019231319118.png)
 
 查询调用函数栈我们发现不简单，大致经过了这么几个函数：
 
@@ -80,41 +269,40 @@
 
 创建过程中用到的函数如下表，可以先不看，后面有需要的时候再来查
 
-| 创建函数名               | 作用                          | 关键点 |
-| :----------------------- | ----------------------------- | ------ |
-| moveStaticNode           |                               |        |
-| patch                    |                               |        |
-| processText              |                               |        |
-| processCommentNode       |                               |        |
-| patchStaticNode          |                               |        |
-| mountStaticNode          |                               |        |
-| patchStaticNode          |                               |        |
-| removeStaticNode         |                               |        |
-| processElement           |                               |        |
-| mountElement             |                               |        |
-| setScopeId               |                               |        |
-| mountChildren            |                               |        |
-| patchElement             |                               |        |
-| patchBlockChildren       |                               |        |
-| patchProps               |                               |        |
-| processFragment          |                               |        |
-| processComponent         |                               |        |
-| mountComponent           |                               |        |
-| updateComponent          |                               |        |
-| setupRenderEffect        |                               |        |
-| updateComponentPreRender |                               |        |
-| patchChildren            |                               |        |
-| patchUnkeyedChildren     |                               |        |
-| patchKeyedChildren       |                               |        |
-| move                     |                               |        |
-| UnmountFn                |                               |        |
-| RemoveFn                 |                               |        |
-| removeFragment           |                               |        |
-| unmountComponent         |                               |        |
-| unmountChildren          |                               |        |
-| getNextHostNode          |                               |        |
-| traverseStaticChildren   |                               |        |
-| render                   | 将指定的vnode节点渲染到容器中 |        |
+| 创建函数名               | 作用                          | 关键点     |
+| :----------------------- | ----------------------------- | ---------- |
+| moveStaticNode           |                               |            |
+| patch                    | 渲染更新节点                  | 详见第四章 |
+| processText              | 处理文本节点                  | 详见第四章 |
+| processCommentNode       |                               |            |
+| patchStaticNode          | 渲染静态节点                  | 详见第四章 |
+| mountStaticNode          | 挂载静态节点                  | 详见第四章 |
+| removeStaticNode         |                               |            |
+| processElement           | 处理原生的element             |            |
+| mountElement             | 挂载原生的element             |            |
+| setScopeId               | 模块之间独立                  |            |
+| mountChildren            | 挂载子节点                    |            |
+| patchElement             | 渲染原生的element             |            |
+| patchBlockChildren       |                               |            |
+| patchProps               |                               |            |
+| processFragment          |                               |            |
+| processComponent         |                               |            |
+| mountComponent           |                               |            |
+| updateComponent          |                               |            |
+| setupRenderEffect        |                               |            |
+| updateComponentPreRender |                               |            |
+| patchChildren            |                               |            |
+| patchUnkeyedChildren     |                               |            |
+| patchKeyedChildren       |                               |            |
+| move                     |                               |            |
+| UnmountFn                |                               |            |
+| RemoveFn                 |                               |            |
+| removeFragment           |                               |            |
+| unmountComponent         |                               |            |
+| unmountChildren          |                               |            |
+| getNextHostNode          |                               |            |
+| traverseStaticChildren   |                               |            |
+| render                   | 将指定的vnode节点渲染到容器中 |            |
 
 最终返回值：
 
@@ -403,7 +591,103 @@ Q2: 中有哪些东西
 
    
 
-   
+### 4.  vdom 
+
+####  4.1 为何要更新diff算法
+
+1. 因为双端对比可能导致一次diff时间超过单帧的刷新时间，所以需要优化(**类似react fiber要解决的问题**)
+2. JSX和手写的render function h('div', null, children)是完全动态的，过度的灵活性导致可利用的优化信息不足
+
+#### 4.2 Vue 3怎么做？
+
+1. 如果静态节点不diff
+2. 动态节点引入block tree
+   + 每个区块内部基于动态节点指令(v-for v-if)切割嵌套区块
+   + 每个区块内部结构固定(方便递归)
+   + 每个区块内部的动态元素进行存储记录(一个Array)
+3. 通过时间片进行更新，flushupdate
+
+#### 4.3 Vue 3中如何更新节点信息
+
+##### 4.3.1 更新dom展示
+
+当页面mount的时候，会默认为该组件实例挂一个setupRender的钩子，通过这个钩子，可以完成从vnode -> 实dom的转变。
+
+![image-20201122180333195](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122180333195.png)
+
+##### 4.3.2 setupRenderEffect解析
+
+setupRenderEffect主要做了哪些事：
+
++ 初次mount
+  + 调用响应的生命周期钩子函数(beforeMount, onVnodeBeforeMount, mount, onVnodeMount)
+  + 判断是否为hydrateNode（未看）
+  + 给组件打上标记
+  + 调用patch方法开始挂载组件，mount状态patch的第一个参数为空
+  + 根据keepAlive将父组件处于Suspense状态(未看)
+  + 设置isMounted标志位为true
+  
++ 后续update
+
+  + 组件本身动态参数变化(next为空)
+    + 将next设为当前的节点vnode，执行后续步骤
+  + 父组件更新调用processComponent触发的(next不为空)
+    + 加载之前一次render的vnode，利用updateComponentPreRender -> flushPreFlushCbs。
+  + 调用beforeUpdate钩子
+  + 给组件打上标记
+  + 解析新节点的vnode(renderComponentRoot)
+
+#### 4.5 VNode创建过程
+
+#### 4.5.1 createVNode
+
+![image-20201122230926602](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122230926602.png)
+
+主要是调用了createVNodeWithArgsTransform和_createVNode这两个方法
+
+![image-20201122231412402](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122231412402.png)
+
+其主要作用是：
+
++ **将template -> vdom**
+
++ 生成clone节点，目前发生的场景为，如果这种情况下，_createVNode传入的type为一个vnode，其他情况不会传入一个vnode
+
+  ```vue
+  <component :is="vnode" />
+  ```
+
+其主要生成的过程为：
+
++ 规整type的类型 -> 区分函数组件还是类组件
+
++ 规整class
+
++ 规整style
+
++ 根据type的类型来对vnode进行打标
+
+  ```typescript
+  export const enum ShapeFlags {
+    ELEMENT = 1,
+    FUNCTIONAL_COMPONENT = 1 << 1,
+    STATEFUL_COMPONENT = 1 << 2,
+    TEXT_CHILDREN = 1 << 3,
+    ARRAY_CHILDREN = 1 << 4,
+    SLOTS_CHILDREN = 1 << 5,
+    TELEPORT = 1 << 6,
+    SUSPENSE = 1 << 7,
+    COMPONENT_SHOULD_KEEP_ALIVE = 1 << 8,
+    COMPONENT_KEPT_ALIVE = 1 << 9,
+    COMPONENT = ShapeFlags.STATEFUL_COMPONENT | ShapeFlags.FUNCTIONAL_COMPONENT
+  }
+  ```
+  
++ 生成vnode节点 -> 其本质上是一个对象
+
+  ![image-20201122232919736](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122232919736.png)
+
+  
 
 
 
@@ -412,3 +696,23 @@ Q2: 中有哪些东西
 
 
 
+
+
+#### 4.4 类似fiber时间片的思想 ---- > flushJobs
+
+##### 4.4.x flushJobs是什么
+
+1. 浏览器空闲的时间对vdom进行更新对比
+
+2. 调用方法大约如下，以组件未更新加载前一次的vdom为例：
+
+   ![image-20201122205937696](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122205937696.png)
+
+   ![image-20201122210003455](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122210003455.png)
+
+3. 
+
+##### 4.4.X 队列排序的作用
+
++ 组件的更新从父元素到子元素(因为父元素总是在子元素之前创建，所以render effect的优先级更小)
++ 如果一个组件在父组件更新时被卸载了，这个时候它应该被忽略
