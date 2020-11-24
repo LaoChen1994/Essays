@@ -587,9 +587,46 @@ Q2: 中有哪些东西
 
 3. genNodeListAsArray:  这个函数主要是用来生成多个props或者children用的，其原理就是通过genNodeList然后如果是children就直接调用后通过genNode来进行处理即可，按照上面的原理找props然后根据对应元素的nodeType, 递归生成即可，这里要注意的是，作为同一个变量的nodeList在同一层的话要用括号
 
-4. 
 
-   
+##### 2.x.5 生成代码的样子
+
+[Vue 3 template explorer](https://vue-next-template-explorer.netlify.app/)
+
+```html
+<div>{{ a }}</div>
+```
+
+```javascript
+import { toDisplayString as _toDisplayString, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (_openBlock(), _createBlock("div", null, _toDisplayString(_ctx.a), 1 /* TEXT */))
+}
+```
+
+这里有两个关键的函数：
+
++ openBlock
+
+  ![image-20201124010327939](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010327939.png)
+
+  **关键**：为一个节点树提供一个block的容器，根据官方所说可知，需在createBlock之前被调用，这里更新了当前的block -> currentBlock
+
++ createBlock
+
+  ![image-20201124010659428](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010659428.png)
+
+  **步骤**：
+
+  + 创建对应的vnode -> 如果有子节点递归调用createVNode
+
+  + 将当前的vnode保存在block中,并关闭当前的block
+
+    ![image-20201124011410007](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124011410007.png)
+
+    **close的时候blockStack会出栈，所以下一次的currentBlock为当前节点的父节点**
+
+  + 
 
 ### 4.  vdom 
 
@@ -635,7 +672,22 @@ setupRenderEffect主要做了哪些事：
     + 加载之前一次render的vnode，利用updateComponentPreRender -> flushPreFlushCbs。
   + 调用beforeUpdate钩子
   + 给组件打上标记
-  + 解析新节点的vnode(renderComponentRoot)
+  + 解析新节点的vnode(renderComponentRoot) -> 这里会调用之前mount挂载在vnode实例上的render函数进行渲染
+  + render函数: 通过template -> vnode的转换过程
+
+
+
+##### 4.3.3 render函数生成node
+
+一个简单的render函数如下：
+
+![image-20201125011526916](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011526916.png)
+
+主要内容包括：
+
++ openBlock
++ createBlock
++ createVNode（后面讨论）
 
 #### 4.5 VNode创建过程
 
@@ -649,7 +701,7 @@ setupRenderEffect主要做了哪些事：
 
 其主要作用是：
 
-+ **将template -> vdom**
++ **将template -> vnode**
 
 + 生成clone节点，目前发生的场景为，如果这种情况下，_createVNode传入的type为一个vnode，其他情况不会传入一个vnode
 
@@ -683,9 +735,30 @@ setupRenderEffect主要做了哪些事：
   }
   ```
   
-+ 生成vnode节点 -> 其本质上是一个对象
++ 生成新的vnode节点 -> 其本质上是一个对象 (调用renderComponentRoot)
 
   ![image-20201122232919736](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122232919736.png)
+
++ vnode对于子节点的规整 (主要通过传入的vnode的shapeFlag和children类型进行判断)
+
+  其目的是为了规整统一其children的类型和shapeFlag(节点)的类型：
+
+  + 数组子节点：一个元素下面有多个子节点的情况，（典型Fragment，这个时候由于多个子节点已经被解析为vnode因此不用单独处理了）
+
+    ![image-20201125011322684](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011322684.png)
+
+  + 对象子节点(子节点仍是一个vnode的场景，多层嵌套)
+    + 当前节点为element节点 或TELEPORT(传送门)
+    + 当前节点为slot节点
+    
+  + 文本子节点
+    + 当前节点类型为传送门
+      + ![image-20201125005947796](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125005947796.png)
+    + 其他类型认为是文本子节点
+
++ 对于Suspense节点的规整(未整理)
+
+  
 
   
 
