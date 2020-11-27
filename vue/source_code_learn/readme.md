@@ -1,4 +1,4 @@
-# Vue源码学习笔记
+Vue源码学习笔记
 
 ## 0. 学习环境搭建
 
@@ -389,33 +389,9 @@ vue compile做了什么？
 
   ![image-20201022004701624](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201022004701624.png)
 
-+ render函数中如果vnode存在会调用patch方法，我们来看patch方法
++ render函数中如果vnode存在会调用patch方法，我们来看patch方法，之后会做详细的解析
 
-  ![image-20201022005159630](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201022005159630.png)
-
-  patch有如下几个入参：
-
-  + n1: 代表父组件的_vnode属性，如果这个属性没有就认为是mount时候调用的
-  + n1: 代表需要挂在上去的目标vnode
-  
-  + container: 代表挂在父容器的element
-+ 后面的参数在mount的时候不会用到
-  
-##### 2.3.2 patch方法解析
-
-![image-20201024141036339](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20201024141036339.png)
-
-1. 主要的解析过程：
-  
-   通过vnode的type和之前的shapeFlags来对不同类型的组件调用不同的方法进行渲染，我们先来看对普通组件的处理processComponent
-  
-2. processComponent的处理
-  
-   主要是调用了mountComponent -> setupComponent -> setupStatefulComponent
-
-
-
-**VNode的主要类型**：
++ **VNode的主要类型**：
 
   ~~~typescript
   export const enum ShapeFlags {
@@ -587,11 +563,81 @@ Q2: 中有哪些东西
 
 3. genNodeListAsArray:  这个函数主要是用来生成多个props或者children用的，其原理就是通过genNodeList然后如果是children就直接调用后通过genNode来进行处理即可，按照上面的原理找props然后根据对应元素的nodeType, 递归生成即可，这里要注意的是，作为同一个变量的nodeList在同一层的话要用括号
 
-4. 
 
-   
+##### 2.x.5 生成代码的样子
+
+[Vue 3 template explorer](https://vue-next-template-explorer.netlify.app/)
+
+```html
+<div>{{ a }}</div>
+```
+
+```javascript
+import { toDisplayString as _toDisplayString, createVNode as _createVNode, openBlock as _openBlock, createBlock as _createBlock } from "vue"
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return (_openBlock(), _createBlock("div", null, _toDisplayString(_ctx.a), 1 /* TEXT */))
+}
+```
+
+这里有两个关键的函数：
+
++ openBlock
+
+  ![image-20201124010327939](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010327939.png)
+
+  **关键**：为一个节点树提供一个block的容器，根据官方所说可知，需在createBlock之前被调用，这里更新了当前的block -> currentBlock
+
++ createBlock
+
+  ![image-20201124010659428](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010659428.png)
+
+  **步骤**：
+
+  + 创建对应的vnode -> 如果有子节点递归调用createVNode
+
+  + 将当前的vnode保存在block中,并关闭当前的block
+
+    ![image-20201124011410007](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124011410007.png)
+
+    **close的时候blockStack会出栈，所以下一次的currentBlock为当前节点的父节点**
+
+  + 
 
 ### 4.  vdom 
+
+我们用的例子：
+
+```html
+<script src="../../dist/vue.global.js"></script>
+
+<div id="demo">
+    <div>{{ count }}</div>
+    <button @click="addCount">+1</button>
+</div>
+
+<script>
+    let { createApp, ref, watchEffect } = Vue
+    createApp({
+        setup() {
+            let count = ref(0)
+
+            watchEffect(() => {
+                console.log(`now count = ${count.value}`)
+            })
+
+            const addCount = () => {
+                count.value++;
+            }
+
+            return {
+                count,
+                addCount
+            }
+        }
+    }).mount('#demo')
+</script>
+```
 
 ####  4.1 为何要更新diff算法
 
@@ -609,9 +655,13 @@ Q2: 中有哪些东西
 
 #### 4.3 Vue 3中如何更新节点信息
 
+**调用链:** proxy更新 -> 对应的watchEffect  -> setupRenderEffect -> renderComponentRoot (生成新的节点) -> render函数生成vnode -> 
+
 ##### 4.3.1 更新dom展示
 
 当页面mount的时候，会默认为该组件实例挂一个setupRender的钩子，通过这个钩子，可以完成从vnode -> 实dom的转变。
+
+这里的instance是组件的实例，在mount的时候进行挂载：
 
 ![image-20201122180333195](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122180333195.png)
 
@@ -635,11 +685,51 @@ setupRenderEffect主要做了哪些事：
     + 加载之前一次render的vnode，利用updateComponentPreRender -> flushPreFlushCbs。
   + 调用beforeUpdate钩子
   + 给组件打上标记
-  + 解析新节点的vnode(renderComponentRoot)
+  + 解析新节点的vnode(renderComponentRoot) -> 这里会调用之前mount挂载在vnode实例上的render函数进行渲染
+  + render函数: 通过template -> vnode的转换过程
 
-#### 4.5 VNode创建过程
+##### 4.3.3 renderComponentRoot解析 
 
-#### 4.5.1 createVNode
+**目的：**为了生成新的vnode
+
+**步骤：**
+
++ 从实例中获取当前的type，vnode，render函数等
+
++ 根据当前vnode的类型(shapeFlag)，生成和规整vnode
+
+  + 状态组件
+    + 调用mount过程中得到的render函数 （具体过程详见4.3.3节）
+    + 利用normalizeVode规整render生成的vnode
+      + 根据传入节点的类型进行分类
+        + 布尔类型或者null -> vnode类型标记为Comment
+        + 如果是数组，外面包一层Fragment
+        + 如果是对象 -> 说明是个单节点，非clone节点的话，直接返回child
+        + string或者number -> 创建文本节点
+
+  + 函数组件(主要是jsx和手动调用vue中的h -> vue 2.x中的render函数中隐式提供的h)
+    + 这次每次需要调用render进行重新的渲染，生成vnode
+
++ 进一步对vnode进行处理包括：
+
+  + v-model绑定 -> withDirectives
+  + 是否通过Transition包一层(分支后续了解)
+
++ 返回最终的vnode -> result
+
+##### 4.3.4 render函数生成node
+
+一个简单的render函数如下：
+
+![image-20201125011526916](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011526916.png)
+
+主要内容包括：
+
++ openBlock -> 每次createBlock之前都需要调用openBlock，创建v-for的时候，需要指定openBlock的第一个参数为true
++ createBlock-> **当使用v-if, v-for, slot的时候会将模板分成一个一个block分区，整个应用树以block串起来，之后在更新对比监控(diff)的时候可以从上而下进行，最小范围变更，提升性能**
++ createVNode（后面讨论）
+
+##### 4.3.5 createVNode
 
 ![image-20201122230926602](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122230926602.png)
 
@@ -649,7 +739,7 @@ setupRenderEffect主要做了哪些事：
 
 其主要作用是：
 
-+ **将template -> vdom**
++ **将template -> vnode**，对节点的子节点，class，style以及其他的props进行规整，并保存在vnode中返回
 
 + 生成clone节点，目前发生的场景为，如果这种情况下，_createVNode传入的type为一个vnode，其他情况不会传入一个vnode
 
@@ -683,11 +773,117 @@ setupRenderEffect主要做了哪些事：
   }
   ```
   
-+ 生成vnode节点 -> 其本质上是一个对象
++ 生成新的vnode节点 -> 其本质上是一个对象 
 
   ![image-20201122232919736](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122232919736.png)
 
-  
++ vnode对于子节点的规整 (主要通过传入的vnode的shapeFlag和children类型进行判断)
+
+  其目的是为了规整统一其children的类型和shapeFlag(节点)的类型：
+
+  + 数组子节点：一个元素下面有多个子节点的情况，（典型Fragment，这个时候由于多个子节点已经被解析为vnode因此不用单独处理了）
+
+    ![image-20201125011322684](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011322684.png)
+
+  + 对象子节点(子节点仍是一个vnode的场景，单节点)
+    + 当前节点为element节点 或TELEPORT(传送门)
+    + 当前节点为slot节点
+    
+  + 文本子节点
+    + 当前节点类型为传送门
+      + ![image-20201125005947796](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125005947796.png)
+    + 其他类型认为是文本子节点
+
++ 对于Suspense节点的规整(未整理)
+
+#### 4.4 patch
+
+通过renderComponentRoot获得跟新后的vnode之后，我们需要将新的dom渲染到页面上从vdom -> 实dom的转换，这个时候使用patch方法, patch方法的作用：
+
+1. vnode如果没有挂载
+
+##### 4.4.1 patch入参
+
+![image-20201125235858897](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125235858897.png)
+
+patch有如下几个入参：
+
++ n1: 代表父组件的_vnode属性，如果这个属性没有就认为是mount时候调用的，如果有会认为是更新场景，这个时候需要diff比对
++ n1: 代表需要挂在上去的目标vnode
++ container: 代表挂在父容器的element
++ anchor:  目前没研究出干啥用的
++ parentComponent: 父组件的vnode
++ parentSuspense: 父组件是Suspense的情况
++ isSVG：判断是否是SVG
++ optimized：优化的标志，用来控制是否需要跳过优化diff模式
+
+##### 4.4.2 patch方法解析
+
+简单来说patch方法的目的和实现：
+
+目的：对比n1和n2两个vnode之前的区别，然后进行渲染到对应的父容器中。
+
+实现：通过对比n2和n1的shapeFlag通过不同的type的处理方法挂载或更新组件
+
+具体实现：
+
+1. n1与n2节点类型不一样 -> 直接卸载n1, 然后n1 = null
+2. n2的patchFlag如果是BAIL那么就全量diff，放弃optimized优化diff
+3. 根据不同的节点类型和n2的shapeFlag调用不同的process方法进行处理
+
+##### 4.4.3 一个processFragment的例子
+
+**步骤：**
+
++ 如果patchFlag（用于标记是什么类型的动态变量的）> 0, 说明是动态节点的，开启优化模式
++ 如果n1不存在 -> 调用对应的mountChildren方法，挂载对应的子节点
++ 如果n1存在，更新操作
+  + patchFlag = STABLE_FRAGMENT -> 调用patchBlockChildren： STABLE_FRAGMENT指的是不需要关心节点的顺序问题，节点的顺序会比较稳定的情况，不会出现节点之间顺序变化，但是节点本身可能是一个动态节点
+  + 其他情况fragment都走patchChildren
+
+因为我们diff的是一个简单的fragment的例子，所以这里是走patchBlockChildren方法：
+
+![image-20201126003926842](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201126003926842.png)
+
+**大前提：**他会对对应位置的vnode进行对比，因为STABLE_FRAGMENT 一半来说节点node的位置不会进行改变，所以其diff的步骤：
+
+1. 逐个对比node的shapeFlag和type，获取父节点(容器)
+2. 将继续调用patch方法渲染子节点
+
+**更新案例一：**我们count的部分是一个element，所以根据上面的patch方法会通过processElement进行更新：
+
+![image-20201126010549604](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201126010549604.png)
+
+直接通过patchElement渲染上去：
+
++ 获取实际的dom节点 el
+
++ 获取新的patchFlag -> n2
+
++ 获取新老props
+
++ 执行钩子beforeupdate
+
++ 执行自定义指令的钩子函数(未详细了解)
+
++ 根据不同的patchFlag类型，调用不同的hostPatch方法进行操作(基本都在nodeOps中定义)
+
++   我们这里主要是count从0 -> 1所以是patchFlag = 1的场景，调用hostSetElementText
+
++ 调用hostPatch方法，这一步结束之后对应的改变的变量就已经被渲染到页面上了
+
+  ![image-20201127003405716](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201127003405716.png)
+
++ 之后在下一次更新队列中推入调用vnodeUpdate的回调
+
++ 更新ref
+
+**更新案例二**：button组件也是一个element，这里的patchFlag = 8， shapeFlag = 9 (8 + 1):
+
++ 根据vnode.dynamicProps获取动态props
+
++ 遍历双端对比相应的props，如果前后不一致，或者需要强制更新(key === value)的就执行hostPatchProps进行更新
+
 
 #### 4.4 类似fiber时间片的思想 ---- > flushJobs
 
