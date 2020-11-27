@@ -341,6 +341,7 @@ function _createVNode(
   }
 
   // class component normalization.
+  // defineComponent
   if (isClassComponent(type)) {
     type = type.__vccOpts
   }
