@@ -531,6 +531,7 @@ function setupStatefulComponent(
 ) {
   const Component = instance.type as ComponentOptions
 
+  // 根据组件类型做一层验证
   if (__DEV__) {
     if (Component.name) {
       validateComponentName(Component.name, instance.appContext.config)
@@ -548,15 +549,18 @@ function setupStatefulComponent(
       }
     }
   }
-  // 0. create render proxy property access cache
+  // 0. 创建render proxy的accessCache做一层缓存
+  // 这个缓存是为了，当我们在props/data/ctx/有各种变量 例如value
+  // 我们不知道应该取 props[value], ctx[value], state[value]的时候
+  // 这里缓存一个接入的方式的缓存
+  // 主要一直使用hasOwn去判断某个属性，会比较消耗性能
   instance.accessCache = {}
-  // 1. create public instance / render proxy
-  // also mark it raw so it's never observed
+  // 1. 为公共的上下文方法创建proxy
   instance.proxy = new Proxy(instance.ctx, PublicInstanceProxyHandlers)
   if (__DEV__) {
     exposePropsOnRenderContext(instance)
   }
-  // 2. call setup()
+  // 2. 调用setup函数
   const { setup } = Component
   if (setup) {
     const setupContext = (instance.setupContext =

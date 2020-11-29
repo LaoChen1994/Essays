@@ -78,10 +78,14 @@ export function baseCompile(
     onError(createCompilerError(ErrorCodes.X_SCOPE_ID_NOT_SUPPORTED))
   }
 
+  // 将template转换成ast
   const ast = isString(template) ? baseParse(template, options) : template
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset(
     prefixIdentifiers
   )
+
+  // 调用各种transform插件
+  // 将ast根据vue语法进行改动
   transform(
     ast,
     extend({}, options, {
@@ -98,6 +102,7 @@ export function baseCompile(
     })
   )
 
+  // 通过generate将as -> 变成我们需要的js代码字符串
   return generate(
     ast,
     extend({}, options, {
