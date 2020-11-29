@@ -37,6 +37,7 @@ export function rewriteDefault(
       node.specifiers.forEach(specifier => {
         if (
           specifier.type === 'ExportSpecifier' &&
+          //@ts-ignore
           specifier.exported.name === 'default'
         ) {
           const end = specifier.end!
