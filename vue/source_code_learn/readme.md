@@ -70,7 +70,7 @@ Vue源码学习笔记
 
 Vue 3重构之后，源码大致可以分为以下几个部分：
 
-![image-20201114161127343](E:./image/image-20201114161127343.png)
+![image-20201114161127343](./image/image-20201114161127343.png)
 
 + compile -> 将template -> js -> vdom
 + reactivity -> 实现响应式，实现数据监听
@@ -524,8 +524,8 @@ enum NodeTypes {
 
  + 入参
    	+ VNode
-   	+ parent
-   	+ suspense
+      	+ parent
+      	+ suspense
 + 输出
   + 一个instance对象
 
