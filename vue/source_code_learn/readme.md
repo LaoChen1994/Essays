@@ -70,7 +70,7 @@ Vue源码学习笔记
 
 Vue 3重构之后，源码大致可以分为以下几个部分：
 
-![image-20201114161127343](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114161127343.png)
+![image-20201114161127343](E:./image/image-20201114161127343.png)
 
 + compile -> 将template -> js -> vdom
 + reactivity -> 实现响应式，实现数据监听
@@ -80,11 +80,14 @@ Vue 3重构之后，源码大致可以分为以下几个部分：
 
 Vue 3相较于Vue 2做了以下几个改进：
 
-compile：
+reactive:
 
 + 用Proxy代替defineProperty
   + Object.defineProperty需要遍历或者递归来绑定对象的所有属性，影响首屏渲染
   + Object.defineProperty无法监听新增和属性和数组操作
+
+compile：
+
 + vdom重写
   + 静态标记
   + 标记静态节点
@@ -126,9 +129,9 @@ watchEffect(() => {
 
 + 发布订阅模式
 
-![image-20201114164759644](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114164759644.png)
+![image-20201114164759644](./image/image-20201114164759644.png)
 
-![image-20201114211301423](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114211301423.png)
+![image-20201114211301423](./image/image-20201114211301423.png)
 
 #### 2.1.1 如何自动收集副作用
 
@@ -221,9 +224,9 @@ function createProxyRef(initVal) {
 
 ### 2.3 康康源码长啥样
 
-![image-20201114171506685](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114171506685.png)
+![image-20201114171506685](./image/image-20201114171506685.png)
 
-![image-20201114171654268](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201114171654268.png)
+![image-20201114171654268](./image/image-20201114171654268.png)
 
 ### 2.4 拆分源码结构
 
@@ -278,7 +281,7 @@ function createProxyRef(initVal) {
 
 #####  1) 利用baseCreateRender创建render
 
-![image-20201128143945588](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128143945588.png)
+![image-20201128143945588](./image/image-20201128143945588.png)
 
 创建路径createApp -> 创建Render -> ensureRender(传递了一些上下文配置) -> 调用baseCreateRender(根据option创建render，**这些利用这些option中的默认配置作为创建了下面的方法，其实就是一个闭包**)
 
@@ -330,7 +333,7 @@ function createProxyRef(initVal) {
 
 最终返回值：
 
-![image-20201128143854771](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128143854771.png)
+![image-20201128143854771](./image/image-20201128143854771.png)
 
 #### 3.2.2 createApp
 
@@ -338,7 +341,7 @@ function createProxyRef(initVal) {
 
 1. render
 
-   ![image-20201128144112925](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128144112925.png)
+   ![image-20201128144112925](./image/image-20201128144112925.png)
 
    + render函数接受的参数
 
@@ -362,7 +365,7 @@ function createProxyRef(initVal) {
 
    + mount: 
 
-     ![image-20201128150408580](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128150408580.png)
+     ![image-20201128150408580](./image/image-20201128150408580.png)
 
      mount主要做了这么几个事：
 
@@ -374,7 +377,7 @@ function createProxyRef(initVal) {
 
    + use
 
-     ![image-20201128150452201](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128150452201.png)
+     ![image-20201128150452201](./image/image-20201128150452201.png)
 
      use主要做的事情：
 
@@ -384,7 +387,7 @@ function createProxyRef(initVal) {
 
 ##### 3) mount方法的改造
 
-![image-20201128152419930](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128152419930.png)
+![image-20201128152419930](./image/image-20201128152419930.png)
 
 **改造了啥？**：
 
@@ -392,7 +395,7 @@ function createProxyRef(initVal) {
 
 2. 目前页面会根据我们传入的模板渲染一个我们不想要的页面效果，所以需要先清一把：
 
-   ![image-20201128153600299](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128153600299.png)
+   ![image-20201128153600299](./image/image-20201128153600299.png)
 
 3. 根据函数的类型来找到对应的模板，因为目前vue有这么几种模板：
 
@@ -490,13 +493,13 @@ enum NodeTypes {
 
 1. 初次渲染的组件，如例子中，一半都是一个对象，所以ShapeFlags会被认为是STATEFUL_COMPONENT（createVNode阶段）
 
-![image-20201128155705928](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128155705928.png)
+![image-20201128155705928](./image/image-20201128155705928.png)
 
-2. patch中找到对应的process处理方法，processComponent![image-20201128155830724](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128155830724.png)
+2. patch中找到对应的process处理方法，processComponent![image-20201128155830724](./image/image-20201128155830724.png)
 
 3. 在第一次渲染的时候，他会去调用mountComponent：
 
-   ![image-20201128160214961](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128160214961.png)
+   ![image-20201128160214961](./image/image-20201128160214961.png)
 
    主要步骤：
 
@@ -508,7 +511,7 @@ enum NodeTypes {
 
    + 如果是正常场景下会直接执行setupRenderEffect
 
-     ![image-20201129164501593](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129164501593.png)
+     ![image-20201129164501593](./image/image-20201129164501593.png)
 
      等下会详细介绍这个函数，目前我们需要知道调用这个函数的目的：
 
@@ -530,7 +533,7 @@ enum NodeTypes {
 
 ##### 4）setupComponent
 
-![image-20201129121309553](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129121309553.png)
+![image-20201129121309553](./image/image-20201129121309553.png)
 
 + 初始化props、和slot挂载到实例上
 + 根据是否为状态组件，如果是调用setupStatefulComponent
@@ -556,11 +559,9 @@ enum NodeTypes {
 
     + 挂载render (finishComponentSetup), 通过setup注册的都是通过这一步操作，将模板编译成render函数
 
-      ![image-20201129131711865](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129131711865.png)
+      ![image-20201129131711865](./image/image-20201129131711865.png)
 
     + 在instance上挂载render方法
-
-  
 
 ### 3.3 Compile 过程
 
@@ -572,7 +573,7 @@ compileToFunction -> compile -> **(baseCompile，在这一层需要做的才是s
 
 baseCompile的关键代码主要是下面三步
 
-![image-20201129135143274](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129135143274.png)
+![image-20201129135143274](./image/image-20201129135143274.png)
 
 + ast 解析 （string -> ast）
 + transform处理ast (ast -> ast)
@@ -584,11 +585,11 @@ baseCompile的关键代码主要是下面三步
 
 在parser中最终会通过调用baseParse方法来完成从字符串到ast的过程
 
-![image-20201129135939532](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129135939532.png)
+![image-20201129135939532](./image/image-20201129135939532.png)
 
 + 创建上下文context （记录了节点行列信息，源码的信息等）
 
-  ![image-20201129140019900](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129140019900.png)
+  ![image-20201129140019900](./image/image-20201129140019900.png)
 
 + 获取起始位置
 
@@ -600,7 +601,7 @@ baseCompile的关键代码主要是下面三步
 
 **过程：**根据不同的字符串特征(标签，标识符如{{，< , <!----等)和mode的类型进行字符串匹配等等，之后将解析完的结果存到nodes中，详见parse.ts中：
 
-![image-20201129140959856](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129140959856.png)
+![image-20201129140959856](./image/image-20201129140959856.png)
 
 每个parser插件做的事情：
 
@@ -617,13 +618,13 @@ baseCompile的关键代码主要是下面三步
 
  最终输出：
 
-![image-20201129140930931](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129140930931.png)
+![image-20201129140930931](./image/image-20201129140930931.png)
 
 ##### 3） createRoot
 
 主要就把children组组装起来，然后初始化一些上下文属性：
 
-![image-20201129153001769](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129153001769.png)
+![image-20201129153001769](./image/image-20201129153001769.png)
 
 #### 3.3.3 transform
 
@@ -637,13 +638,13 @@ baseCompile的关键代码主要是下面三步
   + directives：是否用到了transitionGroup这种
   + .......
 
-![image-20201129155036457](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129155036457.png)
+![image-20201129155036457](./image/image-20201129155036457.png)
 
 ##### 1) transform 插件
 
 transform的入参中，这个options主要就包含了各类transform的插件，vue中内置了部分插件，从插件的名可以看到基本上都是用于解析vue的语法的，比如v-if, v-for, slot, scope等
 
-![image-20201129154621108](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129154621108.png)
+![image-20201129154621108](./image/image-20201129154621108.png)
 
 ##### 2) context创建
 
@@ -702,26 +703,26 @@ Q2: 中有哪些东西
 
 1. 根据是否为浏览器环境，生成不同的引入函数的代码端
 
-   ![image-20201031220348593](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031220348593.png)
+   ![image-20201031220348593](./image/image-20201031220348593.png)
 
    || 服务端渲染 | 浏览器渲染 |
    |---| ---------- | ---------- |
    |genFunctionPreamble做的事| 直接将之前在ast解析时候的helper引入到生成代码中 | 从ast中先引入在静态hepler中存在的函数 |
    |其他| 引入@vue/server-renderer | |
 
-   ![image-20201031220517306](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031220517306.png)
+   ![image-20201031220517306](./image/image-20201031220517306.png)
 
 **Q： genFunctionPreamble方法做了啥**
 
 在genFunction中主要通过genHoists方法，其传入参数为**ast解析后的node列表**，以及**生成函数中的全局上下文context**, 在genHoists中其实通过genNode来具体生成元素对应的代码，genNode调用参数主要为**一个vnode节点**和对应的上下文**context**。
 
-   ![image-20201031221600900](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031221600900.png)
+   ![image-20201031221600900](./image/image-20201031221600900.png)
 
 ##### 3) genNode函数解析
 
 genNode根据不同的nodeType来调用不同的方法来完成对于ast处理后的vnode进行解析，我们通过一个JS_OBJECT_EXPRESSION的常规vnode 的解析来看一看他是如何生成各类的vue js的代码的：
 
-![image-20201031222111684](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031222111684.png)
+![image-20201031222111684](./image/image-20201031222111684.png)
 
    2. genObjExpression
 
@@ -737,7 +738,7 @@ genNode根据不同的nodeType来调用不同的方法来完成对于ast处理�
 
       ​	(2) 生成tag上的标签的key，value，并插入其中的**:**
 
-      ​	  	![image-20201031223921003](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031223921003.png)
+      ​	  	![image-20201031223921003](./image/image-20201031223921003.png)
 
         	(3) 如果多个属性的话需要加上，并换行
 
@@ -748,13 +749,13 @@ genNode根据不同的nodeType来调用不同的方法来完成对于ast处理�
 + 是否独立作用域
 + 是否ssr
 
-![image-20201031230244672](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031230244672.png)
+![image-20201031230244672](./image/image-20201031230244672.png)
 
 2. 使用with块级作用域来解决参数中带有this.xxx的问题
 
 为啥vue中使用with来解决this.xxx的问题：
 
-![image-20201031230649350](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201031230649350.png)
+![image-20201031230649350](./image/image-20201031230649350.png)
 
 之后，在ctx中引入需要在生成的代码中引入的helper，Vue runtime过程中生成真实DOM的方法
 
@@ -762,7 +763,7 @@ genNode根据不同的nodeType来调用不同的方法来完成对于ast处理�
 
 1. 调用genVNodeCall，其中用到的几个关键的参数来控制函数的嵌套，所有我们写的类似Fragment等其实都对应了相映的Vue中的一个函数进行处理
 
-![image-20201101013430452](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201101013430452.png)
+![image-20201101013430452](./image/image-20201101013430452.png)
 
 + directives
 + isBlock
@@ -794,19 +795,19 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 目前生成的代码还是string，通过new Function重新生成一个真的函数，如果是非浏览器情况下的话，我们还需要看全局是否注入了Vue，没有的话对应的runtimeDom传进去 
 
-![image-20201129163742469](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201129163742469.png)
+![image-20201129163742469](./image/image-20201129163742469.png)
 
 这里有两个关键的函数：
 
 + openBlock
 
-  ![image-20201124010327939](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010327939.png)
+  ![image-20201124010327939](./image/image-20201124010327939.png)
 
   **关键**：为一个节点树提供一个block的容器，根据官方所说可知，需在createBlock之前被调用，这里更新了当前的block -> currentBlock
 
 + createBlock
 
-  ![image-20201124010659428](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124010659428.png)
+  ![image-20201124010659428](./image/image-20201124010659428.png)
 
   **步骤**：
 
@@ -816,7 +817,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
   + 将当前的vnode保存在block中,并关闭当前的block
 
-    ![image-20201124011410007](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201124011410007.png)
+    ![image-20201124011410007](./image/image-20201124011410007.png)
 
     **close的时候blockStack会出栈，所以下一次的currentBlock为当前节点的父节点**
 
@@ -857,7 +858,9 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 ####  4.1 为何要更新diff算法
 
-1. 因为双端对比可能导致一次diff时间超过单帧的刷新时间，所以需要优化(**类似react fiber要解决的问题**)
+1. 因为双端对比可能导致一次diff时间超过单帧的刷新时间，所以需要优化，通过下面两个方面大大的缩小了更新和diff的开销
+   1. block分块的策略
+   2. 静态节点不进行更新
 2. JSX和手写的render function h('div', null, children)是完全动态的，过度的灵活性导致可利用的优化信息不足
 
 #### 4.2 Vue 3怎么做？
@@ -879,7 +882,7 @@ export function render(_ctx, _cache, $props, $setup, $data, $options) {
 
 这里的instance是组件的实例，在mount的时候进行挂载：
 
-![image-20201122180333195](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122180333195.png)
+![image-20201122180333195](./image/image-20201122180333195.png)
 
 ##### 4.3.2 setupRenderEffect解析
 
@@ -937,7 +940,7 @@ setupRenderEffect主要做了哪些事：
 
 一个简单的render函数如下：
 
-![image-20201125011526916](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011526916.png)
+![image-20201125011526916](./image/image-20201125011526916.png)
 
 主要内容包括：
 
@@ -947,11 +950,11 @@ setupRenderEffect主要做了哪些事：
 
 ##### 4.3.5 createVNode
 
-![image-20201122230926602](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122230926602.png)
+![image-20201122230926602](./image/image-20201122230926602.png)
 
 主要是调用了createVNodeWithArgsTransform和_createVNode这两个方法
 
-![image-20201122231412402](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122231412402.png)
+![image-20201122231412402](./image/image-20201122231412402.png)
 
 其主要作用是：
 
@@ -991,7 +994,7 @@ setupRenderEffect主要做了哪些事：
   
 + 生成新的vnode节点 -> 其本质上是一个对象 
 
-  ![image-20201122232919736](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122232919736.png)
+  ![image-20201122232919736](./image/image-20201122232919736.png)
 
 + vnode对于子节点的规整 (主要通过传入的vnode的shapeFlag和children类型进行判断)
 
@@ -999,7 +1002,7 @@ setupRenderEffect主要做了哪些事：
 
   + 数组子节点：一个元素下面有多个子节点的情况，（典型Fragment，这个时候由于多个子节点已经被解析为vnode因此不用单独处理了）
 
-    ![image-20201125011322684](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125011322684.png)
+    ![image-20201125011322684](./image/image-20201125011322684.png)
 
   + 对象子节点(子节点仍是一个vnode的场景，单节点)
     + 当前节点为element节点 或TELEPORT(传送门)
@@ -1007,7 +1010,7 @@ setupRenderEffect主要做了哪些事：
     
   + 文本子节点
     + 当前节点类型为传送门
-      + ![image-20201125005947796](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125005947796.png)
+      + ![image-20201125005947796](./image/image-20201125005947796.png)
     + 其他类型认为是文本子节点
 
 + 对于Suspense节点的规整(未整理)
@@ -1020,7 +1023,7 @@ setupRenderEffect主要做了哪些事：
 
 ##### 4.4.1 patch入参
 
-![image-20201125235858897](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201125235858897.png)
+![image-20201125235858897](./image/image-20201125235858897.png)
 
 patch有如下几个入参：
 
@@ -1059,7 +1062,7 @@ patch有如下几个入参：
 
 因为我们diff的是一个简单的fragment的例子，所以这里是走patchBlockChildren方法：
 
-![image-20201126003926842](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201126003926842.png)
+![image-20201126003926842](./image/image-20201126003926842.png)
 
 **大前提：**他会对对应位置的vnode进行对比，因为STABLE_FRAGMENT 一半来说节点node的位置不会进行改变，所以其diff的步骤：
 
@@ -1068,7 +1071,7 @@ patch有如下几个入参：
 
 **更新案例一：**我们count的部分是一个element，所以根据上面的patch方法会通过processElement进行更新：
 
-![image-20201126010549604](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201126010549604.png)
+![image-20201126010549604](./image/image-20201126010549604.png)
 
 直接通过patchElement渲染上去：
 
@@ -1084,7 +1087,7 @@ patch有如下几个入参：
 
 + 根据不同的patchFlag类型，调用不同的hostPatch方法进行操作(基本都在nodeOps中定义)
 
-  ![image-20201128143440526](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201128143440526.png)
+  ![image-20201128143440526](./image/image-20201128143440526.png)
 
   这些renderOptions是在ensureRender中的option中传进去的
 
@@ -1092,7 +1095,7 @@ patch有如下几个入参：
 
 + 调用hostPatch方法，这一步结束之后对应的改变的变量就已经被渲染到页面上了
 
-  ![image-20201127003405716](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201127003405716.png)
+  ![image-20201127003405716](./image/image-20201127003405716.png)
 
 + 之后在下一次更新队列中推入调用vnodeUpdate的回调
 
@@ -1102,47 +1105,24 @@ patch有如下几个入参：
 
 + 根据vnode.dynamicProps获取动态props
 
-+ 遍历双端对比相应的props，如果前后不一致，或者需要强制更新(key === value)的就执行hostPatchProps进行更新
-
-  
++ 遍历双端对比相应的props，如果前后不一致，或者需要强制更新(key === value)的就执行hostPatchProps进行更新  
 
 
+#### 4.5 类似fiber时间片的思想 ---- > flushJobs （待研究）
 
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-#### 4.4 类似fiber时间片的思想 ---- > flushJobs （待研究）
-
-##### 4.4.x flushJobs是什么
+##### 4.5.1 flushJobs是什么
 
 1. 浏览器空闲的时间对vdom进行更新对比
 
 2. 调用方法大约如下，以组件未更新加载前一次的vdom为例：
 
-   ![image-20201122205937696](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122205937696.png)
+   ![image-20201122205937696](./image/image-20201122205937696.png)
 
-   ![image-20201122210003455](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20201122210003455.png)
+   ![image-20201122210003455](./image/image-20201122210003455.png)
 
 3. 
 
-##### 4.4.X 队列排序的作用
+##### 4.5.2 队列排序的作用
 
 + 组件的更新从父元素到子元素(因为父元素总是在子元素之前创建，所以render effect的优先级更小)
 + 如果一个组件在父组件更新时被卸载了，这个时候它应该被忽略
