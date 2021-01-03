@@ -1,0 +1,25 @@
+{
+    "restartable": "rs",
+    "ignore": [".git", "node_modules/**", "client/*", "dist", ".cache", "logs"],
+    "verbose": true,
+    "execMap": {
+      "": "node",
+      "js": "node --harmony",
+      "ts": "ts-node"
+    },
+    "exec": "npx ts-node ./app/app.ts",
+    "events": {
+      "start": "",
+      "crash": "",
+      "exit": "",
+      "restart": ""
+    },
+    "ext": "js json ts tsx njk",
+    "watch": ["./app/*"],
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": "3002"
+    },
+    "legacy-watch": false,
+    "delay": 3
+}
