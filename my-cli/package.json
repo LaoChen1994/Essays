@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "npx nodemon -w",
-    "dev": "cd ./client && npm run dev"
+    "dev": "cd ./client && npm run dev",
+    "build-server": "rimraf -r ./dist/* && npx tsc",
+    "dep:install": "npm install && cd ./client && npm install"
   },
   "author": "",
   "license": "ISC",
