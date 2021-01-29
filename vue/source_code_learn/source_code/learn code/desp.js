@@ -1,6 +1,6 @@
-import { effect } from './effect.js';
+const effect = require('./effect.js');
 
-export class Desp {
+ class Desp {
     constructor() {
         this.subs = new Set()
     }
@@ -15,3 +15,7 @@ export class Desp {
         this.subs.forEach(effect => effect())
     }
 }
+
+console.log(Desp)
+
+module.exports = Desp

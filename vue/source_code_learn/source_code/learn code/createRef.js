@@ -1,5 +1,6 @@
-import { Desp } from './desp'
-import { effect } from './effect'
+const Desp = require('./desp')
+const effect = require('./effect')
+
 
 function createRef(initVal) {
     let _value = initVal;
@@ -31,6 +32,7 @@ const getCommonHandler = (desp) =>  ({
 
 function createProxyRef(initVal) {
     let _value = initVal
+    console.log(Desp)
     let desp = new Desp()
 
     let proxy = new Proxy({ value: _value }, getCommonHandler(desp))

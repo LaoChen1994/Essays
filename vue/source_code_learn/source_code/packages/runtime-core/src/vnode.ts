@@ -373,6 +373,7 @@ function _createVNode(
       ? ShapeFlags.SUSPENSE
       : isTeleport(type)
         ? ShapeFlags.TELEPORT
+        // 第一次mount的时候是一个对象传进来的
         : isObject(type)
           ? ShapeFlags.STATEFUL_COMPONENT
           : isFunction(type)

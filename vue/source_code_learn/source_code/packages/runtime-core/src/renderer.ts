@@ -1258,6 +1258,8 @@ function baseCreateRenderer(
     if (__DEV__) {
       startMeasure(instance, `init`)
     }
+    // 1. state -> instance 
+    // 2. render -> instance 
     setupComponent(instance)
     if (__DEV__) {
       endMeasure(instance, `init`)
@@ -1485,6 +1487,7 @@ function baseCreateRenderer(
         }
         // updated hook
         if (u) {
+          // https://juejin.cn/post/6850418106419511310
           queuePostRenderEffect(u, parentSuspense)
         }
         // onVnodeUpdated
