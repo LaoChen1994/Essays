@@ -14,11 +14,11 @@ interface IStudentsAttribute {
     id: BigInt
     name: string
     age: number
-    phoneNumber: string
+    phone_number: string
     grade: number
-    createdAt: Date
-    updatedAt: Date
-    deletedAt: Date
+    create_at: Date
+    update_at: Date
+    delete_at: Date
 }
 
 let studentAttributes: ModelAttributes<Model<any, IStudentsAttribute>, IStudentsAttribute> = {
@@ -36,23 +36,24 @@ let studentAttributes: ModelAttributes<Model<any, IStudentsAttribute>, IStudents
         type: DataTypes.INTEGER,
         allowNull: false,
     },
-    createdAt: {
+    create_at: {
         type: DataTypes.DATE,
         defaultValue: new Date().toString(),
         allowNull: false
     },
-    updatedAt: {
+    update_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW,
         allowNull: false
     },
-    phoneNumber: {
+    phone_number: {
         type: DataTypes.STRING,
         allowNull: false
     },
-    deletedAt: {
+    delete_at: {
         type: DataTypes.DATE(0),
         allowNull: false,
+        defaultValue: new Date(0),
     },
     grade: {
         type: DataTypes.INTEGER,
@@ -60,141 +61,46 @@ let studentAttributes: ModelAttributes<Model<any, IStudentsAttribute>, IStudents
     }
 }
 
-class Students extends Model {
-    static attributes = studentAttributes
-
-    static id?: BigInt
-    public name?: string
-    public age?: number
-    public phoneNumber?: string
-    public grade?: number
-    static createdAt?: Date
-    public updatedAt?: Date
-    public deletedAt?: Date
+let studentOptions: any = {
+    tableName: 'gx_students',
 }
 
+export class Students extends Model {
+    static attributes = studentAttributes
+    static options = studentOptions
 
-// Students.init({
-//     id: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//         autoIncrement: true,
-//         primaryKey: true,
-//     },
-//     name: {
-//         type: DataTypes.STRING,
-//         allowNull: false,
-//     },
-//     age: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//     },
-//     createdAt: {
-//         type: DataTypes.DATE,
-//         defaultValue: new Date().toString(),
-//         allowNull: false
-//     },
-//     updatedAt: {
-//         type: DataTypes.DATE,
-//         defaultValue: DataTypes.NOW,
-//         allowNull: false
-//     },
-//     phoneNumber: {
-//         type: DataTypes.STRING,
-//         allowNull: false
-//     },
-//     deleteAt: {
-//         type: DataTypes.DATE(0),
-//         allowNull: false,
-//     },
-//     grade: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//     }
-// }, {
-//     sequelize, 
-//     modelName: 'Students',
-//     updatedAt: 'updateTimestamp',
-// })
+    public id?: BigInt
+    public name?: string
+    public age?: number
+    public phone_number?: string
+    public grade?: number
+    public create_at?: Date
+    public update_at?: Date
+    public delete_at?: Date
+}
 
-// interface IGrades extends Model {
-//     id?: number
-//     name: string
-//     gradeType: number
-// }
+const defaultCreationOptions = {
+    paranoid: true,
+    createdAt: 'create_at',
+    updatedAt: 'update_at',
+    deletedAt: 'delete_at',
+}
 
-// const Grades =  sequelize.define<IGrades>('grades', {
-//     id: {
-//         type: DataTypes.INTEGER,
-//         autoIncrement: true,
-//         primaryKey: true,
-//         allowNull: false,
-//     },
-//     name: {
-//         type: DataTypes.STRING(64),
-//         allowNull: false,
-//     },
-//     gradeType: {
-//         type: DataTypes.INTEGER,
-//         allowNull: false,
-//     },
-//     deletedAt: {
-//         type: DataTypes.DATE(0)
-//     }
-// }, {
-//     paranoid: true,
-// })
-
-
-export async function init() {
+export async function init(application) {
 
     try {
+        const { options, attributes } = Students
+
+        Students.init(attributes, {
+            ...options,
+            ...defaultCreationOptions,
+            sequelize: sequelize
+        })
+
         await sequelize.authenticate()
         await sequelize.sync({ force: false })
 
-        // 通过build创建数据
-        // const senior = Grades.build({
-        //     name: '初二一班',
-        //     gradeType: 8
-        // })
-        // await senior.save()
-
-        // 通过create创建数据
-        // const senior = await Grades.create({
-        //     name: '初三一班',
-        //     gradeType: 9
-        // })
-
-        // 改数据
-        // const senior = await Grades.create({
-        //     name: '初三一班2',
-        //     gradeType: 9
-        // })
-
-
-        // senior.name = '初三二班'
-        // 实际表现好像是新增一条
-        // await senior.save()
-
-        // 删数据
-        // const senior = await Grades.create({
-        //     name: '初三3班',
-        //     gradeType: 9
-        // })
-
-        // senior.destroy()
-
-        // 奇怪的新增数据的方式
-        // const senior = await Grades.create({
-        //     name: '初三三班',
-        //     gradeType: 7
-        // })
-
-        // senior.increment('gradeType', { by: 2 })
-
-        // 查询数据
-        
-
+        application && (application.db = sequelize)
         console.log('grade init ok')
         
     } catch (error) {
