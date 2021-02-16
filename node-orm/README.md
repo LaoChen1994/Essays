@@ -251,6 +251,94 @@ export async function init(application) {
 1. 我们在目录下创建名为__test__的文件夹，然后创建一个test.js
 2. 引入对应的库函数
 
+```javascript
+var { should, expect } = require('chai'),
+    supertest = require('supertest'),
+    api = supertest('http://127.0.0.1:3000');
+```
+
+【注意】这里需要注意的是supertest的参数
+
+![image-20210217012302462](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20210217012302462.png)
+
+![image-20210217012324469](C:\Users\msi\AppData\Roaming\Typora\typora-user-images\image-20210217012324469.png)
+
+从源码来看，可以我们可以将host作为参数传给supertest，然后后面我们调用get,post等方法的时候，supertest会将对应的host和path进行拼接得到我们最终需要请求的链接地址。
+
+### 2.5 对应的单测的编写
+
+#### 2.5.1 单测三层结构
+
++ describe: 一半用来描述一个统一的组结构，其中可以执行多个用it包含的用例
++ it: 用于单个用例，回调函数的第一个参数为done，执行done代表该单测通过
++ expect、shoule、assert：用来标明是否结果满足我们的预期
+
+#### 2.5.2 一个简单的get单测结构
+
+```javascript
+describe('Students', function() {
+    it('should get students', function(done) {
+        api
+            .get('/api/students')
+            .set('Accpect', 'application/json')
+            .end(function(err, res) {
+                res.body.map((item, i) => {
+                    // 表明item需要拥有name，age，phone_number,grade的属性
+                    // 具体的可看文档https://www.chaijs.com/api/bdd/
+                    expect(item).to.have.property('name')
+                    expect(item.name).to.not.equal('')
+                    expect(item.name).to.be.a('string')
+                    expect(item).to.have.property('age')
+                    expect(item).to.have.property('phone_number')
+                    expect(item).to.have.property('grade')
+                })
+                done()
+            })
+    })
+})
+```
+
+#### 2.5.3 多个请求的单测例子
+
+```javascript
+describe('Students', function() {  
+    // ....省略其他的单测用例
+	it('should create student', function(done) {
+        let createName = `测试${new Date().toDateString()}`
+
+        api
+            .post('/api/student')
+            .set('Accpect', 'application/json')
+            .send({
+                name: createName,
+                age: 18,
+                phoneNumber: '11111111111',
+                grade: 7
+            })
+            .end((err, res) => {
+                should().not.exist(err)
+                expect(res.body).to.have.property('id')
+                expect(res.body.id).to.not.equal(0)
+
+                const createId = +res.body.id
+                return api
+                        .get(`/api/student/${createId}`)
+                        .set('Accpect', 'application/json')
+                        .expect(200)
+                        .end((err, res) => {
+                            expect(res.body).to.have.property('id')
+                            expect(res.body.id).to.equal(createId)
+                            expect(res.body.name).to.equal(createName)
+                            done()
+                        })
+            })
+    })
+}
+```
+
+
+
+
 
 
 

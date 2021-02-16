@@ -10,6 +10,8 @@ describe('Students', function() {
             .end(function(err, res) {
                 res.body.map((item, i) => {
                     expect(item).to.have.property('name')
+                    expect(item.name).to.not.equal('')
+                    expect(item.name).to.be.a('string')
                     expect(item).to.have.property('age')
                     expect(item).to.have.property('phone_number')
                     expect(item).to.have.property('grade')
@@ -31,7 +33,6 @@ describe('Students', function() {
                 grade: 7
             })
             .end((err, res) => {
-                console.log(err)
                 should().not.exist(err)
                 expect(res.body).to.have.property('id')
                 expect(res.body.id).to.not.equal(0)
