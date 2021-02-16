@@ -20,4 +20,5 @@
 |node导出csv的例子|2020.11.15| [代码例子](./nodeCsv/index.js)|
 |yeoman搭建cli|2021.1.3|[yeoman学习笔记](./yeoman/readme.md)|
 |深入浅出的webpack读书笔记|2021.2.1|[webpack学习思维导图](https://github.com/LaoChen1994/webpack-deeply)<br />[官网文档实践](https://github.com/LaoChen1994/LearnWebpack)|
+|service work简用|2021.2.16|[学习笔记](./serviceWork/readme.md)|
  

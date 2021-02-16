@@ -1,13 +1,9 @@
 {
   "name": "generator-my-bff",
-  "version": "0.0.0",
-  "description": "cyx bff gen",
+  "version": "1.0.0",
+  "description": "my bff gen",
   "homepage": "",
-  "author": {
-    "name": "cyx",
-    "email": "735849467@qq.com",
-    "url": ""
-  },
+  "author": "my-bad-egg",
   "files": [
     "generators"
   ],

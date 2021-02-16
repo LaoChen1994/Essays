@@ -1,4 +1,4 @@
-import { Sequelize, DataTypes, ModelCtor, Model } from 'sequelize'
+import { Sequelize, DataTypes, ModelCtor, Model, ModelAttributes } from 'sequelize'
 
 const sequelize = new Sequelize({
     dialect: 'mysql',
@@ -8,9 +8,71 @@ const sequelize = new Sequelize({
     password: '123456'
 })
 
-class Grade extends Model {}
+// class Grade extends Model {}
 
-// class Students extends Model {}
+interface IStudentsAttribute {
+    id: BigInt
+    name: string
+    age: number
+    phoneNumber: string
+    grade: number
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date
+}
+
+let studentAttributes: ModelAttributes<Model<any, IStudentsAttribute>, IStudentsAttribute> = {
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+    age: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    createdAt: {
+        type: DataTypes.DATE,
+        defaultValue: new Date().toString(),
+        allowNull: false
+    },
+    updatedAt: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+        allowNull: false
+    },
+    phoneNumber: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    deletedAt: {
+        type: DataTypes.DATE(0),
+        allowNull: false,
+    },
+    grade: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    }
+}
+
+class Students extends Model {
+    static attributes = studentAttributes
+
+    static id?: BigInt
+    public name?: string
+    public age?: number
+    public phoneNumber?: string
+    public grade?: number
+    static createdAt?: Date
+    public updatedAt?: Date
+    public deletedAt?: Date
+}
+
 
 // Students.init({
 //     id: {
@@ -55,33 +117,33 @@ class Grade extends Model {}
 //     updatedAt: 'updateTimestamp',
 // })
 
-interface IGrades extends Model {
-    id?: number
-    name: string
-    gradeType: number
-}
+// interface IGrades extends Model {
+//     id?: number
+//     name: string
+//     gradeType: number
+// }
 
-const Grades =  sequelize.define<IGrades>('grades', {
-    id: {
-        type: DataTypes.INTEGER,
-        autoIncrement: true,
-        primaryKey: true,
-        allowNull: false,
-    },
-    name: {
-        type: DataTypes.STRING(64),
-        allowNull: false,
-    },
-    gradeType: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-    },
-    deletedAt: {
-        type: DataTypes.DATE(0)
-    }
-}, {
-    paranoid: true,
-})
+// const Grades =  sequelize.define<IGrades>('grades', {
+//     id: {
+//         type: DataTypes.INTEGER,
+//         autoIncrement: true,
+//         primaryKey: true,
+//         allowNull: false,
+//     },
+//     name: {
+//         type: DataTypes.STRING(64),
+//         allowNull: false,
+//     },
+//     gradeType: {
+//         type: DataTypes.INTEGER,
+//         allowNull: false,
+//     },
+//     deletedAt: {
+//         type: DataTypes.DATE(0)
+//     }
+// }, {
+//     paranoid: true,
+// })
 
 
 export async function init() {
