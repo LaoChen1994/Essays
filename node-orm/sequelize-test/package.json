@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx tsc -w -p ./tsconfig.json",
     "start": "npx nodemon ./dist/app.js",
-    "test": "npx mocha ./__test__"
+    "test": "npx mocha ./__test__ --timeout 5000"
   },
   "author": "",
   "license": "ISC",

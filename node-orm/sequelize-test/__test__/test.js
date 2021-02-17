@@ -51,8 +51,44 @@ describe('Students', function() {
             })
     })
 
-    // it('update student', function(done) {
+    it('destory student', function(done) {
+        let createName = `测试${new Date().toDateString()}`
 
-    // })
+        api
+            .post('/api/student')
+            .set('Accpect', 'application/json')
+            .send({
+                name: createName,
+                age: 18,
+                phoneNumber: '11111111111',
+                grade: 7
+            })
+            .end((err, res) => {
+                should().not.exist(err)
+                expect(res.body).to.have.property('id')
+                expect(res.body.id).to.not.equal(0)
+
+                const createId = +res.body.id
+                return api
+                        .get(`/api/student/${createId}`)
+                        .set('Accpect', 'application/json')
+                        .expect(200)
+                        .end((err, res) => {
+                            expect(res.body).to.have.property('id')
+                            expect(res.body.id).to.equal(createId)
+                            expect(res.body.name).to.equal(createName)
+
+                            console.log('id = ', createId)
+                           api
+                           .delete(`/api/student/${createId}`)
+                           .set('Accpect', 'application/json')
+                           .end((err, res) => {
+                               expect(res.body).to.have.property('status')
+                               expect(res.body.status).to.equal(true)
+                               done()
+                           })
+                        })
+            })
+    })
 
 })

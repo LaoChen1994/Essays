@@ -1,9 +1,8 @@
 import express, { Express } from 'express';
 import { init } from './db/index'
-import { Sequelize } from 'sequelize'
+import { Sequelize, Op } from 'sequelize'
 import { Students } from './db'
 import bodyParser from 'body-parser'
-
 class MyApp {
     app: Express
     db?: Sequelize
@@ -44,6 +43,12 @@ class MyApp {
 
 const app = new MyApp()
 
+enum SearchType {
+    ALL = 'all',
+    EXISTED = 'existed',
+    DELETED = 'deleted'
+}
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
@@ -53,7 +58,31 @@ app.get('/', function (req: any, res: any) {
 })
 
 app.get('/api/students', (req: any, res: any) => {
-    return Students.findAll()
+    const { query: { type = SearchType.EXISTED } } = req
+    let operator = Op.eq
+    console.log(type === SearchType.DELETED)
+
+    switch (type) {
+        case SearchType.ALL:
+            operator = Op.gte
+            break;
+        case SearchType.DELETED:
+            operator = Op.gt
+            break;
+        default:
+            break;
+    }
+
+    console.log(operator)
+
+    return Students.findAll({
+                where: {
+                    delete_at: {
+                        [operator]: new Date(0)
+                    }
+                },
+                paranoid: false
+            })
             .then(data => data.map(item => item.toJSON()))
             .then(data => res.send(data))
 })
@@ -85,10 +114,21 @@ app.post('/api/student', (req: any, res: any) => {
     })
 })
 
-// app.put('/api/student/:id', (req, res) => {
-//     const { id } = req.params
-//     const { name, age, phoneNumber, grade } = req.body
-// })
+app.delete('/api/student/:id', (req, res) => {
+    const { id } = req.params
+    return Students.destroy({
+        where: {
+            id: {
+                [Op.eq]: +id
+            }
+        }
+    })
+    .then(effectNumber => {
+        res.send({
+            status: effectNumber ? true : false
+        })
+    })
+})
 
 app.listen(3000, async () => {
     console.log('server is on 3000')
