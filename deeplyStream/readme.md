@@ -1,4 +1,4 @@
-#   深入理解Node Stream
+#     深入理解Node Stream
 
 # 0. 参考文章
 
@@ -338,6 +338,7 @@ Stream.prototype.pipe = function(dest, options) {
   + 当监听readable事件后会进入暂停模式，此时，生产者会一直向缓存池中添加数据，直到达到highWaterMark，消费者不会像流动模式那样自动消费对应的内容
   + 进入暂停模式后需要通过read方法，消费者逐个读取对应的信息
   + 因为暂停模式是消费者主动调用pause，后续开启需要消费者调用read, readable是消费者调用read之后的对应的回调
+  
 + 【注】如果同时存在readable和data事件，则仍处于paused模式，如果此时移除readable事件，则可使readable重新流动起来
   
   + 【注】readable事件何时触发？当生产者将数据达到缓存池的时候，就会触发readable事件，和消费者是否正在消费其实没有必然关系，这点很重要，如果还是要监听消费者消费数据的事件，还得是data事件
@@ -371,10 +372,11 @@ Stream.prototype.pipe = function(dest, options) {
     // readable ->  3
   ```
   
-    
 
 
-![Readable](https://github.com/barretlee/dive-into-node-stream/raw/master/graphic/Readable.png)
+![Readable Flowing](http://www.barretlee.com/blogimgs/2017/06/06/node-stream-readable-flowing.png)
+
+![Readable No-Flowing](http://www.barretlee.com/blogimgs/2017/06/06/node-stream-non-flowing.png)
 
 #### 3.2.3 Readable Stream源码分析
 
@@ -397,7 +399,7 @@ Stream.prototype.pipe = function(dest, options) {
 2. highWaterMark水位的高低，当水位高于阈值就会触发背压，如果是流动模式会自动触发pause
 3. buffer： 一个用来存储data chunk的容器，这里重新封装了一个链表BufferList来做这个事情
 
-![](E:\Learn\Essays\deeplyStream\images\Readable State.svg)
+![](E:\Learn\Essays\deeplyStream\images\Readable State.png)
 
 ##### 3.2.3.2 Readable构造函数
 
@@ -446,7 +448,63 @@ Readable类做的事情：
 
 ##### 3.2.3.3 Readable 相关方法解析
 
-###### 1. destroy
+###### 1. on
+
+坐标：lib/internal/streams/readable.js
+
+作用：对绑定在其上的data和readable两个状态的事件做了特殊的处理
+
+主要步骤：
+
++ 继承Readable（其实是event）的on方法
+
++ 事件名称是data的处理方式
+  
+  + 设置stateableListening，主要依据为是否有绑定的readable的事件回调了
+  + 如果不处于流动模式，调用Readable.resume开始继续流动
+  
++ 事件名称是readable的处理方式
+
+  + 设置readableListening(该值为true的时候，后面就无法继续绑定对应的readable事件)和needReadable为true，代表进入readable模式
+  + readable事件绑定flowing标志位置为false，此时处于暂停模式
+
+  ```javascript
+  Readable.prototype.on = function(ev, fn) {
+    const res = FunctionPrototypeCall(Stream.prototype.on, this, ev, fn);
+    const state = this._readableState;
+  
+    if (ev === 'data') {
+      // Update readableListening so that resume() may be a no-op
+      // a few lines down. This is needed to support once('readable').
+      state.readableListening = this.listenerCount('readable') > 0;
+  
+      // Try start flowing on next tick if stream isn't explicitly paused.
+      if (state.flowing !== false) this.resume();
+    } else if (ev === 'readable') {
+      // readable事件只能绑定一次
+      // 且如果是结束的的场景是无法重新绑定readable事件的
+      if (!state.endEmitted && !state.readableListening) {
+        state.readableListening = state.needReadable = true;
+        // 关闭流动模式
+        state.flowing = false;
+        state.emittedReadable = false;
+        debug('on readable', state.length, state.reading);
+        // 如果此时ReadStream有buffer 触发readable事件回调
+        if (state.length) {
+          emitReadable(this);
+        } else if (!state.reading) {
+          process.nextTick(nReadingNextTick, this);
+        }
+      }
+    }
+  
+    return res;
+  };
+  ```
+
+  
+
+###### 2. destroy
 
 + 坐标：lib/internal/streams/destroy
 
@@ -562,7 +620,7 @@ Readable类做的事情：
   }
   ```
 
-###### 2. _undestroy
+###### 3. _undestroy
 
   + 坐标：lib/internal/streams/destroy
 
@@ -602,21 +660,36 @@ Readable类做的事情：
     }
     ```
 
-###### 3. push
+###### 4. push
 
   + 坐标：lib/internal/streams
 
   + 作用：手动向read()的缓冲区中插入数据
 
-  + 主要步骤：调用了readableAndChunk,这个readableAndChunk主要用在push和unshift上，所以这个addToFront是一个控制向前插入还是向后插入，readableAndChunk中主要调用了addChunk方法。
+  + 主要步骤：调用了readableAndChunk,这个readableAndChunk主要用在push和unshift上，所以这个addToFront是一个控制向前插入还是向后插入，readableAndChunk中主要调用了addChunk方法。过程流：push/unshift -> readableAndChunk -> addChunk
 
-  + push/unshift -> readableAndChunk -> addChunk
+  + 如果同时使用 'readable' 事件和 'data'事件，则 'readable' 事件会优先控制流，也就是说，当调用 stream.read()时才会触发 'data' 事件，此时flowing会被置为false
+
+    ```javascript
+    const fs = require('fs')
+    const path = require('path')
+    
+    const rs = fs.createReadStream(path.resolve(__dirname, './test.js'))、
+    // 这个时候data事件不会被触发
+    rs.on('data', (chunk) => {
+      console.log('data -> ', chunk)
+    })
+    
+    rs.on('readable', () => {
+      console.log('readable ->', rs.buffer)
+    })
+    ```
 
   + readableAndChunk做的事
 
       + 将string、unit8Array、buffer数据类型和encoding进行整合，整合为buffer和对应的encoding编码方式输出
       + 根据是否stream已经被close，是否有error做一些异常的报错，然后通过addChunk往state.buffer中向read()获取数据的缓冲区里塞数据
-    
+      
     ```javascript
     // addChunk方法主要做的事
     // 1. 调用data事件
@@ -624,6 +697,7 @@ Readable类做的事情：
     function addChunk(stream, state, chunk, addToFront) {
       if (
         // 用于判断是否处于流动模式 true -> 处于流动模式
+        // 非流动模式场景，readable事件被注册或pause
         state.flowing &&
         // 当前state长度为0，说明处于暂停状态
         state.length === 0 &&
@@ -641,16 +715,18 @@ Readable类做的事情：
         // 触发data事件
         // 将chunk buffer作为参数传给对应的回调
         // 主要就触发了data事件
+        // flowing场景触发的是data的回调
         stream.emit('data', chunk);
       } else {
         // 非第一次调用addChunk场景
         // 更新buffer信息
         state.length += state.objectMode ? 1 : chunk.length;
-        // 这里的buffer主要是bufferList
+      // 这里的buffer主要是bufferList
         if (addToFront) state.buffer.unshift(chunk);
       else state.buffer.push(chunk);
     
-      if (state.needReadable) emitReadable(stream);
+        // 不是flowing的场景是调用readable事件回调  
+        if (state.needReadable) emitReadable(stream);
       }
       // 持续的读取read()中的数据，当length < hwm的时候可以将数据先读取到buffer中
       // 有两种场景获取继续持续的读数据
@@ -712,6 +788,7 @@ Readable类做的事情：
       if (err) {
         errorOrDestroy(stream, err);
       } else if (chunk === null) {
+        // chunk是null标识读取结束，reading -> false
         state.reading = false;
         // chunk为null就认为是最后一个chunk了
         onEofChunk(stream, state);
@@ -736,10 +813,10 @@ Readable类做的事情：
             else maybeReadMore(stream, state);
           } else {
             addChunk(stream, state, chunk, false);
-          }
+        }
         }
       } else if (!addToFront) {
-      state.reading = false;
+        state.reading = false;
         maybeReadMore(stream, state);
       }
     
@@ -752,11 +829,11 @@ Readable类做的事情：
     }
     ```
 
-###### 4. unshift
+###### 5. unshift
 
 参考push，只是将readable中的addToFront参数置为true
 
-###### 5. isPaused
+###### 6. isPaused
 
 坐标：lib/internal/streams/readable.js
 
@@ -764,7 +841,7 @@ Readable类做的事情：
 
 实现： kpaused -> true, flowing -> false
 
-###### 6. setEncoding
+###### 7. setEncoding
 
 坐标：lib/internal/streams/readable.js
 
@@ -772,14 +849,448 @@ Readable类做的事情：
 
 实现：调用string_dencoder将string类型进行转码，先将buffer中的数据读出来，然后通过string decoder转码后再协会buffer中
 
-###### 7. read
+###### 8. read
 
 坐标: lib/internal/streams/readable.js
 
 作用：从缓冲区中读取数据
 
-注意：如果我们自定义一个readable继承了Readable，我们可以手动重写read函数或_read方法来自定义读取数据的方法
+注意：
 
++ 如果我们自定义一个readable继承了Readable，我们可以手动重写read函数或_read方法来自定义读取数据的方法
+
++ read和_read的区别
+
+  + read是从缓冲区读数据，而_read是从文件中读取数据是个异步操作
+  + read一般是消费者调用，用于读取数据，_read是缓冲区调用，补充缓冲区的数据
+
++ readable和data之间的关系
+
+  + readable已经处于暂停模式，需要手动调用read使其恢复flowing，readable事件触发条件
+
+    + 数据已经在buffer中准备好，需要调用read手动获取
+    + end之前会调用readable事件
+
+  + data事件在处于流动模式的时候，获取数据的时候自动触发
+
+    + 数据不经过buffer直接_read -> 消费者
+
+  + read(0)的用法
+
+    + 我们使用read(0)一般只是为了在stream内部使用，目的是为了触发readable事件
+
+    > 官方文档
+    >
+    > 在某些情况下，需要触发底层可读流的刷新，但实际并不消费任何数据。 在这种情况下，可以调用 `readable.read(0)`，返回 `null`。
+    >
+    > 如果内部读取缓冲小于 `highWaterMark`，且流还未被读取，则调用 `stream.read(0)` 会触发调用底层的 [`stream._read()`](http://nodejs.cn/api/stream.html#stream_readable_read_size_1)。
+    >
+    > 虽然大多数应用程序几乎不需要这样做，但 Node.js 中会出现这种情况，尤其是在可读流类的内部。
+
+实现：
+
++ 对输入的需要读取长度n进行转换以及数字类型的校验
+
++ 计算hwm的值(这里最大是1G, 小于1G就向上取最近的二进制作为hwm)
+
+  ```javascript
+    if (n >= MAX_HWM) {
+      // TODO(ronag): Throw ERR_VALUE_OUT_OF_RANGE.
+      n = MAX_HWM;
+    } else {
+      // 获取上限最近二进制的方法
+      // 已有的位置不断向右移
+      // 将最高位开始的后面所有的1都置为1
+      n--;
+      n |= n >>> 1;
+      n |= n >>> 2;
+      n |= n >>> 4;
+      n |= n >>> 8;
+      n |= n >>> 16;
+      n++;
+    }
+  ```
+
++ read读取非0的步骤
+
+  + 计算出下一状态我们需要从buffer中读取什么东西
+    + 通过doRead即state.needReadable、reading、ended进行判断
+    + 注：如果处于reading或者ended，这两个阶段其实不会再去读
+    + 注：这里调用\_read被认为是一个同步的写法，因为其实依赖调用\_read之后有一些标志位的更新
+    
+  +  如果结果触发了\_read就调用\_read读取文件数据（需要注意同步流程和异步任务）
+    + reading状态置为true标识已经有一个挂起的读取任务
+    
+    + sync置为true，标识开始跑同步的流程
+    
+    + 这里的_read是一个抽象方法，这里会手动的去抛异常，因此我们在写继承Readable类的时候，需要实现\_read方法,这里我们以fs中实现的createReadStream中的ReadStream为例，看下他的\_read实现
+    
+    ```javascript
+      ReadStream.prototype._read = function(n) {
+        n = this.pos !== undefined ?
+          MathMin(this.end - this.pos + 1, n) :
+          MathMin(this.end - this.bytesRead + 1, n);
+      
+        if (n <= 0) {
+          this.push(null);
+          return;
+        }
+      
+        const buf = Buffer.allocUnsafeSlow(n);
+      
+        this[kIsPerformingIO] = true;
+        // 这里通过了fs.read方法对文件进行读取
+        this[kFs]
+          .read(this.fd, buf, 0, n, this.pos, (er, bytesRead, buf) => {
+            this[kIsPerformingIO] = false;
+      
+            // Tell ._destroy() that it's safe to close the fd now.
+            if (this.destroyed) {
+              this.emit(kIoDone, er);
+              return;
+            }
+      
+            if (er) {
+            errorOrDestroy(this, er);
+            } else if (bytesRead > 0) {
+              this.bytesRead += bytesRead;
+      
+              if (bytesRead !== buf.length) {
+                // Slow path. Shrink to fit.
+                // Copy instead of slice so that we don't retain
+                // large backing buffer for small reads.
+                const dst = Buffer.allocUnsafeSlow(bytesRead);
+                buf.copy(dst, 0, 0, bytesRead);
+                buf = dst;
+              }
+              // 将读取到的buffer push到bufferList中
+              this.push(buf);
+            } else {
+              this.push(null);
+            }
+          });
+      
+        if (this.pos !== undefined) {
+          this.pos += n;
+        }
+      };
+      
+    ```
+    
+    + 一般会调用push将对应的buffer推到具体的
+    
+  + 将chunk从缓冲区中取出并返回
+  
+    + 主要调用了fromList方法从buffer中获取对应的数据
+      ```javascript
+      function fromList(n, state) {
+        // bufferList为空的场景
+        if (state.length === 0) return null;
+      
+        let ret;
+        // 这种场景就是返回不是bufferList是对象的场景，直接返回了
+        if (state.objectMode) ret = state.buffer.shift();
+        else if (!n || n >= state.length) {
+          // 该场景bufferList中的数据小于所需要的数据，所以要全部读取
+          // 读取完之后清除buffer
+          if (state.decoder) ret = state.buffer.join('');
+          else if (state.buffer.length === 1) ret = state.buffer.first();
+          else ret = state.buffer.concat(state.length);
+          state.buffer.clear();
+        } else {
+          // 如果n < state.length 就直接调用consume方法读取即可
+          ret = state.buffer.consume(n, state.decoder);
+        }
+      
+        return ret;
+      }
+      ```
+    
+  + 设置needReadable标志位
+    
+    + 如果已经是末尾了，即ret为null，这个时候需要触发readable事件给他标记结束
+    
+    + 如果ret不为空，这个时候说明有数据，需要触发data事件
+
+
++ 具体的详情可见代码注释
+
+```javascript
+Readable.prototype.read = function(n) {
+  debug('read', n);
+  // 对输入的n(需要读取的字节进行类型转换)  
+  if (n === undefined) {
+    n = NaN;
+  } else if (!NumberIsInteger(n)) {
+    n = NumberParseInt(n, 10);
+  }
+  const state = this._readableState;
+  const nOrig = n;
+
+  // If we're asking for more than the current hwm, then raise the hwm.
+  if (n > state.highWaterMark) state.highWaterMark = computeNewHighWaterMark(n);
+
+  // n !== 0 需要从buffer中去读对应的内容
+  // 这个时候不会触发readable事件
+  if (n !== 0) state.emittedReadable = false;
+
+  // 利用read(0)来调用stream._read,来触发readable事件
+  // 1. 如果hwm === 0 且 buffer的length为空，说明还读取流，需要手动调用_read
+  // 2. 需要触发readable事件触发底层可读流刷新
+  // 这个时候是一个假读，返回null
+  // read(0) 只是为了让Readable对象能调用_read方法，调用readable事件，并不会真正从缓存区读数据
+  if (
+    n === 0 &&
+    state.needReadable &&
+    ((state.highWaterMark !== 0 ?
+      state.length >= state.highWaterMark :
+      state.length > 0) ||
+      state.ended)
+  ) {
+    debug('read: emitReadable', state.length, state.ended);
+    if (state.length === 0 && state.ended) endReadable(this);
+    else emitReadable(this);
+    return null;
+  }
+
+  // 处理非read(0)场景的n的问题
+  // 1. n非法(n < 0)或可读流没有数据或可读流已经终止 -> 0
+  // 2. 处理n未传undefined, 这种上层会处理成NaN，直接返回bufferList第一个元素的长度(流动状态),整个state中buffer的长度(暂停模式)
+  // 3. 长度不够时候的一把梭
+  n = howMuchToRead(n, state);
+
+  // read(0)但是可读流已经结束的时候返回null
+  // read(0)即是假读状态
+  if (n === 0 && state.ended) {
+    if (state.length === 0) endReadable(this);
+    return null;
+  }
+
+  // readable n !== 0 场景，读取流程
+  // 主要流程如下：
+  // 1.计算出下一状态我们需要从buffer中读取什么东西
+  // 2. 如果结果触发了_read就调用_read读取文件数据
+  // 3. 将chunk从缓冲区中取出并返回。
+  let doRead = state.needReadable;
+  debug('need readable', doRead);
+
+  // 当前buffer中数据length不足或者这次读取后水位低于hwm，就需要读取内容到buffer
+  if (state.length === 0 || state.length - n < state.highWaterMark) {
+    doRead = true;
+    debug('length less than watermark', doRead);
+  }
+
+  // However, if we've ended, then there's no point, if we're already
+  // reading, then it's unnecessary, if we're constructing we have to wait,
+  // and if we're destroyed or errored, then it's not allowed,
+  if (
+    state.ended ||
+    state.reading ||
+    state.destroyed ||
+    state.errored ||
+    !state.constructed
+  ) {
+    doRead = false;
+    debug('reading, ended or constructing', doRead);
+  } else if (doRead) {
+    debug('do read');
+    state.reading = true;
+    state.sync = true;
+    // If the length is currently zero, then we *need* a readable event.
+    if (state.length === 0) state.needReadable = true;
+    // Call internal read method
+    this._read(state.highWaterMark);
+    state.sync = false;
+    // If _read pushed data synchronously, then `reading` will be false,
+    // and we need to re-evaluate how much data we can return to the user.
+    if (!state.reading) n = howMuchToRead(nOrig, state);
+  }
+
+  let ret;
+  if (n > 0) ret = fromList(n, state);
+  else ret = null;
+
+  if (ret === null) {
+    state.needReadable = state.length <= state.highWaterMark;
+    n = 0;
+  } else {
+    state.length -= n;
+    if (state.multiAwaitDrain) {
+      state.awaitDrainWriters.clear();
+    } else {
+      state.awaitDrainWriters = null;
+    }
+  }
+
+  // buffer中已经被完全消费
+  // 需要重新触发readable事件，从文件中读取对应的内容
+  if (state.length === 0) {
+    // 第一次进入flowing因为state为0所以这个时候会使needReadable为true这样会将数据读到buffer中
+    if (!state.ended) state.needReadable = true;
+
+    // If we tried to read() past the EOF, then emit end on the next tick.
+    if (nOrig !== n && state.ended) endReadable(this);
+  }
+
+  if (ret !== null) this.emit('data', ret);
+
+  return ret;
+};
+```
+
+###### 9.  resume
+
+坐标: lib/internal/streams/readable.js
+
+作用：将流从暂停模式切换到流动模式
+
+调用点：pipe和通过on绑定data事件的时候
+
+**注：该函数主要调用了resume，resume又调用了resume_方法，而resume\_方法主要调用了flow**，其余是一些状态的变换，其各个函数主要的功能如下
+
++ **resume：**state.flowing -> !state.readableListeing（为了处理同时监听readable和data事件的场景），调用resume
++ resume\_: 处理了resumeScheduled置为false，代表resume的调度已经结束，这里需要讲解一下**flow之后，执行了stream.read(0), 这是因为由于刚才处于流动模式flowing -> needReadable已经为false，所以此时需要通过read(0)来重新激活readable**
++ flow：主要处理当state.flowing为true的时候不断的通过stream.read去读取对应的数据，所以，**当readable绑定了事件回调后flowing为false，此时流动模式就进行不下去了**
+
+```javascript
+function flow(stream) {
+  const state = stream._readableState;
+  debug('flow', state.flowing);
+  while (state.flowing && stream.read() !== null);
+}
+
+// 
+function resume_(stream, state) {
+  debug('resume', state.reading);
+  if (!state.reading) {
+    stream.read(0);
+  }
+
+  state.resumeScheduled = false;
+  stream.emit('resume');
+  flow(stream);
+  if (state.flowing && !state.reading) stream.read(0);
+}
+```
+
+###### 10. pipe
+
+坐标: lib/internal/streams/readable.js
+
+作用：开启流动模式，往pipe里面写入对应的数据
+
+具体步骤：
+
++ 绑定end事件的回调, **如果是stdout或者stderr以及手动传入options.end为true的绑定onunpipe函数作为回调，其他绑定onend函数作为回调**
+  + onunpipe: 移除生产者和消费者的部分回调(这里调用了readable里的clean函数)，这里处理了一种特殊情况，即生产者在等待消费者drain事件的场景，这种结束的时候清除场景，直接调ondrain
+  + onend: 直接调dest.end让消费者停止消费
+  
++ 绑定data事件
+  + 这里绑定了ondata回调，主要是向消费这种写数据
+
+      ```javascript
+      function ondata(chunk) {
+          debug('ondata');
+          const ret = dest.write(chunk);
+          debug('dest.write', ret);
+          if (ret === false) {
+            pause();
+          }
+      }
+      ```
+
+  + 这里要注意就是，如果这里的ret为false，说明**产生背压，数据无法写入**，这个时候，我们需要手动调用pause，让生产者先暂停生产，所以这里pause做了3件事情
+
+      + 让保存等待的消费者信息
+      + 让生产者暂停生产
+      + 绑定消费者的ondrain事件，让其在适合的时候唤醒生产者
+
+      ```javascript
+      function pause() {
+          // 还未被cleanup说明流还存在，没有被清除
+          if (!cleanedUp) {
+              if (state.pipes.length === 1 && state.pipes[0] === dest) {
+                  debug('false write response, pause', 0);
+                  state.awaitDrainWriters = dest;
+                  state.multiAwaitDrain = false;
+              } else if (state.pipes.length > 1 && state.pipes.includes(dest)) {
+                  debug('false write response, pause', state.awaitDrainWriters.size);
+                  state.awaitDrainWriters.add(dest);
+              }
+             	// 调用了protorype.pause
+              src.pause();
+          }
+          if (!ondrain) {
+              // When the dest drains, it reduces the awaitDrain counter
+              // on the source.  This would be more elegant with a .once()
+              // handler in flow(), but adding and removing repeatedly is
+              // too slow.
+             	// 如果没有ondrain事件，绑定一个，用于监听消费者消费结束，需要重新唤醒生产者
+              ondrain = pipeOnDrain(src, dest);
+              dest.on('drain', ondrain);
+          }
+      }
+      
+      // 这里在分析一下pipeOnDrain
+      function pipeOnDrain(src, dest) {
+          return function pipeOnDrainFunctionResult() {
+              const state = src._readableState;
+              
+              // 只有一个消费者的场景
+              if (state.awaitDrainWriters === dest) {
+                  debug('pipeOnDrain', 1);
+                  state.awaitDrainWriters = null;
+              } else if (state.multiAwaitDrain) {
+                  // 多个消费者就一个一个处理
+                  debug('pipeOnDrain', state.awaitDrainWriters.size);
+                  state.awaitDrainWriters.delete(dest);
+              }
+      
+              // 当没有需要等待的消费者时，这个时候应该表明所有的消费者都已经可以接受新的数据了
+              // 这种场景继续使Readable开始流动
+              if (
+                  (!state.awaitDrainWriters || state.awaitDrainWriters.size === 0) &&
+                  EE.listenerCount(src, 'data')
+              ) {
+                  state.flowing = true;
+                  flow(src);
+              }
+          };
+      }
+      ```
+
++ 通知消费者可以消费，**绑定了消费者的pipe事件**
+
++ 绑定了其他的一些事件如，unpipe, finish, error, close等，这里就不详细描述了
+
+### 3.3 Writable Stream的源码分析
+
+#### 3.3.1 可写流的运作模式
+
+writable作为一个消费者，他其实整体的buffer缓存的策略和readable是基本一致的，具体的过程如下图：
+
+1. wirtable也有一个write buffer去接生产者写入的数据，用来保证数据的不丢失
+2. 从readable的pipe中可以知道，**readableStream.pipe调用了dest.write**， 用于在流动模式下自动向writable中写入数据
+3. 如果写入过快，此时writableStream调用write会返回false，此时产生了**背压**，表明写入的buffer已经满了，这个时候不会让生产者再从readable buffer去写入 writable buffer, 会调用src.pause来暂停生产者的生产
+4. 当writable从buffer(**buffer为空**)中写完所有的数据，这个时候会发起生产者src的**drain**事件来继续让生产者写入
+5. writeable buffer通过队列的方式写入到对应的资源中
+
+![可写流运作模式](http://www.barretlee.com/blogimgs/2017/06/06/node-stream-writable.png)
+
+#### 3.3.2 Writatble State
+
+ 几个重要的stgate参数：
+
++ objectMode: 用于标识收到数据是object还是buffer类型
++ highWaterMark： 和writable一样，水位线用于来标识是否buffer已经饱和，需要再write的时候返回false
++ needDrain： 是否需要触发drain方法，控制方法的标志位
++ writing： 用于标识是否处于写入中的状态，和reading一样，是异步操作中间态的标志
++ bufferProcessing：是否write再相同时刻被调用多次的标志，用于解决幂等问题
++ resetBuffer，这个函数用于初始化buffer，对其中多个状态和存储的buffer进行了初始化
+  + buffered： 数组，用于存储已经缓存的数据内容
+  + bufferedIndex：用于用于标记当前缓存buffer的位置
+  + allBuffers: 用于标记是否数据格式都是buffers
+  + allNoop: 用于标记buffered中绑定的回调是否为空
 
 ## 2. Node Stream应用
 
