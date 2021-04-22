@@ -1267,7 +1267,7 @@ function resume_(stream, state) {
 
 #### 3.3.1 可写流的运作模式
 
-writable作为一个消费者，他其实整体的buffer缓存的策略和readable是基本一致的，具体的过程如下图：
+writableSteam作为一个消费者，他其实整体的buffer缓存的策略和readableStream是基本一致的，具体的过程如下图：
 
 1. wirtable也有一个write buffer去接生产者写入的数据，用来保证数据的不丢失
 2. 从readable的pipe中可以知道，**readableStream.pipe调用了dest.write**， 用于在流动模式下自动向writable中写入数据
@@ -1291,6 +1291,161 @@ writable作为一个消费者，他其实整体的buffer缓存的策略和readab
   + bufferedIndex：用于用于标记当前缓存buffer的位置
   + allBuffers: 用于标记是否数据格式都是buffers
   + allNoop: 用于标记buffered中绑定的回调是否为空
+
+#### 3.3.3 Writable构造函数
+
++ 初始化writable state
++ 初始化option中的函数,主要是_write和\_writev是用于实际写入的函数，需要重写针对不同的流场景，其他的是writable的生命周期钩子函数
+  + _write: options.write
+  + _writev: options.writev
+  + _destroy: options.destroy
+  + _construct: options.construct
+  + _final: options.final
++ 调用construct方法
+  + 注：这里的大前提是，我们需要重写\_construct这个方法，然后才能走这个生命周期
+  + 绑定construct方法的回调，construct -> false
+  + 初始化完成，设置后续状态
+    + constructed -> true
+    + called -> 初始化为false，如果已经置为true，说明被多次调用，这个时候会报错
+    + destroyed： 如果已经被destroy了，就会触发destroy事件
+    + 调用\_construct之后如果返回的是promise，这里会把上面状态重置的步骤放到promise的resolve中，也就是这里支持异步钩子
+
+#### 3.3.4 相关方法解析
+
+##### 1. pipe
+
+对于writable来说，他并没有pipe这个方法，因为他是一个消费者，他只需要去消费，他不需要去主动发起管道流，来操作对应的数据
+
+##### 2. write
+
+坐标：internal/streams/writable
+
+实现： 主要调用了_write方法（这里他可能想抽成一个公用的方法）
+
+**_write函数解析**
+
+详见代码
+
+```javascript
+function _write(stream, chunk, encoding, cb) {
+  // 这里主要是他传参逻辑的校验
+  // 类似一个函数的重载逻辑
+  // stream chunk cb
+  // stream chunk encoding cb
+  const state = stream._writableState;
+
+  if (typeof encoding === 'function') {
+    // 如果是3个参数那么第三个参数是callback
+    cb = encoding;
+    encoding = state.defaultEncoding;
+  } else {
+    // 入参为两个的场景
+    if (!encoding)
+      encoding = state.defaultEncoding;
+    else if (encoding !== 'buffer' && !Buffer.isEncoding(encoding))
+      throw new ERR_UNKNOWN_ENCODING(encoding);
+    if (typeof cb !== 'function')
+      cb = nop;
+  }
+
+  // 没有chunk场景
+  if (chunk === null) {
+    throw new ERR_STREAM_NULL_VALUES();
+  } else if (!state.objectMode) {
+    // 如果非objectMode
+    // 这个时候和readable一样就是string buffer 分支操作即可
+    // 主要操作：
+    // 1. 将chunk转成buffer
+    // 2. 将encode设成buffer
+    if (typeof chunk === 'string') {
+      if (state.decodeStrings !== false) {
+        // 这个decodeString主要是如果用户调用的时候没有指定encode类型就转成buffer
+        chunk = Buffer.from(chunk, encoding);
+        encoding = 'buffer';
+      }
+    } else if (chunk instanceof Buffer) {
+      encoding = 'buffer';
+    } else if (Stream._isUint8Array(chunk)) {
+      chunk = Stream._uint8ArrayToBuffer(chunk);
+      encoding = 'buffer';
+    } else {
+      throw new ERR_INVALID_ARG_TYPE(
+        'chunk', ['string', 'Buffer', 'Uint8Array'], chunk);
+    }
+  }
+
+  let err;
+  // 异常情况的判断
+  if (state.ending) {
+    err = new ERR_STREAM_WRITE_AFTER_END();
+  } else if (state.destroyed) {
+    err = new ERR_STREAM_DESTROYED('write');
+  }
+
+  // 如果上面判断是异常情况，这里就抛异常
+  if (err) {
+    process.nextTick(cb, err);
+    errorOrDestroy(stream, err, true);
+    return err;
+  }
+  // 没有异常这个时候需要写入buffer
+  // 并调用对应的回调，这个时候正在操作的cb即挂起的cb++
+  state.pendingcb++;
+  return writeOrBuffer(stream, state, chunk, encoding, cb);
+}
+```
+
+writeOrBuffer解析
+
+```javascript
+function writeOrBuffer(stream, state, chunk, encoding, callback) {
+  // 这里还是要判断是否为objectMode
+  const len = state.objectMode ? 1 : chunk.length;
+
+  state.length += len;
+
+  // stream._write resets state.length
+  const ret = state.length < state.highWaterMark;
+  // We must ensure that previous needDrain will not be reset to false.  
+  // 等待写入buffer的长度大于hwm，说明生产者速度大于消费
+  // 其实认为上一次是没有消费完全
+  // 这种场景他会触发背压
+  // 那其实这个时候，可以理解为buffer是满的，需要等buffer内的数据完全写入之后
+  // 调用drain事件回调，让生产者继续生产
+  if (!ret)
+    state.needDrain = true;
+
+  // 如果是正在写入场景，就缓存
+  if (state.writing || state.corked || state.errored || !state.constructed) {
+    state.buffered.push({ chunk, encoding, callback });
+    if (state.allBuffers && encoding !== 'buffer') {
+      state.allBuffers = false;
+    }
+    if (state.allNoop && callback !== nop) {
+      state.allNoop = false;
+    }
+  } else {
+    // 如果当前没有被占用
+    // 可以写入文档流或socket流，那么这个时候就调重写的_write方法
+    state.writelen = len;
+    state.writecb = callback;
+    state.writing = true;
+    state.sync = true;
+    stream._write(chunk, encoding, state.onwrite);
+    state.sync = false;
+  }
+
+  // Return false if errored or destroyed in order to break
+  // any synchronous while(stream.write(data)) loops.
+  return ret && !state.errored && !state.destroyed;
+}
+```
+
+
+
+
+
+
 
 ## 2. Node Stream应用
 
