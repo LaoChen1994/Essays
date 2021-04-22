@@ -1,10 +1,7 @@
 // Import the package main module
 const csv = require("csv");
-const Stream = require("stream");
 const fs = require("fs");
-const assert = require("assert");
 
-const inStream = new Stream.Readable({});
 const writer = new fs.createWriteStream("./test.csv");
 
 csv.parse(
