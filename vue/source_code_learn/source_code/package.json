@@ -79,6 +79,6 @@
   "dependencies": {
     "@types/consolidate": "^0.14.0",
     "consolidate": "^0.16.0",
-    "postcss": "^8.1.1"
+    "postcss": "^8.2.10"
   }
 }
