@@ -112,13 +112,13 @@ module.exports = class extends Generator {
       .then(() => {
         const { templateType, jsFrameSelection } = this.props;
 
-        if (templateType === "typescript" && jsFrameSelection === "react") {
+        if (templateType === "typescript") {
           try {
             this.log(chalk.green("开始拉取模板, 请等待....."));
             const cloneRes = spawnSync("git", [
               "clone",
               "-b",
-              `-b feat/${jsFrameSelection}-dev`,
+              `feat/${jsFrameSelection}-dev`,
               "git@github.com:LaoChen1994/react-server-gen.git"
             ]);
 
