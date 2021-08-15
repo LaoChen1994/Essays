@@ -68,7 +68,7 @@ module.exports = class extends Generator {
         type: "list",
         name: "jsFrameSelection",
         message: "请选择前端使用的框架",
-        choices: ["react"],
+        choices: ["react", "vue"],
         default: "react"
       },
       {
@@ -117,7 +117,9 @@ module.exports = class extends Generator {
             this.log(chalk.green("开始拉取模板, 请等待....."));
             const cloneRes = spawnSync("git", [
               "clone",
-              `git@github.com:LaoChen1994/react-server-gen.git`
+              "-b",
+              `-b feat/${jsFrameSelection}-dev`,
+              "git@github.com:LaoChen1994/react-server-gen.git"
             ]);
 
             this._error(cloneRes, "git 拉取镜像错误！");
