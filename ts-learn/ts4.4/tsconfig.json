@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "strictNullChecks": false,
+    "target": "es5",
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "declaration": true,
+    "module": "esnext",
+    "lib": ["dom", "es7", "esnext"],
+    "moduleResolution": "node",
+    "downlevelIteration": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+    // ts的paths在build的时候并不会改为相对路径，太傻x了
+  },
+  "include": ["src/**/*"],
+}
