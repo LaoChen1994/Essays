@@ -3,7 +3,7 @@
     "strict": true,
     "experimentalDecorators": true,
     "allowJs": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "target": "es5",
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
@@ -14,8 +14,9 @@
     "moduleResolution": "node",
     "downlevelIteration": true,
     "rootDir": "./src",
-    "outDir": "./dist"
-    // ts的paths在build的时候并不会改为相对路径，太傻x了
+    "outDir": "./dist",
+    "exactOptionalPropertyTypes": true,
+    "useUnknownInCatchVariables": true,
   },
   "include": ["src/**/*"],
 }
