@@ -12,13 +12,19 @@
 | Web worker               | 2020.07.18 | [web worker 倒计时](./myself-timeCountDown/readme.md)     |
 | Vue 3 学习笔记           | 2020.08.02 | [vue 3 学习笔记(持续更新)](./vue/vue-next-test/README.md) |
 | Graphql 学习笔记         | 2020.08.29 | [graphql 学习笔记](./node-graphql/readme.md)              |
-|typescript 4.0学习笔记|2020.09.1|[typescript4学习笔记](./typescript4/readme.md)|
+|typescript 4.0学习笔记|2020.09.1|[typescript4学习笔记](./ts-learn/typescript4/readme.md)|
 | vue 3 todo List          | 2020.10.7  | [vue3 todo list](./vue/vue3-todolist/readme.md)           |
-|post css支持响应式rem的例子|2020.10.14|[postcss响应式学习笔记](.test-postcss/README.md)|
+|post css支持响应式rem的例子|2020.10.14|[postcss响应式学习笔记](.learn-postcss/README.md)|
 | vue 3 源码学习 | 2020.11.29 | [vue 3 源码学习](./vue/source_code/readme.md)             |
 | 一些 css 特效            | 2020.12.25 | [css 学习笔记](.css-learn/readme.md)                     |
 |node导出csv的例子|2020.11.15| [代码例子](./nodeCsv/index.js)|
+|自己写着玩的Event Bus|2020.12.16| [代码例子](./my-event-bus/src/index.js)|
 |yeoman搭建cli|2021.1.3|[yeoman学习笔记](./yeoman/readme.md)|
 |深入浅出的webpack读书笔记|2021.2.1|[webpack学习思维导图](https://github.com/LaoChen1994/webpack-deeply)<br />[官网文档实践](https://github.com/LaoChen1994/LearnWebpack)|
 |service work简用|2021.2.16|[学习笔记](./serviceWork/readme.md)|
+|Docker学习笔记（持续，未完待续）|2021.4.16|[docker笔记](./learn-docker/readme.md)|
+|Rollup学习笔记|2021.5.15|[rollup笔记]](./learn-rollup/guide/readme.md)|
+|typescript 4.4|2021.9.10|[ts 4.4笔记](./ts-learn/src/type-tighten.ts)|
+|读书笔记|持续更新|[读书笔记](./读书笔记)|
+
  

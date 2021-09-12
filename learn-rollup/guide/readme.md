@@ -55,6 +55,36 @@ export default {
 安装插件
 
 ```bash
-yarn add rollup-plugin-node-resolve
+yarn add @rollup/plugin-node-resolve
+```
+#### 1.4.2 commonjs
+
+作用：将CJS -> ESM 通常和resolve插件一起使用
+
+安装插件
+
+```bash
+yarn add rollup-plugin-commonjs
 ```
 
+#### 1.4.3 typescript
+
+作用：将ts文件进行解析，类似ts-loader
+
+安装插件
+
+```bash
+yarn add @rollup/plugin-typescript
+```
+
+#### 1.4.4 terser
+
+作用：丑化和压缩js文件
+
+tips：以前用的uglyjs，现在自己用terser更多一点
+
+安装插件
+
+```bash
+yarn add rollup-plugin-terser
+```
