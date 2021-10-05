@@ -177,3 +177,505 @@ function bindSearch(array, target) {
 
 
 
+## 4. 利用大O来给代码提速
+
+###  4.1 冒泡排序
+
+原理：遍历整个数组，每个数组的每个数字都和后一个比， 如果更大就往后交换位置，然后更大的数继续向后比较，直至到底为止
+
+
+
+### 4.2 冒泡排序实战/实现
+
+```javascript
+let transStep = 0;
+let rechargeStep = 0;
+
+function bubbleSort (array) {
+  let endLength = 1;
+  for(let i = 0; i < array.length; i++) {
+    // 比较需要 (N -1) + (N -2) + (N -3) + … + 1
+    for (let j = 0; j < array.length - endLength; j++) {
+      if (array[j] > array[j + 1]) {
+        [array[j], array[j + 1]] = [array[j+1], array[j]]
+        rechargeStep++
+      }
+      transStep++;
+    }
+
+    endLength++;
+  }
+}
+
+const arr = bubbleSort([6, 5, 4, 3, 2, 1])
+console.log(arr, transStep, rechargeStep)
+```
+
+
+
+### 4.3 冒泡排序效率
+
+总体算法的复杂度为==O(N^2^)==
+
+【计算过程】：
+
+**比较**： `(N-1) + (N-2) + …… + 1 = (N - 1) * N / 2 `
+
+**交换**：最坏情况，每次比较都需要交换 所以也是 ` (N - 1) * N / 2`
+
+整体复杂度 : N^2^ - N, 等于==O(N^2^)==的复杂度
+
+### 4.4 复杂度高的解决办法
+
+本文中用了一个例子来说明：**查找纯数字的数组内是否有相同元素**
+
+遍历的实现思路：遍历N * N找对应的元素是否在，复杂度O(N^2^)
+
+利用缓存的实现思路：创建一个新数组L，遍历N次，对应数字i代表值的索引，L[i]置为1，如果L[i]已存在，说明已经有重复的值了，复杂度O(N)
+
+**用空间换时间**，可以利用一个缓存，来降低时间复杂度
+
+
+
+## 5. 用或不用大O来优化代码
+
+### 5.1 选择排序
+
+选择排序原理：
+
+1. 从左至右，将第一个元素认为是最小的，记录下索引
+2. 一次向后比较，找到整个数组中最小的元素，并记录下索引
+3. 交换两者的位置
+4. 这个时候第一个元素已经是最小的了，之后需要找第二小的元素，将第二个认为是最小的，重复1～3的步骤
+
+### 5.2~5.3 选择排序实战/实现
+
+```javascript
+function chooseSort(array) {
+  for (let index = 0; index < array.length; index++) {
+    let minIndex = index;
+
+    for (let index = minIndex; index < array.length; index++) {  
+      if (array[index] < array[minIndex]) minIndex = index;
+    }
+
+    [array[minIndex], array[index]] = [array[index], array[minIndex]]
+  }
+
+  return array
+}
+
+const items = chooseSort([6, 5, 4, 3, 2, 1])
+```
+
+### 5.4 选择排序效率
+
+**比较**： `(N-1) + (N-2) + …… + 1 = (N - 1) * N / 2 `
+
+**交换**：最坏情况，每次都需要交换，所是`N`
+
+整体复杂度：(N^2^ + N) / 2
+
+所以选择排序的复杂度差不多为冒泡排序的一半
+
+### 5.5 忽略常数
+
+对比冒泡和选择排序，两者的对应的大O表达式是保持一致的都是O(N^2^)
+
+因为大O表达式，**忽略常数 N^2^ 和 N^2^/2 都认为是O(N^2^)的复杂度**
+
+### 5.6 大O的作用
+
+1. 当数据量无限增大算法运行的速度logN > N > N^2^是一定的
+2. 即使是100N和N^2^也会有在某一个数量级算法运行速度相同的零界点，因此大O描述的都是临界点之后的事情
+3. 如果有两个算法跨越两个不同的数量级，那么我们应该知道去选哪种
+4. 即使两种算法大O表达式相同他们的速度也不可能完全相同
+
+### 5.7 一个实例
+
+略，其实从冒泡排序和选择排序之间可窥见一斑
+
+### 5.8 总结
+
+1. 大O算法是一种临界点后的参考方式
+2. 大O算法指的都是最坏情况下，但是理论上，一半我们代码中遇到的都是平均情况
+3. 即使两个算法大O表示相同，他们的效率可能也不同
+
+
+
+## 6. 乐观的调优
+
+算法的选择不应该都是按最坏情况进行考虑，可以全面分析各种情况，用来选择适当的算法
+
+### 6.1 插入排序
+
+ 原理：
+
+1. 从索引为N（从1开始），第N+1（从2开始）个数从整个数组中拿出
+2. 将该数与1～N-1的索引的数比较，找到比他小的位置为M
+3. 插入位置为M，M后面的所有数全部向后平移一位，重复1、2两步
+
+
+
+### 6.2～6.3 插入排序实战/实现
+
+```javascript
+function insertSort (array) {
+  for (let i = 0; i < array.length; i++) {
+    if (i === 0) continue;
+
+    // 移除N个元素需要N
+    const element = array.splice(i, 1)[0];
+    let position = i
+    for (let j = 0; j < i; j--) {
+      if (array[j] > element) {
+        // 这里需要对比 1 + 2 + ... + N-1次
+        position = j;
+      } else {
+        break;
+      }
+    }
+
+    // 这里包括了插入和平移两步操作
+    // 最差情况也需要平移 1 + 2 + ... + N-1次
+    // 插入N个元素最差要插入N次
+    array.splice(position, 0, element);
+  }
+
+  return array
+}
+
+const rlt = insertSort([6, 5, 4, 3, 2, 1])
+```
+
+
+
+### 6.4 插入排序的效率
+
+根据6-2中的步骤数量进行计算，插入排序总的复杂度为
+
+N + (N-1) * N /2 * 2 + N = N^2^ + N
+
+所以总的复杂度也为O(N^2^)
+
+
+
+如果从最差的情况的大O表达式来看，目前三种类型排序的顺序为
+
+选择排序（(N^2^ + N) / 2）< 冒泡排序（N^2^ - N）< 插入排序（N^2^ + N）
+
+
+
+**但是实际情况真的如此吗？**
+
+
+
+### 6.5 平均情况
+
+对于`插入排序`而言，最坏、平均、最好情况的复杂度分别是N^2^、N^2^/ 2 以及 N步（这是由于只要对比到之前有比插入的元素更小的就可以停止比较，所以在不同的对比场景中差异较大）
+
+
+
+而对于`选择排序`来说都是N^2^（原因是不管如何都需要对比到最后一个元素才知道当前元素是不是剩下中最小的那个元素）
+
+
+
+原因：**因为选择排序没有中途退出的机制，所以永远复杂度都是N^2^**,但是**插入排序在对比的过程中可以提早退出循环**，所以算法的性能会得到很大的优化
+
+
+
+所以到底哪种算法更好，要看情况
+
+
+
+## 7. 查找快速的散列表
+
+### 7.1 散列表
+
+在javascript中的散列表就是对象，在python中是字典。
+
+``` javascript
+// 定义一个散列表
+const a = { a: 1, b: 2 }
+
+// 通过散列表查询
+
+a['a'] // 1
+```
+
+**在散列表中查找值的效率为O(1)**，对于查找带来了无与伦比的性能优势
+
+
+
+### 7.2 用散列函数来做散列
+
+散列函数运作的简单案例：
+
+1. 先规定一个映射的关系图
+
+```
+A -> 1
+B -> 2
+C -> 3
+D -> 4
+E -> 5
+F -> 6
+G -> 7
+```
+
+2. 根据关系图将对应的字符串转换为数字`BAE -> 215`
+3. 通过散列函数来进行计算，比如求和 2+1+5 -> 8 （实际要比这个复杂）
+
+【注】这个散列转换的办法一定是可复制的，即多次计算可以得到相同的值（如果输入相同的话）
+
+
+
+### 7.3 一个好玩又赚钱的同义词典
+
+散列表存储的原理就是，通过`散列函数`计算出对应的值应该存储的`散列地址`，将对应的内容存进去，之后查询的时候只需要将**查询的索引通过散列函数进行计算**，直接可以查询到对应的散列值，即查询复杂度为O(1)
+
+
+
+### 7.4 处理冲突
+
+上述存储存在一个问题，==如果两个索引值对应的散列值相同怎么办==
+
+
+
+解决办法：
+
+1. 分离链接，就是在散列相同的时候，存储一个数组，数组的每一个元素中包含了key + value
+
+   查询过程：先看散列对应的值是否为一个数组，如果是数组在找key匹配的对应的索引值，最坏情况O(N)(所有需要存储的key-value中key对应的散列函数计算结果都相同)
+
+
+
+### 7.5 找到平衡
+
+散列表的效率：
+
+1. 要存多少数据
+2. 要有多少可用的格子
+3. 用什么样的散列函数
+
+散列表需要考虑的问题：1. 既要避免冲突（散列表尽可能的大）2. 节约空间（避免不必要的浪费）
+
+目前的扩展法则：**每增加7个元素，就增加10个格子**
+
+
+
+### 7.6 一个实例
+
+通过散列表的方式在验证是否数组中有重复的元素
+
+![image-20211003230605906](/Users/pidan/Library/Application Support/typora-user-images/image-20211003230605906.png)
+
+
+
+通过统计一个数组中重复元素的数量，代码略（比较简单不赘述了）
+
+【思路】如果散列表中有对应的key，值+1，否则将该key的值置为1
+
+
+
+## 8. 用栈和队列来构造灵巧的代码
+
+数据结构本身是一种遵循特殊约束的数据形式，比如栈和队列
+
+栈：**先入后出**
+
+队列：**先入先出**
+
+### 8.1 栈
+
+#### 8.1.1 特殊约束
+
++ 只能在末尾插入数据
++ 只能读取==末尾==的数据
++ 只能移除==末尾==的数据
+
+
+
+#### 8.1.2 特殊术语
+
+1. 压栈： 往栈中添加元素
+2. 出栈：从栈顶移除数据
+
+
+
+#### 8.1.3 特点
+
+栈：**先入后出**（LIFO：last in first out）
+
+### 8.2 栈实战
+
+实战解决的问题就是，用来检测javascript的一段代码中的`{}`, `()`, `[]`是否匹配的问题
+
+```javascript
+const pushStackMarks = ["(", "{", "["]
+const outStack = [")", "}", "]"]
+
+function matchBracket (origin, target) {
+  const orginIdx = pushStackMarks.indexOf(origin)
+
+  return outStack[orginIdx] === target
+}
+
+function lintCode (str) {
+  const stack = []
+
+  for (let index = 0; index < str.length; index++) {
+    const char = str[index];
+    if (pushStackMarks.includes(char)) {
+      stack.push(char)
+    } else if(outStack.includes(char)) {
+      const outStackElem =  stack.pop()
+
+      if (!matchBracket(outStackElem, char)) {
+        return false
+      }
+      
+    }
+  }
+
+  return true
+}
+
+
+const lintStr = '(var a = { a: 1, b: 2, c: [1, 2, 3] })'
+
+const rlt = lintCode(lintStr)
+
+```
+
+
+
+### 8.3 队列
+
+####  8.3.1 约束
+
++ 只能在末尾插入数据
++ 只能读取==开头==的数据
++ 只能移除==开头==的数据
+
+
+
+#### 8.3.2 特殊术语
+
+1. 出队：取出队列中的元素
+2. 入队：为队列中加入元素
+
+
+
+#### 8.3.3 特点
+
+先入先出：FIFO
+
+
+
+### 8.4 队列实战
+
+只要需要顺序执行的场景基本都是队列，比如IO顺序输出，异步顺序执行等
+
+
+
+### 9. 递归
+
+### 9.1 用递归代替循环
+
+一个倒计时的例子：
+
+```javascript
+function countDown(num) {
+  if (num < 0) return
+  console.log(num)
+
+  countDown(num - 1)
+}
+
+countDown(10)
+```
+
+【注意】使用递归的时候，我们需要控制好递归的结束点，不然会造成无限递归的问题，非常危险
+
+
+
+### 9.2 基准情形
+
+刚才说到的结束递归的点，称之为`基准情形`，在递归算法中，这是必要的
+
+
+
+### 9.3 阅读递归代码
+
+**具体方法：1. 从基准情形下手进行阅读 2. 从基准情形一步一步增加基准值，反推得到对应的结果**
+
+例如，倒计时的例子，我们一步一步计算，countDown(0), countDown(1), ……等一路向上，就能明白该递归算法的意图
+
+
+
+### 9.4 计算机眼中的递归
+
+计算机并不是反推的，而是从头到尾开始执行算法的，
+
+从一个求阶乘的计算结果开始：
+
+```javascript
+function factorial(num) {
+  if (num === 1) return 1
+
+  return num * Fibonacci(num - 1)
+}
+
+const rlt = Fibonacci(5)
+```
+
+因此，当调用`factorial(5)`的时候，`factorial(4)`，`factorial(3)`，.......，`factorial(1)`会分别被压入栈中，当num为1的时候，逐次出栈，因此如果无限递归，会将同一个方法疯狂的压入调用栈，所以会报栈溢出的错误
+
+
+
+### 9.5 递归实战
+
+文件夹目录的递归，获取对应的文件和文件夹信息：
+
+```javascript
+const fs = require('fs')
+
+const walkDirs = []
+let isEmpty = false
+
+const FILE_TYPE = {
+  FILE: 0,
+  DIRECTORY: 1
+};
+
+function _walk(basePath, recordDir = false) {
+    const filenames = fs.readdirSync(basePath);
+    if (filenames.length) {
+      isEmpty = false;
+      filenames.forEach(file => {
+        const _path = path.join(basePath, file);
+        try {
+          if (fs.statSync(_path).isDirectory()) {
+            _walk(_path, recordDir);
+
+            if (recordDir) {
+              _walkDirs.push({ path: _path, type: FILE_TYPE.DIRECTORY });
+            }
+          } else {
+            this._walkDirs.push({ path: _path, type: FILE_TYPE.FILE });
+          }
+        } catch (error) {
+          console.log("error = ", error);
+        }
+      });
+    }
+  }
+```
+
+
+
+
+
+
+
