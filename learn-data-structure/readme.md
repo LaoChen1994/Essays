@@ -468,7 +468,7 @@ G -> 7
 
 通过散列表的方式在验证是否数组中有重复的元素
 
-![image-20211003230605906](/Users/pidan/Library/Application Support/typora-user-images/image-20211003230605906.png)
+![image-20211003230605906](./images/1.png)
 
 
 
@@ -579,7 +579,9 @@ const rlt = lintCode(lintStr)
 
 
 
-### 9. 递归
+## 9. 递归
+
+
 
 ### 9.1 用递归代替循环
 
@@ -672,6 +674,155 @@ function _walk(basePath, recordDir = false) {
     }
   }
 ```
+
+
+
+## 10. 飞快的递归算法
+
+这一章讲讲一下快排，先了解其中的分区的概念
+
+
+
+### 10.1 分区
+
+**是什么**：分区指的是，在数组中随机选择一个数作为轴，然后把比他大的值放到轴的左边，比他小的值放到轴的右边
+
+**怎么做**：
+
+1. 确定轴的位置 
+2. 确定左右两个指针
+3. 左右指针移动（移动规则：左指针找比基准值小的找到停止，否则一直右移，有指针找比基准大的值找到停止，否则一值左移）
+4. 左右指针都找到了想要的值，则交换左右指针对应位置的值
+5. 左右指针指向同一个值判断和基准值的大小，比基准大则交换，否则就不变
+
+![](./images/2.png)
+
+**具体的实现方式**
+
+```javascript
+function partition(array, ctx = {}) {
+  // 如果整个数组的长度小于1直接返回（边界条件）
+  if (array.length <= 1) return array
+
+  // 如果只有两个数的话，可以直接比较交换
+  if (array.length === 2) {
+    if (array[0] > array[1]) {
+      [array[1], array[0]] = array
+    }
+    return array
+  }
+
+  // 默认轴为最后一个数
+  const base = array[array.length - 1]
+  let leftPointer = 0
+  let rightPointer = ctx.basePointer = array.length - 2
+
+  while (leftPointer !== rightPointer) {
+    if (array[leftPointer] <= base) {
+      leftPointer++;
+      continue
+    }
+
+    // 左指针找到大值
+    // 右指针找小值
+    if (array[rightPointer] > base) {
+      rightPointer--
+      continue;
+    }
+
+    [array[leftPointer], array[rightPointer]] = [array[rightPointer], array[leftPointer]]
+  }
+
+  if (array[leftPointer] > base) {
+    [array[leftPointer], array[array.length - 1]] = [base, array[leftPointer]]
+    ctx.basePointer = leftPointer
+  }
+
+  return array
+}
+
+```
+
+
+
+### 10.2 快速排序
+
+在生成了第一个分区后，则需要递归的将分区的左右部分分别继续进行分区排序，最后将分区后的值组合起来即可
+
+```javascript
+
+function quickSort(array) {
+  let ctx = {
+    basePointer: array.length - 1
+  }
+
+  if (array.length <= 1) return array
+
+  // 对数组进行分区
+  const partitions = partition(array, ctx)
+  const base = ctx.basePointer
+
+  // 左边排序结果
+  const leftArray = quickSort(partitions.slice(0, base))
+  // 右边排序结果
+  const rightArray = quickSort(partitions.slice(base + 1, array.length))
+
+  return [...leftArray, array[base], ...rightArray]
+}
+
+const array = [0, 5, 2, 1, 8, 6]
+const rlt = quickSort(array)
+```
+
+
+
+### 10.3 快速排序效率
+
+快排主要的步骤包含：比较、交换
+
+**分区中**
+
+比较：一次分区至少经过N次比较，因为每个数都需要和基准进行比较
+
+交换：最少一次交换，最多N/2次交换，平均为N/4次
+
+所以比较 + 交换做一次分区 = 1.25N
+
+
+
+假设平均每次的轴都是该数组的一半位置，那么就需要切**logN**，每次都需要对N个元素做分区，所以复杂度是1.25N * logN， 总的平均复杂度为**O(N*logN)**，最坏情况，每次都是首或尾，这样需要切N次，所以最坏的复杂度为**O(N^2^)**
+
+
+
+### 10.4 快速选择
+
+快速选择的思想是，比如我们想要获得第3小的元素，那么其实就可以利用分区的思想，类似二分法，只招对应需要侧的元素中排序为3的位置即可，不需要对整个数组进行排序，基本上就是N(LogN)的复杂度
+
+```javascript
+function fastSearch(kthMin, array) {
+  let ctx = {
+    basePointer: array.length - 1
+  }
+
+  if (array.length <= 1) return array[0]
+
+  const partitions = partition(array, ctx)
+  const base = ctx.basePointer
+  if (kthMin - 1 === base) {
+    return array[base]
+  }
+
+  if (kthMin -1 < base) {
+    return fastSearch(kthMin, partition(partitions.slice(0, base), ctx))
+  }
+
+  return fastSearch(kthMin + base, partition(partitions.slice(base + 1, array.length), ctx))
+}
+```
+
+
+
+
 
 
 

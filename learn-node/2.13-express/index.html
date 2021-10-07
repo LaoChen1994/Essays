@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>游戏</title>
+  </head>
+  <body>
+    <div class="result" id="result"></div>
+    <button id="rock">石头</button>
+    <button id="scissor">剪刀</button>
+    <button id="paper">布</button>
+
+    <script>
+      var rockBtn = document.getElementById("rock");
+      var scissorBtn = document.getElementById("scissor");
+      var paperBtn = document.getElementById("paper");
+
+      rockBtn.onclick = () => getGameRlt("rock");
+      scissorBtn.onclick = () => getGameRlt("scissor");
+      paperBtn.onclick = () => getGameRlt("paper");
+
+      function getGameRlt(input) {
+        console.log("click");
+        fetch(`http://${location.host}/game?key=${input}`)
+          .then((res) => {
+            return res.json();
+          })
+          .then((data) => {
+            const rltELem = document.getElementById("result");
+            const rlt = data.data
+
+            if (rltELem) {
+              const str =
+                rlt === 0
+                  ? "恭喜你你赢了"
+                  : rlt === 1
+                  ? "抱歉,你输了"
+                  : "平局，再战一把";
+
+              rltELem.innerHTML = str;
+            }
+          });
+      }
+    </script>
+  </body>
+</html>
