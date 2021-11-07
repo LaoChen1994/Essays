@@ -820,13 +820,860 @@ function fastSearch(kthMin, array) {
 }
 ```
 
+## 11. 基于节点的数据结构
+
+### 11.1 链表
+
+链表和数组的区别，数组是一块区域，链表每个节点都是分散的，但是链表每个节点除了保存值外，还保存了对应下一个值的地址位置
+
+
+
+### 11.2～11.7 实现
+
+#### 11.7.1 实现过程
+
+链表目前包含两个部分
+
+1. 节点
+
+   ```javascript
+   // 节点部分，除了自身的值，还需要记住下一跳的地址
+   class Node {
+     constructor(value) {
+       this.value = value
+       this.nextNode = null
+     }
+   }
+   ```
+
+   
+
+2. 链表
+
+   1. 读取：链表的读取的时间复杂度O(N)相比，因为如果要读取N个数据，需要从第一个数据开始不断的读后一个节点，相比列表的O(1)这是个劣势
+   2. 查找：查找链表和数组相比复杂度相同都是O(N)
+   3. 插入：对比数组，因为数组在插入元素的时候，后面的所有元素都要右移一位，所以复杂度为O(N^2^)，而链表只需要断开对应的nextNode的连接，所以复杂度为O(1)，查找到匹配的结点，最坏的复杂度为O(N)，所以复杂度为O(N)
+   4. 删除：删除的复杂度和插入一样，对比结果也相似
+
+```javascript
+class LinkList {
+  constructor() {
+    this.firstNode = null;
+    this.nextPos = null;
+  }
+
+  add(node) {
+    const newNode = node instanceof Node ? node : new Node(node);
+
+    if (!this.firstNode) {
+      this.firstNode = newNode;
+      this.nextPos = this.firstNode;
+      return this
+    }
+
+    this.tranverse((node, setContinue) => {
+      if (!node.nextNode) {
+        node.nextNode = newNode
+        setContinue(false)
+      }
+    })
+
+    return this;
+  }
+
+  read(idx) {
+    if (!this.firstNode) return undefined;
+    let i = 0;
+    let rlt = undefined;
+    this.tranverse((node, setContinue) => {
+      if (i !== idx) {
+        i++;
+        return;
+      }
+
+      rlt = node.value;
+      setContinue(false);
+    });
+
+    return rlt;
+  }
+
+  tranverse(fn) {
+    let node = this.firstNode;
+    let isContinue = true;
+
+    const setContinue = (value) => {
+      isContinue = value;
+    };
+
+    while (isContinue) {
+      if (!node) {
+        break;
+      }
+      fn(node, setContinue);
+      node = node.nextNode;
+    }
+  }
+
+  showAll() {
+    let idx = 0;
+    let content = [];
+    this.tranverse((node) => {
+      const value = node.value;
+      content.push(value);
+      idx++;
+    });
+
+    console.log(content.join(" -> "));
+  }
+
+  indexOf(value) {
+    let idx = 0;
+    let currentIdx = undefined;
+
+    this.tranverse((node, setContinue) => {
+      if (node.value !== value) {
+        idx++;
+        return;
+      }
+
+      currentIdx = idx;
+      setContinue(false);
+    });
+
+    return currentIdx;
+  }
+
+  insertNode(pos, node) {
+    let _node = node instanceof Node ? node : new Node(node);
+    let isSuccess = false;
+
+    let idx = 0;
+    if (pos === idx) {
+      // 第一个节点插入
+      _node.nextNode = this.firstNode;
+      this.firstNode = _node;
+      return true;
+    }
+
+    this.tranverse((node, setContinue) => {
+      if (idx !== pos - 1) {
+        idx++;
+        return;
+      }
+
+      let nextNode = node.nextNode;
+      node.nextNode = _node;
+      node.nextNode.nextNode = nextNode;
+      isSuccess = true;
+      setContinue(false);
+    });
+
+    if (!isSuccess) {
+      throw Error("未找到对应插入节点");
+    }
+
+    return true;
+  }
+
+  deleteNode(pos) {
+    let idx = 0;
+    let rlt = false;
+
+    if (pos === 0) {
+      const prevFirstNode = this.firstNode;
+      this.firstNode = prevFirstNode.nextNode;
+      prevFirstNode.nextNode = null;
+      return true;
+    }
+
+    this.tranverse((node, setContinue) => {
+      if (idx === pos - 1) {
+        const nextNode = node.nextNode;
+        if (!nextNode) {
+          return;
+        }
+
+        node.nextNode = nextNode.nextNode;
+        nextNode.nextNode = null;
+        setContinue(false);
+      }
+
+      idx++;
+    });
+
+    return rlt;
+  }
+}
+```
+
+
+#### 11.7.2 效率对比
+
+![对比结果](./images/3.png)
+
+### 11.8 双向链表
+
+双向链表中，每个节点除了记住前向的节点外，还需要记住后向的节点，整个链表除了第一个节点外，还记住最后一个节点的信息
+
+**有点**：队列操作的复杂度都是O(1)
+
+```javascript
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.nextNode = null;
+    // 新增前向节点
+    this.prevNode = null;
+  }
+}
+
+class LinkList {
+  constructor() {
+    this.firstNode = null;
+    this.lastNode = null;
+  }
+
+  add(node) {
+    const newNode = node instanceof Node ? node : new Node(node);
+
+    if (!this.firstNode) {
+      this.firstNode = newNode;
+      // 需要对lastNode进行移动
+      this.lastNode = this.firstNode;
+      return this;
+    } else {
+      // 增加只需要增加最后一个节点的nextNode即可
+      newNode.prevNode = this.lastNode;
+      this.lastNode.nextNode = newNode;
+      this.lastNode = this.lastNode.nextNode;
+    }
+
+    return this;
+  }
+
+  read(idx) {
+    if (!this.firstNode) return undefined;
+    let i = 0;
+    let rlt = undefined;
+    this.tranverse((node, setContinue) => {
+      if (i !== idx) {
+        i++;
+        return;
+      }
+
+      rlt = node.value;
+      setContinue(false);
+    });
+
+    return rlt;
+  }
+
+  tranverse(fn) {
+    let node = this.firstNode;
+    let isContinue = true;
+
+    const setContinue = (value) => {
+      isContinue = value;
+    };
+
+    while (isContinue) {
+      if (!node) {
+        break;
+      }
+      fn(node, setContinue);
+      node = node.nextNode;
+    }
+  }
+
+  // 反向遍历方法
+  tranverseRight(fn) {
+    let node = this.lastNode;
+    let isContinue = true;
+
+    const setContinue = (value) => {
+      isContinue = value;
+    };
+
+    while (isContinue) {
+      if (!node) {
+        break;
+      }
+      fn(node, setContinue);
+      node = node.prevNode;
+    }
+  }
+
+  showAll() {
+    let content = [];
+    this.tranverse((node) => {
+      const value = node.value;
+      content.push(value);
+    });
+
+    console.log(content.join(" -> "));
+  }
+
+  showAllReverse() {
+    let content = [];
+    this.tranverseRight((node) => {
+      const value = node.value;
+      content.push(value);
+    });
+
+    console.log(content.join(" <- "));
+  }
+
+  indexOf(value) {
+    let idx = 0;
+    let currentIdx = undefined;
+
+    this.tranverse((node, setContinue) => {
+      if (node.value !== value) {
+        idx++;
+        return;
+      }
+
+      currentIdx = idx;
+      setContinue(false);
+    });
+
+    return currentIdx;
+  }
+
+  insertNode(pos, node) {
+    let _node = node instanceof Node ? node : new Node(node);
+    let isSuccess = false;
+
+    let idx = 0;
+    if (pos === idx) {
+      // 第一个节点插入
+      _node.nextNode = this.firstNode;
+      this.firstNode = _node;
+      return true;
+    }
+
+    this.tranverse((node, setContinue) => {
+      if (idx !== pos - 1) {
+        idx++;
+        return;
+      }
+
+      let nextNode = node.nextNode;
+      // 插入时，需要对后一个节点的prevNode做处理
+      _node.prevNode = node;
+      node.nextNode = _node;
+      nextNode.prevNode = node.newNode;
+      node.nextNode.nextNode = nextNode;
+      isSuccess = true;
+      setContinue(false);
+    });
+
+    if (!isSuccess) {
+      throw Error("未找到对应插入节点");
+    }
+
+    return true;
+  }
+
+  deleteNode(pos) {
+    let idx = 0;
+    let rlt = false;
+
+    if (pos === 0) {
+      const prevFirstNode = this.firstNode;
+      prevFirstNode.prevNode = null;
+      this.firstNode = prevFirstNode.nextNode;
+      prevFirstNode.nextNode = null;
+      return true;
+    }
+
+    this.tranverse((node, setContinue) => {
+      if (idx === pos - 1) {
+        const nextNode = node.nextNode;
+        if (!nextNode) {
+          return;
+        }
+
+        // 需要释放和增加prevNode的引用
+        nextNode.nextNode.prevNode = node;
+        node.nextNode = nextNode.nextNode;
+        nextNode.nextNode = null;
+        setContinue(false);
+      }
+
+      idx++;
+    });
+
+    return rlt;
+  }
+}
+```
+
+
+
+## 12. 让一切操作都更快的二叉树
+
+现有数据结构的问题：
+
+1. 数组：查询可以通过二分查找复杂度为logN，但增加和删除元素的复杂度较高
+2. 散列表：虽然查询插入删除复杂度都是O(1)，但是不保持插入元素的顺序
+
+为了有好的查询插入删除性能，也能保证插入的顺序，这里来看二叉树
+
+
+
+### 12.1 二叉树
+
+#### 12.1.1 二叉树数据结构的特点
+
+1. 树的结构也是基于结点的数据结构。
+2. 二叉树的每个子节点数量是0、1、2
+3. 如果有顺序，需要一个节点的值大于父节点，一个节点的值小于父节点
 
 
 
 
 
+### 12.2～12.5 二叉树的增删改查
+
++ 插入节点：
+  + 小的节点在父节点的左边，大的节点插入父节点的右边，最坏情况O(N)，平衡情况下是O(logN)
++ 查询节点
+  + 对比值，小的只去左边查询，大的只去右边查询，最坏情况O(N)，平均情况O(logN)
++ 删除节点
+  + 如果删除的节点没有子节点直接删除
+  + 如果删除的节点带一个子节点，需要将删除节点的子节点挂到该节点的位置上
+  + 如果删除的节点带两个子节点，用子树的后继节点替换本节点
+    + 后继节点为本树中最小的节点，即最左边的节点
+    + 后继节点不可能有左节点，如果有右节点的话，把后继节点的左节点替换成后继节点的右节点
+  + 删除效率平均是O(logN)最差情况O(N)
+
+```javascript
+class TreeNode {
+  constructor(value, leftNode = null, rightNode = null) {
+    this.value = value;
+    this.leftNode = leftNode;
+    this.rightNode = rightNode;
+  }
+}
+
+class BinarayTree {
+  constructor() {
+    this.root = null;
+  }
+
+  traverseNode(node = this.root) {
+    if (!node) return;
+
+    this.traverseNode(node.leftNode);
+    console.log(node.value);
+    this.traverseNode(node.rightNode);
+  }
+
+  insertNode(nodeVal) {
+    const newNode = nodeVal instanceof TreeNode ? node : new TreeNode(nodeVal);
+
+    if (!this.root) {
+      this.root = newNode;
+      return this;
+    }
+
+    let node = this.root;
+
+    while (node) {
+      if (node.value > nodeVal) {
+        if (!node.leftNode) {
+          node.leftNode = newNode;
+          break;
+        } else {
+          node = node.leftNode;
+        }
+      }
+
+      if (node.value <= nodeVal) {
+        if (!node.rightNode) {
+          node.rightNode = newNode;
+          break;
+        } else {
+          node = node.rightNode;
+        }
+      }
+    }
+
+    return this;
+  }
+
+  searchNode(nodeVal) {
+    let node = this.root;
+
+    while (node !== null) {
+      if (node.value > nodeVal) {
+        node = node.leftNode;
+        continue;
+      }
+
+      if (node.value === nodeVal) return true;
+
+      if (node.value < nodeVal) {
+        node = node.rightNode;
+      }
+    }
+
+    return false;
+  }
+
+  _findSuccessorNode(subTree) {
+    let node = subTree;
+    let parentNode = subTree;
+
+    while (node !== null) {
+      if (node.leftNode) {
+        parentNode = node;
+        node = node.leftNode;
+        continue;
+      } else {
+        // 最后一个左节点
+        if (!parentNode || parentNode === subTree) {
+          return node;
+        } else {
+          parentNode.leftNode = node.rightNode;
+          node.rightNode = null;
+          return node;
+        }
+      }
+    }
+  }
+
+  deleteNode(nodeVal) {
+    let node = this.root;
+    let parentNode = null;
+    let nodePos = "leftNode";
+
+    while (node !== null) {
+      if (node.value === nodeVal) {
+        // 叶子节点
+        if (!node.leftNode && !node.rightNode) {
+          if (!parentNode) {
+            this.root = null;
+            break;
+          }
+
+          parentNode[nodePos] = null;
+        }
+
+        // 左右子节点都存在
+        if (node.leftNode && node.rightNode) {
+          const successorNode = this._findSuccessorNode(
+            node.rightNode,
+            node
+          );
+
+          if (node.rightNode !== successorNode) {
+            successorNode.rightNode = node.rightNode;
+          }
+
+          successorNode.leftNode = node.leftNode
+          parentNode[nodePos] = successorNode;
+          break;
+        }
+
+        // 左右子节点存在一边的场景
+        if (node.leftNode) {
+          parentNode[nodePos] = node.leftNode;
+          break;
+        }
+
+        if (node.rightNode) {
+          parentNode[nodePos] = node.rightNode;
+          break;
+        }
+      }
+
+      parentNode = node;
+
+      if (node.value > nodeVal) {
+        node = node.leftNode;
+        nodePos = "leftNode";
+        continue;
+      }
+
+      if (node.value < nodeVal) {
+        node = node.rightNode;
+        nodePos = "rightNode";
+      }
+    }
+  }
+}
+
+```
 
 
+
+### 12.6 总结
+
+二叉树最大的优点就是，平均复杂度增删查的复杂度都是O(logN)
+
+
+
+## 13 链接万物的图
+
+图的适用场景，通过索引A能搜索到B通过索引B也能搜索到A，适用于多对多的查询
+
+目前可以通过一个二维数组，平铺一对一的关系来找到多对多的信息，，如果使用二维数组来查找一对多的关系需要遍历整个数组，这样查询的复杂度为O(N)。
+
+利用图来构建多对多的关系，通过O(1)即可从多对多的关系中找到其中一条一对多的数据
+
+
+
+### 13.1 图
+
+通过散列表来实现图，比如，用户朋友圈
+
+```javascript
+const friends = {
+  Alice: ["Bob", "Diana", "Fred"],
+  Bob: ["Alice", "Cynthia", "Diana"],
+  Cynthia: ["Bob"],
+  Diana: ["Alice", "Bob", "Fred"],
+  Elise: ["Fred"],
+  Fred: ["Alice", "Diana", "Elise"]
+}
+```
+
+通过散列的方式来实现O(1)的查询和增删查，通过数组的形式来实现关系的维护
+
+==tips==：这里也可以通过面向对象的方式做二次封装
+
+
+
+### 13.2 广度优先搜索
+
+何为广度优先搜索，以13.1中的图为例，以Alice为起点线遍历Alice的朋友，然后alice的朋友中有Bob，Diana，Fred，在讲Bob的朋友中没被遍历到的找出来，Cynthia，Diana的朋友分别找出来，==每次只遍历找到该节点的相邻节点==，而==一路递归对子节点“刨根问底”到最后一个节点（深度优先遍历）==
+
+
+
+**广度搜索遍历步骤：**
+
+1. 找出当前顶点的所有邻接点，没有被访问过的入队
+2. 如果没有访问的邻接点，就再从邻点队列中移出一个节点作为顶点
+3. 如果邻点队列都为空且，当前节点也没有任何节点可以入队则算法结束
+
+
+
+```javascript
+function breadthFirst (graph, startNode) {
+  // 结果队列
+  let rlt = [startNode];
+  // 邻节点队列
+  let restNode = [startNode]
+
+  while(restNode.length) {
+    const nextNode = restNode.shift()
+
+    if (!graph[nextNode]) continue
+
+    (graph[nextNode] || []).forEach(item => {
+      if (rlt.includes(item)) return;
+
+      rlt.push(item)
+      restNode.push(item)
+    })
+  }
+
+  return rlt
+}
+
+```
+
+
+
+**算法复杂度O(V + E)**, V代表出队的数量，E代表访问的数量，所有访问邻节点的步数为边数的两倍，所以有E条边就有2E的访问量，因为是双向的。
+
+这个算法复杂度的解释：如果有`V`个人，理论上，遍历每个节点，至少要都需要出队，就是需要==V个节点都出队==，所以复杂度==O(V)==但是每个顶点之间有关系，设为有`E`条边，没条边比如A和B关联，在A的图中需要查到B这条边，在B的图中也能查到A这条边，所以，这里有`2E`次查询，所以总的复杂度是==O(V + 2E)==，忽略常数也就是==O(V + E)==**这里的E可能会有各种顶点间的交叉，所以会很复杂**
+
+
+
+### 13.3 图数据库
+
+图的结构很适合用来存储关系型数据库
+
+一般关系型数据库用来存储的时候需要两张表，以朋友关系图为例，一张保存个人信息（个人的信息），一张保存朋友关系（id的映射）
+
+用图数据库查询的优化：
+
+1. 传统的列表结构，首先在关系表中根据id查询出对应的朋友User的列表，假设朋友id为[2, 4, 5, 6, 7]五人，然后需要从个人信息表中查询出这五人的信息，因为这个==列表是顺序表（数据库保证）==，所以根据`二分查找`的复杂度为==O(logN)==查询5人就是==O(5logN)==，假设需要查询M人，所以从顺序表中查询M人如果是传统的顺序数组复杂度为==O(MlogN)==
+2. 如果使用图的话，该节点已经找到，所以只需要遍历N个朋友也就是上面说的E条边，所以复杂度就是==O(N)==
+
+
+
+### 13.4 加权图
+
+加权图：边上具有一定权重数值，比如往返的机票，从多伦多到达拉斯需要216刀，但是从达拉斯刀多伦多却需要138刀，这个权重值不一样
+
+方向图：就是是一个有方向的图，从多伦多到达拉斯和从达拉斯到多伦多由于方向不同，而导致对应的权重不同，即不是平等的
+
+![](./images/4.png)
+
+
+
+### 13.5 Dijkstra算法
+
+**算法步骤：**
+
+1. 以起点作为当前的顶点
+2. 每个顶点计算所有相邻节点的权重，并记录下来
+3. 获取一个能达到总权重最小的点，作为下一个当前顶点
+4. 重复上述三步，直到所有顶点都被访问过
+
+
+
+![](./images/5.png)
+
+13.4中提到了加权图，在我们生活中经常可以通过加权图来解决最短路径的问题，接下来我们来通过Dijkstra算法来实现**获取某个城市到上述城市，机票价格最低的问题的解决方案**
+
+
+
+#### 13.5.1 创建图结构
+
+```javascript
+// 图结构的创建
+// 用面向对象的方式创建一个图结构
+// 具体的路径关系（边）在routes中维护
+class City {
+  constructor(name) {
+    this.name = name;
+    this.routes = [];
+  }
+
+  addRoute(city, price) {
+    this.routes.push({
+      city,
+      price,
+    });
+
+    return this;
+  }
+}
+
+const Atlanta = new City("Atlanta");
+const Boston = new City("Bostan");
+const Denvor = new City("Denvor");
+const Chicago = new City("Chicago");
+const ElPaso = new City("ElPaso");
+
+Atlanta.addRoute(Boston, 100).addRoute(Denvor, 160);
+Boston.addRoute(Chicago, 120).addRoute(Denvor, 180);
+Denvor.addRoute(Chicago, 40).addRoute(ElPaso, 140);
+Chicago.addRoute(ElPaso, 80);
+ElPaso.addRoute(Boston, 100);
+```
+
+
+
+#### 13.5.2 实现对应的算法
+
+```javascript
+// @todo 这部分代码后续可以优化
+// 具体的算法实现
+// 这个可以经过所有经过的路线
+const pathRlt = {};
+
+function dijkstra(startCity) {
+  let nextCity = { city: startCity, price: 0, prePath: "", preCityPrice: 0 };
+  const hasArrived = [];
+  const priceRlt = {};
+  const nextCities = [];
+
+  while (nextCity) {
+    const currentCityName = nextCity.city.name;
+    const currentCityPrice = nextCity.price;
+    const currentPrePath = nextCity.prePath;
+    const currentPrePrice = nextCity.preCityPrice;
+    const rltCity = priceRlt[currentCityName];
+
+    const routes = nextCity.city.routes;
+    let cityPrice = Number.MAX_SAFE_INTEGER;
+    const priceSum = currentCityPrice + currentPrePrice;
+
+    // 去目的地最佳的价格保存起来
+    if (!rltCity) {
+      cityPrice = priceRlt[currentCityName] = priceSum;
+    } else {
+      cityPrice = priceRlt[currentCityName] = Math.min(
+        priceRlt[nextCity.city.name],
+        priceSum
+      );
+    }
+
+    // 记录当前节点之前的路线
+    const nextPath = currentPrePath || currentCityName;
+    // 这里可以记录所有路线的经过
+    pathRlt[nextPath] = cityPrice;
+
+    // prePath需要重置
+    nextCities.push(
+      ...routes.map((item) => ({
+        ...item,
+        prePath: nextPath,
+        preCityPrice: priceSum,
+      }))
+    );
+
+    // 已走过的路线需要被记录
+    hasArrived.push(nextPath);
+    // 下一个需要遍历的节点
+    let _nextCity = nextCities.shift();
+    preCityPrice = cityPrice;
+    const composePrePath = `${_nextCity.prePath}_${_nextCity.city.name}`;
+
+    nextCity =
+      // 没有走过这条路线
+      !hasArrived.includes(composePrePath) &&
+      // 这条路线中没有走到过这个城市
+      (!_nextCity.prePath.includes(_nextCity.city.name) ||
+        _nextCity.prePath.indexOf(_nextCity.city.name) ===
+          nextPath.length - _nextCity.city.name.length)
+        ? _nextCity
+        : null;
+
+    if (!nextCity) {
+      // 该节点已经被经过则重新更换节点
+      nextCity = nextCities.shift();
+    } else {
+      nextCity = { ...nextCity, prePath: composePrePath };
+    }
+  }
+
+  return priceRlt;
+}
+
+const rlt = dijkstra(Atlanta, [Boston, Denvor, Chicago, ElPaso]);
+
+console.log(rlt);
+```
+
+
+
+## 14. 对付空间限制
+
+### 14.1 描述空间复杂度的大O记法
+
+时间复杂度：通过大O表达式来表达算法的步数
+
+空间复杂度：当存在N个元素的时候，需要消耗多少元素大小的内存空间
+
+| 大O记法 | 解释                                                         | 备注 |
+| ------- | ------------------------------------------------------------ | ---- |
+| O(N)    | 算法执行过程中，N个输入元素需要额外的N的空间进行数据的存储   |      |
+| O(1)    | 算法执行过程中，除了本来输入的N个元素，没有额外的辅助空间来消耗内存 |      |
+
+
+### 14.2 时间和空间之间的权衡
+
+==如何选择一个好的算法==：**需要从时间复杂度和空间复杂度去从何考虑**
+
+如何选择：将时间复杂度和空间复杂度列出来，然后根据自己的需要，如果内存充足，时间要求高，就偏向时间复杂度低的选择，内存吃紧就选择时间复杂度相对较高，空间复杂度较低的算法
 
 
 
