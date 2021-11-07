@@ -143,3 +143,28 @@
 2021/10/07 11:58:18 [notice] 1#1: signal 17 (SIGCHLD) received from 28
 2021/10/07 11:58:18 [notice] 1#1: worker process 28 exited with code 0
 2021/10/07 11:58:18 [notice] 1#1: signal 29 (SIGIO) received
+2021/10/07 13:50:04 [notice] 1#1: signal 3 (SIGQUIT) received, shutting down
+2021/10/07 13:50:04 [notice] 40#40: gracefully shutting down
+2021/10/07 13:50:04 [notice] 38#38: gracefully shutting down
+2021/10/07 13:50:04 [notice] 41#41: gracefully shutting down
+2021/10/07 13:50:04 [notice] 41#41: exiting
+2021/10/07 13:50:04 [notice] 39#39: gracefully shutting down
+2021/10/07 13:50:04 [notice] 40#40: exiting
+2021/10/07 13:50:04 [notice] 38#38: exiting
+2021/10/07 13:50:04 [notice] 41#41: exit
+2021/10/07 13:50:04 [notice] 39#39: exiting
+2021/10/07 13:50:04 [notice] 40#40: exit
+2021/10/07 13:50:04 [notice] 38#38: exit
+2021/10/07 13:50:04 [notice] 39#39: exit
+2021/10/07 13:50:04 [notice] 1#1: signal 17 (SIGCHLD) received from 41
+2021/10/07 13:50:04 [notice] 1#1: worker process 41 exited with code 0
+2021/10/07 13:50:04 [notice] 1#1: signal 29 (SIGIO) received
+2021/10/07 13:50:04 [notice] 1#1: signal 17 (SIGCHLD) received from 40
+2021/10/07 13:50:04 [notice] 1#1: worker process 40 exited with code 0
+2021/10/07 13:50:04 [notice] 1#1: signal 29 (SIGIO) received
+2021/10/07 13:50:04 [notice] 1#1: signal 17 (SIGCHLD) received from 39
+2021/10/07 13:50:04 [notice] 1#1: worker process 39 exited with code 0
+2021/10/07 13:50:04 [notice] 1#1: signal 29 (SIGIO) received
+2021/10/07 13:50:04 [notice] 1#1: signal 17 (SIGCHLD) received from 38
+2021/10/07 13:50:04 [notice] 1#1: worker process 38 exited with code 0
+2021/10/07 13:50:04 [notice] 1#1: exit
