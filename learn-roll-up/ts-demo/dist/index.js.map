@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sources":["../src/components/Button.tsx"],"sourcesContent":["import React from \"react\";\r\n\r\ninterface Props {}\r\n\r\nexport const Button: React.FC<Props> = (props) => {\r\n  return <div>{props.children}</div>;\r\n};\r\n"],"names":["props","React","children"],"mappings":"qLAIuC,SAACA,GACtC,OAAOC,mCAAMD,EAAME"}
