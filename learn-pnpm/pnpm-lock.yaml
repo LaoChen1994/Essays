@@ -1,0 +1,81 @@
+lockfileVersion: 5.3
+
+importers:
+
+  .:
+    specifiers:
+      lodash: ^4.17.21
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      lodash: 4.17.21
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+
+  packages/repo1:
+    specifiers:
+      lodash: ^4.17.21
+      moment: ^2.29.1
+    dependencies:
+      lodash: 4.17.21
+      moment: 2.29.1
+
+  packages/repo2:
+    specifiers:
+      lodash: ^4.17.21
+      repo1: workspace:^1.0.0
+    dependencies:
+      lodash: 4.17.21
+      repo1: link:../repo1
+
+packages:
+
+  /js-tokens/4.0.0:
+    resolution: {integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=, tarball: https://r.cnpmjs.org/js-tokens/download/js-tokens-4.0.0.tgz}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=, tarball: https://r.cnpmjs.org/lodash/download/lodash-4.17.21.tgz}
+    dev: false
+
+  /loose-envify/1.4.0:
+    resolution: {integrity: sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=, tarball: https://r.cnpmjs.org/loose-envify/download/loose-envify-1.4.0.tgz}
+    hasBin: true
+    dependencies:
+      js-tokens: 4.0.0
+    dev: false
+
+  /moment/2.29.1:
+    resolution: {integrity: sha1-sr52n6MZQL6e7qZGnAdeNQBvo9M=, tarball: https://r.cnpmjs.org/moment/download/moment-2.29.1.tgz}
+    dev: false
+
+  /object-assign/4.1.1:
+    resolution: {integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=, tarball: https://r.cnpmjs.org/object-assign/download/object-assign-4.1.1.tgz}
+    engines: {node: '>=0.10.0'}
+    dev: false
+
+  /react-dom/17.0.2_react@17.0.2:
+    resolution: {integrity: sha1-7P+2hF462Nv83EmPDQqTlzZQLCM=, tarball: https://r.cnpmjs.org/react-dom/download/react-dom-17.0.2.tgz}
+    peerDependencies:
+      react: 17.0.2
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react: 17.0.2
+      scheduler: 0.20.2
+    dev: false
+
+  /react/17.0.2:
+    resolution: {integrity: sha1-0LXMUW0p6z7uOD91tihkz7aAADc=, tarball: https://r.cnpmjs.org/react/download/react-17.0.2.tgz}
+    engines: {node: '>=0.10.0'}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false
+
+  /scheduler/0.20.2:
+    resolution: {integrity: sha1-S67jlDbjSqk7SHS93L8P6Li1DpE=, tarball: https://r.cnpmjs.org/scheduler/download/scheduler-0.20.2.tgz}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    dev: false

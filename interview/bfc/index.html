@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div
+      style="height: 100px; width: 100px; float: left; background: lightblue"
+    >
+      我是一个左浮动的元素
+    </div>
+    <div style="width: 200px; height: 200px; background: #eee; display: inline-block;">
+      我是一个没有设置浮动, 也没有触发 BFC 元素, width: 200px; height:200px;
+      background: #eee;
+    </div>
+
+    <div style="border: 1px solid #000;overflow: hidden;">
+        <div style="width: 100px;height: 100px;background: #eee;float: left;"></div>
+    </div>
+  </body>
+</html>

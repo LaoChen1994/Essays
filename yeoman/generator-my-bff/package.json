@@ -1,6 +1,6 @@
 {
   "name": "generator-my-bff",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "my bff gen",
   "homepage": "",
   "author": "my-bad-egg",
@@ -9,7 +9,6 @@
   ],
   "main": "generators/index.js",
   "keywords": [
-    "",
     "yeoman-generator"
   ],
   "devDependencies": {
