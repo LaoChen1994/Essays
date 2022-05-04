@@ -1,5 +1,4 @@
 const Readable = require("stream").Readable;
-const process = require('process')
 
 class MyReadable extends Readable {
   constructor(dataSource, options) {
