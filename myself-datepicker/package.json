@@ -15,7 +15,7 @@
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
     "typescript": "~3.7.2",
-    "moment": "2.24.0"
+    "moment": "2.29.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -50,6 +50,6 @@
     "eslint-plugin-react-hooks": "^2.5.1"
   },
   "resolutions": {
-    "moment": "2.24.0"
+    "moment": "2.29.4"
   }
 }
