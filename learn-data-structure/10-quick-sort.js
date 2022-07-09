@@ -10,6 +10,7 @@ function partition(array, ctx = {}) {
 
   const base = array[array.length - 1]
   let leftPointer = 0
+  // 主要是为了节约空间复杂度
   let rightPointer = ctx.basePointer = array.length - 2
 
   while (leftPointer !== rightPointer) {
@@ -28,6 +29,7 @@ function partition(array, ctx = {}) {
     [array[leftPointer], array[rightPointer]] = [array[rightPointer], array[leftPointer]]
   }
 
+  // 左右指针交汇， 这个时候这个位置需要把基准值塞进来
   if (array[leftPointer] > base) {
     [array[leftPointer], array[array.length - 1]] = [base, array[leftPointer]]
     ctx.basePointer = leftPointer
@@ -72,7 +74,7 @@ function fastSearch(kthMin, array) {
   return fastSearch(kthMin + base, partition(partitions.slice(base + 1, array.length), ctx))
 }
 
-const array = [1, 2, 3, 4, 5, 6, 7, 8]
-const rlt = fastSearch(3, array)
+const array = [0, 5, 2, 1, 6, 3]
+const rlt = quickSort(array)
 
 console.log(rlt)
