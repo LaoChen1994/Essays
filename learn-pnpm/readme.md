@@ -34,13 +34,13 @@ npm install -g pnpm
 
 ## 3. cli 命令对比
 
-| npm 命令        | pnpm 等效                                        |
+| npm 命令          | pnpm 等效                                          |
 | --------------- | ------------------------------------------------ |
 | `npm install`   | [`pnpm install`](https://pnpm.io/zh/cli/install) |
 | `npm i <pkg>`   | [`pnpm add <pkg>`]                               |
 | `npm run <cmd>` | [`pnpm <cmd>`]                                   |
 
-【pnpx】已废弃，现在可以使用 pnpm exrc 或者 pnpm dlx 来代替
+【pnpx】已废弃，现在可以使用 pnpm exec 或者 pnpm dlx 来代替
 
 > 他从源获取包，但不将它安装为依赖项，热加载它，并运行任何它暴露的默认二进制命令
 
@@ -66,7 +66,7 @@ pnpm install --shamefully-flatten
 
 **Q3: hard link 和 symlink**
 
-**A3: **
+**A3:**
 
 新仓库引用老的包，通过 hard link 的方式从**全局的 store 中找到对应 hardlink 的映射关系**
 
@@ -86,9 +86,7 @@ pnpm install --shamefully-flatten
 
 ![](./image/pic-3.png)
 
-因为在 monorepo 这种场景下，我们经常熟悉的目录结构为
-
-==tips==：**这种依赖结构导致多个仓库可能会有相同的依赖，如果重复安装会浪费很多磁盘空间。（lerna 的公共依赖其实也无法跨应用）**
+因为在 monorepo 这种场景下，我们经常熟悉的目录结构为**这种依赖结构导致多个仓库可能会有相同的依赖，如果重复安装会浪费很多磁盘空间。（lerna 的公共依赖其实也无法跨应用）**
 
 pnpm 在 monorepo 上的优势：
 
