@@ -11,25 +11,25 @@
       - [1.3.3 通过分解问题得到答案](#133-通过分解问题得到答案)
     - [1.4 总结](#14-总结)
   - [2. 双指针技巧秒杀七道链表题（一）](#2-双指针技巧秒杀七道链表题一)
-      - [前言](#前言)
-    - [2.1 合并两个有序链表](#21-合并两个有序链表)
-      - [2.1.1 题目链接](#211-题目链接)
-      - [2.1.2 实现](#212-实现)
-    - [2.2 单链表分解](#22-单链表分解)
-      - [2.2.1 题目链接](#221-题目链接)
-      - [2.2.2 实现](#222-实现)
-    - [2.3 合并k个有序链表](#23-合并k个有序链表)
-      - [2.3.1 题目链接](#231-题目链接)
-      - [2.3.2 实现一：归并合并](#232-实现一归并合并)
-      - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
-    - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
-      - [2.4.1 题目链接](#241-题目链接)
-      - [2.4.2 题解思路（重要）](#242-题解思路重要)
-      - [2.4.3 代码实现](#243-代码实现)
-      - [2.4.4 相关衍生](#244-相关衍生)
-    - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
-      - [2.5.1 题目链接](#251-题目链接)
-      - [2.5.2 代码实现](#252-代码实现)
+    - [前言](#前言)
+      - [2.1 合并两个有序链表](#21-合并两个有序链表)
+    - [2.1.1 题目链接](#211-题目链接)
+    - [2.1.2 实现](#212-实现)
+      - [2.2 单链表分解](#22-单链表分解)
+    - [2.2.1 题目链接](#221-题目链接)
+    - [2.2.2 实现](#222-实现)
+      - [2.3 合并k个有序链表](#23-合并k个有序链表)
+    - [2.3.1 题目链接](#231-题目链接)
+    - [2.3.2 实现一：归并合并](#232-实现一归并合并)
+    - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
+      - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
+    - [2.4.1 题目链接](#241-题目链接)
+    - [2.4.2 题解思路（重要）](#242-题解思路重要)
+    - [2.4.3 代码实现](#243-代码实现)
+    - [2.4.4 相关衍生](#244-相关衍生)
+      - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
+    - [2.5.1 题目链接](#251-题目链接)
+    - [2.5.2 代码实现](#252-代码实现)
   - [3. 双指针秒杀七道数组题目（二）](#3-双指针秒杀七道数组题目二)
     - [前言](#前言-1)
     - [3.1 快慢指针技巧](#31-快慢指针技巧)
@@ -62,8 +62,8 @@
       - [3.3.2.1 题目链接](#3321-题目链接)
       - [3.3.2.2 代码实现](#3322-代码实现)
     - [3.3.3 例题（三）反转字符串](#333-例题三反转字符串)
-        - [3.3.3.1题目链接](#3331题目链接)
-        - [3.3.3.2 代码实现](#3332-代码实现)
+      - [3.3.3.1题目链接](#3331题目链接)
+      - [3.3.3.2 代码实现](#3332-代码实现)
     - [3.4 中心向两侧扩展双指针](#34-中心向两侧扩展双指针)
       - [3.4.1 例题（一）最长回文子串](#341-例题一最长回文子串)
         - [3.4.1.1 题目链接](#3411-题目链接)
@@ -107,6 +107,28 @@
 
 #### 1.3.2 遍历二叉树得到结果
 
+**二叉树的先序遍历**
+
+```javascript
+function preorder (tree) {
+    let res = []
+
+    function traverse (root) {
+        if (root === null) {
+            return
+        }
+
+        res.push(root.key)
+        traverse(root.left)
+        traverse(root.right)
+    }
+
+    traverse(tree)
+
+    return res
+}
+```
+
 **二叉树深度**
 
 ```javascript
@@ -128,28 +150,6 @@ function maxLength (tree) {
     traverse(tree)
 
     return maxDepth
-}
-```
-
-**二叉树的先序遍历**
-
-```javascript
-function preorder (tree) {
-    let res = []
-
-    function traverse (root) {
-        if (root === null) {
-            return
-        }
-
-        res.push(root.key)
-        traverse(root.left)
-        traverse(root.right)
-    }
-
-    traverse(tree)
-
-    return res
 }
 ```
 
@@ -731,9 +731,9 @@ var removeElement = function(nums, val) {
 };
 ```
 
-## 3.2 滑动窗口算法
+### 3.2 滑动窗口算法
 
-### 3.2.1 滑动窗口代码框架
+#### 3.2.1 滑动窗口代码框架
 
 滑动窗口的原理也是快慢指针，其算法的大致框架如下：
 
@@ -758,13 +758,13 @@ function(s) {
 };
 ```
 
-### 3.2.2 题目一：无重复最长子字符串
+#### 3.2.2 题目一：无重复最长子字符串
 
-#### 3.2.2.1 题目链接
+##### 3.2.2.1 题目链接
 
 [力扣3](https://leetcode.cn/problems/longest-substring-without-repeating-characters/submissions/)
 
-#### 3.2.2.2 代码实现
+##### 3.2.2.2 代码实现
 
 **题解思路**：
 
@@ -809,13 +809,13 @@ var lengthOfLongestSubstring = function (s) {
 };
 ```
 
-### 3.2.3 题目二：最小覆盖子串
+#### 3.2.3 题目二：最小覆盖子串
 
-#### 3.2.3.1 题目链接
+##### 3.2.3.1 题目链接
 
 [力扣76](https://leetcode.cn/problems/minimum-window-substring/)
 
-#### 3.2.3.2 代码实现
+##### 3.2.3.2 代码实现
 
 **题解**
 
@@ -907,17 +907,17 @@ var minWindow = function(s, t) {
 };
 ```
 
-## 3.3 左右指针算法
+### 3.3 左右指针算法
 
-### 3.3.1 例题（一）二分查找
+#### 3.3.1 例题（一）二分查找
 
-#### 3.3.1.1 二分查找使用条件
+##### 3.3.1.1 二分查找使用条件
 
 1. 数组
 
 2. 有序
 
-#### 3.3.1.2 代码实现
+##### 3.3.1.2 代码实现
 
 **题解**：
 
@@ -948,13 +948,13 @@ function binarySearch(nums, target) {
 }
 ```
 
-### 3.3.2 例题（二）两数之和
+#### 3.3.2 例题（二）两数之和
 
-#### 3.3.2.1 题目链接
+##### 3.3.2.1 题目链接
 
 [力扣167](https://leetcode.cn/problems/two-sum-ii-input-array-is-sorted/)
 
-#### 3.3.2.2 代码实现
+##### 3.3.2.2 代码实现
 
 **题解**：
 
@@ -985,7 +985,7 @@ var twoSum = function (numbers, target) {
 };
 ```
 
-### 3.3.3 例题（三）反转字符串
+#### 3.3.3 例题（三）反转字符串
 
 ##### 3.3.3.1题目链接
 
@@ -1066,3 +1066,270 @@ function expand (s, l, r = l) {
     return str
 }
 ```
+
+## 4. 二叉树（纲领篇）
+
+### 4.1 前言
+
+#### 4.1.1二叉树基础思路
+
+二叉树解题基本思路：
+
+1. 是否可以通过一遍二叉树遍历得到结果
+
+2. 是否可以通过子问题答案推到出原问题的答案
+
+#### 4.1.2 二叉树生成的简单实现
+
+为了便于后续测试二叉树题目中的用例
+
+```javascript
+class Node {
+  constructor (val = 0, left = null, right = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
+
+class BinarySearchTree {
+  /**
+   * 
+   * @param {number[]} nums
+   * @returns {Node}
+   */
+  static getTreeFromArray (nums) {
+    const len = nums.length;
+    nums.unshift(0)
+    if (len === 0) return null
+
+    const root = insertRoot(1)
+
+    /**
+     * 
+     * @param {Node} node 
+     * @param {number} idx 
+     * @returns 
+     */
+    function insertRoot (idx) {
+      while (idx > len) {
+        return null
+      }
+
+      const node = new Node(nums[idx])
+      node.left = insertRoot(2*idx)
+      node.right = insertRoot(2 * idx+1)
+
+      return node
+    }
+
+    return root
+  }
+}
+```
+
+#### 4.1.2 二叉树的遍历
+
+##### 4.1.2.1 遍历顺序
+
+- 先序遍历：父节点 => 左节点 =>右节点
+
+- 中序遍历：左节点 =>  父节点 => 右节点
+
+- 后序遍历：左节点 => 右节点 => 父节点
+
+##### 4.1.2.2 代码实现
+
+在代码实现中，就是在哪里将对应遍历到的根节点存进去位置不同
+
+**先序遍历**
+
+```javascript
+function preorder (tree) {
+    let res = []
+
+    function traverse (root) {
+        if (root === null) {
+            return
+        }
+
+        res.push(root.val)
+        traverse(root.left)
+        traverse(root.right)
+    }
+
+    traverse(tree)
+
+    return res
+}
+```
+
+**中序遍历**
+
+```javascript
+function midorder (tree) {
+    let res = [];
+
+    /**
+     * 
+     * @param {BinarySearchTree} node 
+     */
+    function traverse(node) {
+        if (node === null) {
+            return
+        }
+
+        traverse(node.left)
+        res.push(node.val)
+        traverse(node.right)
+    }
+
+    traverse(tree)
+
+    return res
+}
+```
+
+**后序遍历**
+
+```javascript
+function postorder (tree) {
+    let res = []
+
+    /**
+     * 
+     * @param {BinarySearchTree} subtree 
+     */
+    function traverse (subtree) {
+        if (subtree === null) {
+            return;
+        }
+
+        traverse(subtree.left)
+        traverse(subtree.right)
+        res.push(subtree.val)
+    }
+
+    traverse(tree)
+    
+    return res
+}
+```
+
+### 4.2 深入理解前中后序
+
+【重要】上述算法中的`traverse`其实就是一个比递归遍历的方法，是二叉链表的遍历方式，要把<mark>前序中序后序分别理解成遍历时候的三个位置</mark>。
+
+**前序遍历**：代表记录刚进入节点时候的位置，在traverse下一个节点之前
+
+**后序遍历**：代表刚离开节点时候的位置，在traverse下一个节点之后
+
+
+
+##### 4.2.1 如何从后往前输出一个链表
+
+答案：使用后序遍历的方式
+
+```javascript
+function reverse(node) {
+  const res = [];
+
+  /**
+   *
+   * @param {ListNode} node
+   */
+  function traverse(node) {
+    if (node === null) return;
+
+    traverse(node.next);
+    res.push(node.val)
+  }
+
+  traverse(node)
+
+  return res
+}
+```
+
+
+
+##### 4.2.2 二叉树解决问题的思路
+
+二叉树解决问题的思路，就是在前中后序的位置注入巧妙的代码逻辑，达到我们想要的目的，其他的我们不用去管，交给二叉树的遍历框架去做
+
+
+
+### 4.3 两种解题思路
+
+#### 4.3.1 解题思路
+
+二叉树对应的两种解题思路：
+
+1. 遍历一遍二叉树得出答案（回溯）
+
+2. 通过分解问题得出答案（动态规划）
+
+
+
+#### 4.3.2 例题（一）二叉树的最大深度
+
+##### 4.3.2.1 题目链接
+
+[力扣104](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)
+
+##### 4.3.2.2 代码实现
+
+**使用回溯的方式**
+
+```javascript
+var maxDepth = function(root) {
+    let max = 0, curr = 0
+    if (root === null) {
+        return 0
+    }
+
+    function traverse (node) {
+        if (node === null) {
+            return
+        }
+
+       curr++
+       traverse(node.left)
+       traverse(node.right)
+       max = Math.max(curr, max)
+       curr--
+    }
+
+    traverse(root)
+
+    return max
+};
+```
+
+**使用分解的方式**
+
+```javascript
+var maxDepth = function(root) {
+    if (root === null) {
+        return 0
+    }
+
+    function traverse (node, depth) {
+        if (node === null) {
+            return depth
+        }
+
+       return Math.max(traverse(node.left, depth + 1), traverse(node.right, depth + 1))
+    }
+
+    return traverse(root, 0)
+};
+```
+
+#### 4.3.3 遇到二叉树问题的思考过程
+
+1. 是否可以通过遍历一次二叉树得到答案
+
+2. 是否可以定义一个递归函数，用子问题解决得出答案（一定要给traverse设置合理的定义和返回值，在后序位置写代码）
+
+【重点】明白应该在前中后哪个阶段去写

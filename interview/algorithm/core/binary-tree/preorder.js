@@ -8,7 +8,7 @@ function preorder (tree) {
             return
         }
 
-        res.push(root.key)
+        res.push(root.val)
         traverse(root.left)
         traverse(root.right)
     }
@@ -17,6 +17,7 @@ function preorder (tree) {
 
     return res
 }
+
 
 // 分解算法
 function maxLength2 (tree) {
