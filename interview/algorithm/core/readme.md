@@ -1211,7 +1211,7 @@ function postorder (tree) {
     }
 
     traverse(tree)
-    
+
     return res
 }
 ```
@@ -1223,8 +1223,6 @@ function postorder (tree) {
 **前序遍历**：代表记录刚进入节点时候的位置，在traverse下一个节点之前
 
 **后序遍历**：代表刚离开节点时候的位置，在traverse下一个节点之后
-
-
 
 ##### 4.2.1 如何从后往前输出一个链表
 
@@ -1251,13 +1249,9 @@ function reverse(node) {
 }
 ```
 
-
-
 ##### 4.2.2 二叉树解决问题的思路
 
 二叉树解决问题的思路，就是在前中后序的位置注入巧妙的代码逻辑，达到我们想要的目的，其他的我们不用去管，交给二叉树的遍历框架去做
-
-
 
 ### 4.3 两种解题思路
 
@@ -1268,8 +1262,6 @@ function reverse(node) {
 1. 遍历一遍二叉树得出答案（回溯）
 
 2. 通过分解问题得出答案（动态规划）
-
-
 
 #### 4.3.2 例题（一）二叉树的最大深度
 
@@ -1333,3 +1325,207 @@ var maxDepth = function(root) {
 2. 是否可以定义一个递归函数，用子问题解决得出答案（一定要给traverse设置合理的定义和返回值，在后序位置写代码）
 
 【重点】明白应该在前中后哪个阶段去写
+
+#### 4.3.4 例题（二）二叉树的直径
+
+##### 4.3.4.1 题目链接
+
+[力扣543](https://leetcode.cn/problems/diameter-of-binary-tree/)
+
+##### 4.3.4.2 代码实现
+
+```javascript
+  function traverse(node) {
+    if (node === null) {
+      return 0
+    }
+
+    const left = traverse(node.left)
+    const right = traverse(node.right)
+
+    // 目的是为了获取某个节点左右子树节点之和
+    max = Math.max(max, left + right + 1)
+
+    // 对于上一级子树来说，希望拿到这个分支最大的节点数
+    return Math.max(left, right)
+  }
+
+  traverse(root);
+
+  return max;
+};;
+};;
+
+  return max;
+};
+```
+
+#### 4.3.5 例题（三）层序遍历
+
+层序遍历故名思意就是按层遍历树结构，也就是所说的BFS算法的基础
+
+##### 4.3.5.1 代码实现
+
+```javascript
+function levelTraverse (node) {
+    let res = [], stack = []
+
+    /**
+     * 
+     * @param {Node} root 
+     */
+    function traverse (root) {
+        if (root !== null) {
+            res.push(root.val);
+            stack.push(root.left)
+            stack.push(root.right)
+        }
+
+        let node = stack.shift()
+        if (node !== null) {
+            traverse(node)
+        }
+    }
+
+    traverse(node)
+
+    return res
+}
+```
+
+## 5. 动态规划题解套路框架
+
+### 5.1 前言
+
+#### 5.1.1 什么时候用动态规划
+
+动态规划一般是求最值的问题，比如最长子序列，最短编辑距离等，一般具有几个特点：
+
+1. 具备最优子结构
+
+2. 具有重叠子问题
+
+3. 能找到正确的状态转移方程
+
+#### 5.1.2 动态规划的核心
+
+动态规划的核心就是穷举
+
+#### 5.1.3 找到状态转移方程的方式
+
+1. 备忘录（缓存）
+
+2. DP Table
+
+#### 5.1.4 动态规划的格式
+
+**自上而下分解子问题**
+
+一般使用备忘录法记录可能重复计算的子问题
+
+```javascript
+let cache = {}
+function dp(状态1, 状态2, ...) {
+    if (cache[状态xx]) return cache[状态xxx]
+    let result;
+    for 选择 of 所有选择 {
+        cache[状态xx] = result = 最值(result, dp(状态1, 状态2, ...))
+    }
+    return result
+}
+```
+
+**自下而上解决问题**
+
+一般多用DP Table推导对应的状态转移方程
+
+```javascript
+dp[0][0] = base
+
+for 状态1 of 状态1取值:
+    for 状态2 of 状态2取值:
+        for ....
+            dp[状态1][状态2][...] = 求最值(选择1, 选择2,...)
+```
+
+### 5.2 例题（一）斐波那契数列
+
+#### 5.2.1 题目链接
+
+[力扣509](https://leetcode.cn/problems/fibonacci-number/)
+
+#### 5.2.2 自下而上解决
+
+从最小的1，2，3步骤逐步向上枚举
+
+```javascript
+let dp = [0, 1]
+var fib = function(n) {
+    if (n <= 0) return dp[n]
+    for (let i = 2; i <= n; i++) {
+        dp[i] = dp[i - 2] + dp[i - 1]
+    }
+
+    return dp[n]
+};
+```
+
+#### 5.2.3 自上而下解决
+
+根据题目给的状态方程从上而下分解成子问题求解，并做好缓存
+
+```javascript
+var fib = function(n) {
+    if (cache[n] !== undefined) return cache[n]
+    cache[n] = fib(n - 2) + fib(n - 1)
+    return cache[n]
+};
+```
+
+### 5.3 例题（二）凑零钱问题
+
+#### 5.3.1 题目链接
+
+[力扣322](https://leetcode.cn/problems/coin-change/)
+
+
+
+#### 5.3.2 代码实现
+
+**题解**
+
+1. 找到临界点的值：amount等于0和小于0时候的场景
+
+2. 找到放弃子问题的边界，就是amount = 0
+
+3. 找到状态转移方程
+   
+   ![](https://labuladong.github.io/algo/images/%e5%8a%a8%e6%80%81%e8%a7%84%e5%88%92%e8%af%a6%e8%a7%a3%e8%bf%9b%e9%98%b6/coin.png)
+
+```javascript
+var coinChange = function (coins, amount) {
+  const dp = [];
+
+  function t(coins, amount) {
+    if (amount === 0) return 0;
+    if (amount < 0) return -1;
+    if (dp[amount]) return dp[amount];
+
+    let min = Number.MAX_SAFE_INTEGER;
+
+    for (const coin of coins) {
+      let count = t(coins, amount - coin);
+      if (count === -1) continue
+      min = Math.min(min, count + 1);
+    }
+
+    dp[amount] = min === Number.MAX_SAFE_INTEGER ? -1 : min;
+
+    return dp[amount];
+  }
+
+  return t(coins, amount)
+};
+  return t(coins, amount)
+};
+```
