@@ -1488,8 +1488,6 @@ var fib = function(n) {
 
 [力扣322](https://leetcode.cn/problems/coin-change/)
 
-
-
 #### 5.3.2 代码实现
 
 **题解**
@@ -1529,3 +1527,254 @@ var coinChange = function (coins, amount) {
   return t(coins, amount)
 };
 ```
+
+## 6. BFS算法解体套路框架
+
+### 6.1 BFS遍历算法框架
+
+**题解**：
+
+1. 使用队列的数据结构
+
+2. 使用visited来判断如果是图结构是否节点重新走了
+
+3. 每次遍历当前队列的节点数量代表是同层节点
+
+4. 同层遍历完成后深度+1
+
+```javascript
+function bfs (root, target) {
+    const queue = []
+    const visited = new Set();
+
+    queue.push(root);
+    visited.add(root);
+    let step = 0
+
+    while (queue.length) {
+        let len = queue.length;
+
+        for (let i = 0; i < len; i++) {
+            const curr = queue.shift()
+
+            // 提前终止循环的条件
+            // 比如找到目标节点
+            if (curr === target) {
+                return step
+            }
+
+            // 这里的adj指的是将该节点周围的所有节点都获取的方法，不一定都是adj
+            // 插入其所有相邻节点
+            for (const NODE of curr.adj()) {
+                if (!visited.has(NODE)) {
+                    queue.push(NODE)
+                }
+            }
+        }
+
+        // 到这里说明同层节点都遍历完成，所以深度+1
+        step++
+    }
+}
+```
+
+
+
+### 6.2 例题（一）二叉树的最小高度
+
+#### 6.2.1 题目链接
+
+[力扣111](https://leetcode.cn/problems/minimum-depth-of-binary-tree/submissions/)
+
+#### 6.2.2 代码实现
+
+**题解**
+
+1. 提前结束循环的条件：为叶子节点（其左右节点都为null）
+
+2. 所有相邻节点的方法：`node.left`,`node.right`
+
+**实现**
+
+```javascript
+var minDepth = function (root) {
+    let queue = []
+    let depth = 1
+
+    if (root === null) {
+        return 0
+    }
+
+    queue.push(root);
+
+    while(queue.length) {
+        const len = queue.length;
+
+        for (let i = 0; i < len; i++) {
+            const node = queue.shift();
+
+            if (node.left === null && node.right === null) {
+                // 节点为空说明这个时候 
+                return depth
+            }
+            
+
+            if (node.left !== null) {
+                queue.push(node.left)
+            }
+
+            if (node.right !== null) {
+                queue.push(node.right)
+            }
+        }
+
+        depth++
+    }
+};
+```
+
+
+
+### 6.3 BFS的几个说明
+
+#### 6.3.1 为什么BFS可以找到最短距离
+
+因为BFS每次操作Depth，所有节点都向前走了一步，保证了每个节点齐头并进的，但如果是DFS，如果是最后一个子树的节点是最短高度，要遍历整颗树，DFS是线，而BFS是面
+
+
+
+#### 6.3.2 DFS和BFS分别的优点
+
+1. BFS空间复杂度较高，二叉树最小高度的复最坏复杂度O(n)
+
+2. DFS时间复杂度较高，但是空间复杂度不高，以刚才的题目为例，复杂度为O(log n)
+
+
+
+### 6.4 例题（二）解开密码锁的最小次数
+
+#### 6.4.1 题目链接
+
+[力扣752](https://leetcode.cn/problems/open-the-lock/)
+
+#### 6.4.2 代码实现
+
+**题解：**
+
+1. 每个字母的上下变动就好像是可以认为是该节点的相邻节点
+
+2. 因此可以通过BFS来遍历遍历对应的节点的内容
+
+3. 一旦找到一定是最短的达到距离直接返回即可
+
+4. 使用BFS解题模板即可
+
+5. 关键的边界条件，如果是"0000"是deadcode，那就直接放弃了，因为都无法开始搜索任意相邻节点
+
+```javascript
+function openLock(deadends, target) {
+  const queue = [];
+  const visited = new Set([...deadends]);
+  const start = "0000";
+  let step = 0;
+  let min = Number.MAX_SAFE_INTEGER;
+
+  if (visited.has("0000")) return -1;
+
+  queue.push(start);
+  visited.add(start);
+
+  while (queue.length) {
+    const len = queue.length;
+
+    for (let i = 0; i < len; i++) {
+      const element = queue.shift();
+
+      // 找到目标退出当前位置
+      if (element === target) {
+        return step;
+      }
+
+      for (let j = 0; j < element.length; j++) {
+        const [prev, next] = getSiblings(element, j);
+
+        if (!visited.has(prev) && !deadends.includes(prev)) {
+          visited.add(prev);
+          queue.push(prev);
+        }
+
+        if (!visited.has(next) && !deadends.includes(next)) {
+          visited.add(next);
+          queue.push(next);
+        }
+      }
+    }
+
+    step++;
+  }
+
+  return min === Number.MAX_SAFE_INTEGER ? -1 : step;
+}
+
+/**
+ *
+ * @param {string} str
+ * @param {number} idx
+ * @return {string[]}
+ */
+function getSiblings(str, idx) {
+  let prev = getSiblingValue(+str[idx] - 1);
+  let next = getSiblingValue(+str[idx] + 1);
+
+  return [replaceStrByIdx(str, idx, prev), replaceStrByIdx(str, idx, next)];
+}
+
+function getSiblingValue(value) {
+  if (value < 0) return 9;
+  if (value > 9) return 0;
+
+  return value;
+}
+
+/**
+ *
+ * @param {string} str
+ * @param {number} idx
+ * @param {string} value
+ * @return {string}
+ */
+function replaceStrByIdx(str, idx, value) {
+  if (idx === 0) return `${value}${str.slice(1)}`;
+  return `${str.slice(0, idx)}${value}${str.slice(idx + 1)}`;
+}
+```
+
+
+
+### 6.5 双向BFS优化
+
+#### 6.5.1 为何要双向奔赴
+
+从算法复杂度来看，BFS需要遍历同层的所有节点，所以如果答案在最底部，需要遍历整棵树，但是如果双向BFS，只需要遍历半棵树，就能找到交集，所以空间复杂度会更低O(log n)，但时间复杂度都是O(n)
+
+
+
+#### 6.5.2 解开密码锁的最小次数的双向BFS实现
+
+略，因为双向BFS实现其实并不是都能使用的，必须直到终点，有场景限制，目前只要知道BFS的算法框架即可
+
+
+
+## 7. 二分搜索
+
+### 7.1 二分查找的坑
+
+二分查找主要的坑在于：
+
+1. mid找到后，搜索区间是mid+1还是mid-1
+
+2. while循环中是用<= 还是用<
+
+
+
+#### 7.2 二分查找框架
