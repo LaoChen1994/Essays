@@ -1778,3 +1778,197 @@ function replaceStrByIdx(str, idx, value) {
 
 
 #### 7.2 二分查找框架
+
+```javascript
+function binarySearch(nums, target) {
+  let left = 0,
+    right = nums.length;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) {
+      // 找到目标做的操作
+      ...
+    } else if (nums[mid] < target) {
+      // 左指针移动
+      left = ...;
+    } else if (nums[mid] > target) {
+      // 右指针移动
+      right = ...;
+    }
+  }
+
+  return -1;
+}
+
+```
+
+
+
+### 7.3 例题（一）寻找有序列表中的一个数
+
+#### 7.3.1 题目链接
+
+[力扣704](https://leetcode.cn/problems/binary-search/)
+
+#### 7.3.2 代码实现
+
+**题解**
+
+1. 搜索区间为[left, right]这个闭区间所以right是`nums.length - 1`，避免越界
+
+2. 
+
+```javascript
+function binarySearch(nums, target) {
+  let left = 0,
+    right = nums.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) {
+      // 找到目标做的操作
+      return mid;
+    } else if (nums[mid] < target) {
+      // 左指针移动
+      left = mid + 1;
+    } else if (nums[mid] > target) {
+      // 右指针移动
+      right = mid - 1;
+    }
+  }
+
+  return -1;
+}
+```
+
+
+
+### 7.4 在排序数组中查找元素的第一个和最后一个位置
+
+#### 7.4.1 题目链接
+
+[力扣34](https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/submissions/)
+
+#### 7.4.2 方法（一）一次遍历找到后，左右扩展找节点
+
+这种方式虽然能做出来，但是复杂度就不是`log(n)`
+
+```javascript
+var searchRange = function(nums, target) {
+    if (!nums.length) return [-1, -1]
+    const idx = binarySearch(nums, target)
+    if (idx === -1) return [-1, -1];
+
+    let start = idx, end = idx;
+
+    while (start > 0) {
+        if (nums[start - 1] === target) {
+            start--
+        } else {
+            break;
+        }
+    }
+
+    while (end < nums.length) {
+        if (nums[end + 1] === target) {
+            end++
+        } else {
+            break;
+        }
+    }
+
+    return [start, end]
+};
+
+function binarySearch(nums, target) {
+  let left = 0,
+    right = nums.length - 1;
+
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (nums[mid] === target) {
+      // 找到目标做的操作
+      return mid;
+    } else if (nums[mid] < target) {
+      // 左指针移动
+      left = mid + 1;
+    } else if (nums[mid] > target) {
+      // 右指针移动
+      right = mid - 1;
+    }
+  }
+
+  return -1;
+}
+```
+
+#### 7.4.3 使用边界二分搜索方法
+
+**题解**：
+
+1. 左边界的寻找，就是在mid的值和右值相同的时候，搜索右边界到`mid - 1`
+
+2. 右边界的寻找，就是在mid和左值相同的时候，搜索左边界收缩到`mid + 1`
+
+3. 之后返回的边界中`right + 1`就是左边界，`left - 1`就是右边界
+
+```javascript
+var searchRange = function(nums, target) {
+    if (!nums.length) return [-1, -1]
+
+    const left = searchBoundLeft(nums, target);
+    const right = searchBoundRight(nums, target, false);
+
+    return [left, right]
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @param {boolean} isLeft
+ * @return {number[]}
+ */
+function searchBoundLeft (nums, target) {
+    let left = 0, right = nums.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2)
+        if (nums[mid] === target) {
+            right = mid - 1
+        } else if (nums[mid] > target) {
+            right = mid - 1
+        } else {
+            left = mid + 1
+        }
+    }
+
+    return nums[right + 1] === target ? right + 1 : -1
+}
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @param {boolean} isLeft
+ * @return {number[]}
+ */
+ function searchBoundRight (nums, target) {
+    let left = 0, right = nums.length - 1;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2)
+
+        if (nums[mid] === target) {
+            left = mid + 1
+        } else if (nums[mid] > target) {
+            right = mid - 1
+        } else {
+            left = mid + 1
+        }
+    }
+
+    return nums[left - 1] === target ? left - 1 : -1
+ }
+```
