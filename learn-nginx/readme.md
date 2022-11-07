@@ -34,8 +34,6 @@
 docker pull nginx
 ```
 
-
-
 #### 2.1.2 查看镜像文件
 
 **启动nginx镜像**
@@ -44,7 +42,6 @@ docker pull nginx
 # 运行docker
 docker run -p 3001:80 --name ngix-test nginx
 ```
-
 
 
 **观察docker看容器是否已经成功启动**
@@ -382,10 +379,6 @@ server {
     fair; 
   }
   ```
-
-
-
-
 
 ## 7. nginx综合使用场景
 

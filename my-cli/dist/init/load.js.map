@@ -1,1 +1,0 @@
-{"version":3,"file":"load.js","sourceRoot":"","sources":["../../app/init/load.ts"],"names":[],"mappings":";;AAAA,kBAAe;IACX,MAAM,EAAN,UAAO,IAAY;QACf,IAAM,QAAQ,GAAG,uBAAuB,CAAA;QAExC,IAAI,OAAO,CAAC,GAAG,CAAC,QAAQ,KAAK,aAAa,EAAE;YACxC,OAAO,8BAA2B,IAAI,iBAAa,CAAA;SACtD;aAAM;YACH,OAAO,mBAAgB,QAAQ,mBAAc,IAAI,iBAAa,CAAA;SACjE;IACL,CAAC;CACJ,CAAA"}
