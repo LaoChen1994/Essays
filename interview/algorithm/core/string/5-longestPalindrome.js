@@ -8,8 +8,6 @@ var longestPalindrome = function(s) {
         const odd = expand(s, i);
         const even = expand(s, i, i + 1)
 
-        console.log("i =>", i, " even =>", even, " odd => ", odd)
-
         if (res.length < odd.length) {
             res = odd
         }

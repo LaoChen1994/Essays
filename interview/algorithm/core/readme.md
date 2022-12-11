@@ -1578,8 +1578,6 @@ function bfs (root, target) {
 }
 ```
 
-
-
 ### 6.2 例题（一）二叉树的最小高度
 
 #### 6.2.1 题目链接
@@ -1617,7 +1615,7 @@ var minDepth = function (root) {
                 // 节点为空说明这个时候 
                 return depth
             }
-            
+
 
             if (node.left !== null) {
                 queue.push(node.left)
@@ -1633,23 +1631,17 @@ var minDepth = function (root) {
 };
 ```
 
-
-
 ### 6.3 BFS的几个说明
 
 #### 6.3.1 为什么BFS可以找到最短距离
 
 因为BFS每次操作Depth，所有节点都向前走了一步，保证了每个节点齐头并进的，但如果是DFS，如果是最后一个子树的节点是最短高度，要遍历整颗树，DFS是线，而BFS是面
 
-
-
 #### 6.3.2 DFS和BFS分别的优点
 
 1. BFS空间复杂度较高，二叉树最小高度的复最坏复杂度O(n)
 
 2. DFS时间复杂度较高，但是空间复杂度不高，以刚才的题目为例，复杂度为O(log n)
-
-
 
 ### 6.4 例题（二）解开密码锁的最小次数
 
@@ -1749,21 +1741,15 @@ function replaceStrByIdx(str, idx, value) {
 }
 ```
 
-
-
 ### 6.5 双向BFS优化
 
 #### 6.5.1 为何要双向奔赴
 
 从算法复杂度来看，BFS需要遍历同层的所有节点，所以如果答案在最底部，需要遍历整棵树，但是如果双向BFS，只需要遍历半棵树，就能找到交集，所以空间复杂度会更低O(log n)，但时间复杂度都是O(n)
 
-
-
 #### 6.5.2 解开密码锁的最小次数的双向BFS实现
 
 略，因为双向BFS实现其实并不是都能使用的，必须直到终点，有场景限制，目前只要知道BFS的算法框架即可
-
-
 
 ## 7. 二分搜索
 
@@ -1774,8 +1760,6 @@ function replaceStrByIdx(str, idx, value) {
 1. mid找到后，搜索区间是mid+1还是mid-1
 
 2. while循环中是用<= 还是用<
-
-
 
 #### 7.2 二分查找框架
 
@@ -1801,10 +1785,7 @@ function binarySearch(nums, target) {
 
   return -1;
 }
-
 ```
-
-
 
 ### 7.3 例题（一）寻找有序列表中的一个数
 
@@ -1843,8 +1824,6 @@ function binarySearch(nums, target) {
   return -1;
 }
 ```
-
-
 
 ### 7.4 在排序数组中查找元素的第一个和最后一个位置
 
@@ -1971,4 +1950,347 @@ function searchBoundLeft (nums, target) {
 
     return nums[left - 1] === target ? left - 1 : -1
  }
+```
+
+## 8. 滑动窗口纲领篇
+
+### 8.1 算法框架
+
+双指针的第三种技巧，**滑动窗口的代码模板如下：**
+
+```javascript
+function slideWindow (arr) {
+    let left = 0, right = 0, window = []
+
+    while (right < arr.length) {
+        window.push(arr[right])
+        // 扩展右边界
+        right++;
+
+        // 对是否满足题目条件进行判断
+
+        while (conditionShrink) {
+            // 收缩左边边界
+            window.shift()
+            left++
+        }
+    }
+}
+```
+
+### 8.2 例题（一）最小覆盖子串
+
+**题解**：
+
+1. 初始化达到所需要达到的条件map，知道每个字母都需要出现几次
+
+2. 右指针不停右移，直到找到符合条件的子串
+
+3. 左指针当满足条件时右移，直到拿到符合条件的最小子串
+
+```javascript
+/**
+* @param {string} s
+* @param {string} t
+* @return {string}
+*/
+var minWindow = function(s, t) {
+    // build need
+    let need = {}
+    let curr = {}
+    let maxStr = "";
+
+    for (let i = 0; i < t.length; i++) {
+        const key = t[i];
+        if (!need[key]) {
+            need[key] = 1
+        } else {
+            need[key] += 1
+        }
+    }
+
+    let left = 0;
+
+    for (let right = 0; right < s.length; right++) {
+        const ch = s[right];
+        need[ch] && (!curr[ch] ? (curr[ch] = 1) : (curr[ch]++));
+
+        if (!need[ch]) {
+            continue;
+        }
+
+        if (need[ch] && need[ch] > curr[ch]) {
+            continue
+        }
+
+        if (isSame(need, curr)) {
+            // 相同场景左指针收缩
+            while (true) {
+                if (!maxStr || right - left + 1 < maxStr.length) {
+                    maxStr = s.slice(left, right+1)
+                } 
+
+                const leftChar = s[left];
+                curr[leftChar]--;
+                left++;
+
+                if (need[leftChar] && curr[leftChar] < need[leftChar]) {
+                    break
+                }
+            }
+        }
+
+    }
+
+    return maxStr
+}
+
+/**
+ * 
+ * @param {object} need 
+ * @param {object} win 
+ * @return {boolean}
+ */
+function isSame (need, win) {
+    const keys = Object.keys(need);
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+
+        if (!win[key] || need[key] > win[key]) {
+            return false
+        }
+    }
+
+    return true
+}
+```
+
+### 8.2 例题（二）字符串排列
+
+**题解**：
+
+1. 如果窗口宽度等于匹配宽度就进行判断是否是排列组合
+
+2. 如果不匹配，左指针向右收缩直到左指针字母在need内
+
+3. 不满足1直接右指针不断向右
+
+**代码实现**
+
+```javascript
+/**
+ * @param {string} s1
+ * @param {string} s2
+ * @return {boolean}
+ */
+var checkInclusion = function (s1, s2) {
+  const need = buildNeed(s1);
+  let curr = {};
+  let left = 0;
+
+  for (let right = 0; right < s2.length; right++) {
+    const ch = s2[right];
+    if (need[ch]) {
+        curr[ch] ? (curr[ch]++)  : (curr[ch] = 1);
+    }
+
+    if (right - left + 1 === s1.length) {
+      if (isSame(need, curr)) {
+        return true
+      }
+
+      do {
+        curr[s2[left]]--;
+        left++;
+
+        if (need[s2[left]]) {
+          // 在其中说明后面的可能会是s2的排列组合
+          break
+        }
+      } while (left < right);
+    }
+  }
+  return false;
+};
+
+/**
+ * 
+ * @param {object} need 
+ * @param {object} win 
+ * @return {boolean}
+ */
+function isSame (need, win) {
+    const keys = Object.keys(need);
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        
+        if (!win[key] || need[key] > win[key]) {
+            return false
+        }
+    }
+
+    return true
+}
+
+/**
+ *
+ * @param {string} s
+ */
+function buildNeed(s) {
+  let need = {};
+
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+
+    need[ch] ? need[ch]++ : (need[ch] = 1);
+  }
+
+  return need;
+}
+
+```
+
+### 8.3 例题（三）找到所有字母异位词
+
+**题解**
+
+和上一题类似，不一样的是需要在遍历中存下符合条件的左指针
+
+
+
+**代码实现**
+
+```javascript
+/**
+ * @param {string} s
+ * @param {string} p
+ * @return {number[]}
+ */
+var findAnagrams = function(s, p) {
+    const need = buidMap(p)
+    const curr = {}
+    let left = 0;
+    let len = p.length;
+    let res = []
+
+    for (let right = 0; right < s.length; right++) {
+        const ch = s[right];
+
+        if (curr[ch]) {
+            curr[ch]++
+        } else {
+            curr[ch] = 1
+        }
+        
+       if (right - left + 1 === len) {
+            while(left <= right) {
+                // 初次匹配
+                if (right - left + 1 === len) {
+                    if (isSame(need, curr)) {
+                        res.push(left)
+                    }
+                } else {
+                    // 开始收缩
+                    // 如果收缩值仍在value中，指针右移
+                    if (need[s[left]]) {
+                        break
+                    }
+                }
+
+                curr[s[left]]--
+                left++
+            }
+        }
+    }
+
+    return res
+};
+
+/**
+ * 
+ * @param {object} need 
+ * @param {object} win 
+ * @return {boolean}
+ */
+function isSame (need, win) {
+    const keys = Object.keys(need);
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        
+        if (!win[key] || need[key] > win[key]) {
+            return false
+        }
+    }
+
+    return true
+}
+
+/**
+ * 
+ * @param {string} s 
+ * @returns {object}
+ */
+function buidMap (s) {
+    const m = {};
+
+    for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
+        if (m[ch]) {
+            m[ch]++
+        } else {
+            m[ch] = 1
+        }
+    }
+
+    return m
+}
+
+```
+
+
+
+### 8.4 例题（四）无重复字符的最长子串
+
+**题解**
+
+1. 每次只要是map中没有的参数就右指针后移
+
+2. 当出现map中存在的元素，左指针收缩置和右指针相同的元素为止
+
+
+
+**代码实现**
+
+```javascript
+var lengthOfLongestSubstring = function (s) {
+  let left = 0;
+  let max = 0, map = new Map();
+
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    if (!map.get(ch)) {
+      map.set(ch, 1);
+      if (right - left + 1 > max) {
+        max = right - left + 1
+      }
+    } else {
+      // 左边收缩
+      while(left <= right) {
+        if (ch === s[left]) {
+          left++;
+          break;
+        } else {
+          map.delete(s[left])
+          left++;
+        }
+      }
+    }
+  }
+
+  return max
+};
+
 ```

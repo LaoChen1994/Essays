@@ -1,30 +1,29 @@
 var lengthOfLongestSubstring = function (s) {
-  let left = 0,
-    right = 0,
-    len = 0;
-  let need = {};
+  let left = 0;
+  let max = 0, map = new Map();
 
-  while (right < s.length) {
-    const c1 = s[right];
-
-    if (!need[c1]) {
-      need[c1] = 1;
-    } else {
-      need[c1] = need[c1] + 1;
-    }
-
-    while (left <= right && need[c1] && need[c1] > 1) {
-      if (need[s[left]]) {
-        need[s[left]]--;
+  for (let right = 0; right < s.length; right++) {
+    const ch = s[right];
+    if (!map.get(ch)) {
+      map.set(ch, 1);
+      if (right - left + 1 > max) {
+        max = right - left + 1
       }
-
-      left++;
+    } else {
+      // 左边收缩
+      while(left <= right) {
+        if (ch === s[left]) {
+          left++;
+          break;
+        } else {
+          map.delete(s[left])
+          left++;
+        }
+      }
     }
-
-    if (right - left + 1 > len) {
-      len = right - left + 1;
-    }
-
-    right++;
   }
+
+  return max
 };
+
+console.log(lengthOfLongestSubstring("pwwkew"))
