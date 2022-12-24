@@ -15,4 +15,29 @@ var maxProfit = function (prices) {
     return prev_0
 };
 
+/**
+ * @param {number[]} prices
+ * @return {number}
+ */
+var maxProfit2 = function (prices) {
+    const dp = [], n = prices.length;
+
+    for (let i = 0; i < n; i++) {
+        if (!dp[i]) {
+            dp[i] = []
+        };
+
+        if (i === 0) {
+            dp[0][0] = 0;
+            dp[0][1] = -prices[0];
+            continue
+        }
+
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+    }
+
+    return dp[n - 1][0]
+}
+
 console.log(maxProfit([7, 1, 5, 3, 6, 4]))

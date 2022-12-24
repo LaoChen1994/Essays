@@ -11,25 +11,25 @@
       - [1.3.3 通过分解问题得到答案](#133-通过分解问题得到答案)
     - [1.4 总结](#14-总结)
   - [2. 双指针技巧秒杀七道链表题（一）](#2-双指针技巧秒杀七道链表题一)
-    - [前言](#前言)
-      - [2.1 合并两个有序链表](#21-合并两个有序链表)
-    - [2.1.1 题目链接](#211-题目链接)
-    - [2.1.2 实现](#212-实现)
-      - [2.2 单链表分解](#22-单链表分解)
-    - [2.2.1 题目链接](#221-题目链接)
-    - [2.2.2 实现](#222-实现)
-      - [2.3 合并k个有序链表](#23-合并k个有序链表)
-    - [2.3.1 题目链接](#231-题目链接)
-    - [2.3.2 实现一：归并合并](#232-实现一归并合并)
-    - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
-      - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
-    - [2.4.1 题目链接](#241-题目链接)
-    - [2.4.2 题解思路（重要）](#242-题解思路重要)
-    - [2.4.3 代码实现](#243-代码实现)
-    - [2.4.4 相关衍生](#244-相关衍生)
-      - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
-    - [2.5.1 题目链接](#251-题目链接)
-    - [2.5.2 代码实现](#252-代码实现)
+      - [前言](#前言)
+    - [2.1 合并两个有序链表](#21-合并两个有序链表)
+      - [2.1.1 题目链接](#211-题目链接)
+      - [2.1.2 实现](#212-实现)
+    - [2.2 单链表分解](#22-单链表分解)
+      - [2.2.1 题目链接](#221-题目链接)
+      - [2.2.2 实现](#222-实现)
+    - [2.3 合并k个有序链表](#23-合并k个有序链表)
+      - [2.3.1 题目链接](#231-题目链接)
+      - [2.3.2 实现一：归并合并](#232-实现一归并合并)
+      - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
+    - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
+      - [2.4.1 题目链接](#241-题目链接)
+      - [2.4.2 题解思路（重要）](#242-题解思路重要)
+      - [2.4.3 代码实现](#243-代码实现)
+      - [2.4.4 相关衍生](#244-相关衍生)
+    - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
+      - [2.5.1 题目链接](#251-题目链接)
+      - [2.5.2 代码实现](#252-代码实现)
   - [3. 双指针秒杀七道数组题目（二）](#3-双指针秒杀七道数组题目二)
     - [前言](#前言-1)
     - [3.1 快慢指针技巧](#31-快慢指针技巧)
@@ -76,8 +76,8 @@
         - [4.1.2.1 遍历顺序](#4121-遍历顺序)
         - [4.1.2.2 代码实现](#4122-代码实现)
     - [4.2 深入理解前中后序](#42-深入理解前中后序)
-      - [4.2.1 如何从后往前输出一个链表](#421-如何从后往前输出一个链表)
-      - [4.2.2 二叉树解决问题的思路](#422-二叉树解决问题的思路)
+        - [4.2.1 如何从后往前输出一个链表](#421-如何从后往前输出一个链表)
+        - [4.2.2 二叉树解决问题的思路](#422-二叉树解决问题的思路)
     - [4.3 两种解题思路](#43-两种解题思路)
       - [4.3.1 解题思路](#431-解题思路)
       - [4.3.2 例题（一）二叉树的最大深度](#432-例题一二叉树的最大深度)
@@ -132,6 +132,15 @@
     - [8.2 例题（二）字符串排列](#82-例题二字符串排列)
     - [8.3 例题（三）找到所有字母异位词](#83-例题三找到所有字母异位词)
     - [8.4 例题（四）无重复字符的最长子串](#84-例题四无重复字符的最长子串)
+  - [9. 一个方法团灭LeetCode股票买卖问题](#9-一个方法团灭leetcode股票买卖问题)
+    - [9.1 穷举框架](#91-穷举框架)
+    - [9.2 动态规划方法](#92-动态规划方法)
+      - [9.2.1 买卖股票的最佳时机](#921-买卖股票的最佳时机)
+      - [9.2.2 买卖股票的最佳时机Ⅱ](#922-买卖股票的最佳时机ⅱ)
+      - [9.2.3 买卖股票的最佳时机含冷冻期](#923-买卖股票的最佳时机含冷冻期)
+      - [9.2.4 买卖股票的最佳时机含有手续费](#924-买卖股票的最佳时机含有手续费)
+      - [9.2.5 只能交易K次](#925-只能交易k次)
+
 
 ## 1. 刷题心得
 
@@ -2417,3 +2426,208 @@ var maxProfit = function(k, prices) {
 [力扣121](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 
 **题解**
+1. 仍然使用上面的状态转移方程
+2. 这里的k因为只能交易一次，所以k直接可以省略
+3. **这里的关键是因为只能交易一次，所以，dp[i][1]中代表当前持有仓位，那么要么这个持有的仓位就是之前买的，如果是当次买的，之前不可能有仓位，所以一定是-price[i]，说明之前没有过任何一次买卖**
+
+```javascript
+var maxProfit2 = function (prices) {
+  const dp = [], n = prices.length;
+
+  for (let i = 0; i < n; i++) {
+    if (!dp[i]) {
+      dp[i] = []
+    };
+
+    if (i === 0) {
+      dp[0][0] = 0;
+      dp[0][1] = -prices[0];
+      continue
+    }
+
+    dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+    dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+  }
+
+  return dp[n - 1][0]
+}
+```
+
+**动态规划优化方法**
+
+因为用到的只有前面的`dp[i-1][0]`和`dp[i-1][1]`，所以用直接把整个dp数组存下来，可以优化空间复杂度
+
+```javascript
+var maxProfit = function (prices) {
+    let prev_0 = 0
+    let prev_1 = -1 * prices[0]
+
+    for (let i = 1; i < prices.length; i++) {
+        prev_0 = Math.max(prev_0, prev_1 + prices[i]);
+        // 只要买，就一定是之前没有买过，所以一定是-prices[i]
+        prev_1 = Math.max(prev_1, -prices[i]);
+    }
+
+    return prev_0
+};
+```
+
+#### 9.2.2 买卖股票的最佳时机Ⅱ
+
+**原题链接：**
+
+[力扣122](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)
+
+**题解**
+
+1. 状态转移方程如上
+2. 关键点在于，可以无限制进行交易，所以直接用上述的状态转移方程既可
+
+```javascript
+var maxProfit2 = function(prices) {
+    const dp = [];
+
+
+    for (let i = 0; i < prices.length; i++) {
+        if (!dp[i]) {
+            dp[i] = [];
+        }
+
+        if (i === 0) {
+            dp[i][0] = 0;
+            dp[i][1] = -1 * prices[0];
+            continue
+        }
+        
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+    }
+
+    return dp[prices.length - 1][0]
+};
+```
+
+**空间复杂度优化**
+
+```javascript
+var maxProfit = function(prices) {
+    let prev_0 = 0;
+    let prev_1 = -1 * prices[0];
+
+    for (let i = 1; i < prices.length; i++) {
+        prev_0 = Math.max(prev_0, prev_1 + prices[i]);
+        prev_1 = Math.max(prev_1, prev_0 - prices[i]);
+    }
+
+    return prev_0
+};
+```
+
+#### 9.2.3 买卖股票的最佳时机含冷冻期
+
+**原题链接：**
+
+[力扣309](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-cooldown/)
+
+**题解**
+
+1. 关键在于有冷冻期，冷冻期即卖后一段时间内不能买
+2. 所以需要更改状态转移方程，即
+  + `dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - price[i])`，需要判断在第 `i - 2`天的临界情况
+
+```javascript
+var maxProfit = function (prices) {
+    let dp = [];
+
+    for (let i = 0; i < prices.length; i++) {
+        dp[i] = [];
+        if (i === 0) {
+            dp[i][0] = 0;
+            dp[i][1] = -1 * prices[i]
+            continue
+        }
+
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        // 冷冻期为一天，临界情况是第二天的没有持仓且买入，所以当前金额是第二天的价格 * -1 买入
+        dp[i][1] = Math.max(dp[i - 1][1], i >= 2 ? dp[i - 2][0] - prices[i] : -prices[i]);
+    }
+
+    return dp[prices.length - 1][0]
+};
+```
+
+#### 9.2.4 买卖股票的最佳时机含有手续费
+
+**原题链接：**
+
+[力扣309](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/)
+
+**题解**
+
+1. 只需要在计算卖出收益的时候减掉对应的手续费即可
+
+```javascript
+/**
+ * @param {number[]} prices
+ * @param {number} fee
+ * @return {number}
+ */
+var maxProfit = function(prices, fee) {
+    let dp = [];
+    let prev_0 = 0, prev_1 = -1 * prices[0]
+
+    for (let i = 1; i < prices.length; i++) {
+        const price = prices[i];
+        dp[i] = [];
+
+        prev_0 = Math.max(prev_0, prev_1 + price - fee);
+        prev_1 = Math.max(prev_1, prev_0 - price);
+    }
+
+    return prev_0
+};
+```
+
+#### 9.2.5 只能交易K次
+
+**原题链接：**
+
+[力扣123](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/submissions/)
+[力扣188](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/)
+
+
+**题解**
+
+1. 这里需要用到dp[i][k][j]
+2. 这里的k代表是还剩几次交易次数
+3. 然后我们设定是卖出算一次交易结束，所以要考虑`k + 1`越界的情况
+
+```javascript
+var maxProfit = function (k, prices) {
+    const dp = [];
+    const max_k = k;
+
+    for (let i = 0; i < prices.length; i++) {
+        dp[i] = [];
+        const price = prices[i];
+
+        // 交易次数
+        for (let j = max_k; j >= 0; j--) {
+            if (!dp[i][j]) {
+                dp[i][j] = []
+            }
+
+            if (i === 0 || j === max_k) {
+                dp[i][j][0] = 0;
+                dp[i][j][1] = i === 0 ? -price : Math.max(dp[i - 1][j][1], dp[i - 1][j][0] - price);
+                continue;
+            }
+            // 再卖出的时候减掉可订购次数
+            dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j + 1][1] + price);
+            dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j][0] - price);
+        }
+    }
+
+    return Math.max(...dp[prices.length - 1].map(prices => prices[0]));
+};
+```

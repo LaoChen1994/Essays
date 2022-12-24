@@ -2,7 +2,7 @@
  * @param {number[]} prices
  * @return {number}
  */
-var maxProfit = function(prices) {
+var maxProfit = function (prices) {
     let dp = [];
 
     for (let i = 0; i < prices.length; i++) {
@@ -21,4 +21,4 @@ var maxProfit = function(prices) {
     return dp[prices.length - 1][0]
 };
 
-console.log(maxProfit([1]))
+console.log(maxProfit([1, 2, 3, 0, 2]))
