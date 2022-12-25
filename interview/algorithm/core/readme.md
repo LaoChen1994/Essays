@@ -1,146 +1,145 @@
 # 核心框架汇总
 
 - [核心框架汇总](#核心框架汇总)
-  - [1. 刷题心得](#1-刷题心得)
-    - [1.1 算法的本质](#11-算法的本质)
-      - [1.1.1穷举的难点](#111穷举的难点)
-    - [1.2 数组/单链表算法](#12-数组单链表算法)
-    - [1.3 二叉树系列算法](#13-二叉树系列算法)
-      - [1.3.1 二叉树递归解法的思路](#131-二叉树递归解法的思路)
-      - [1.3.2 遍历二叉树得到结果](#132-遍历二叉树得到结果)
-      - [1.3.3 通过分解问题得到答案](#133-通过分解问题得到答案)
-    - [1.4 总结](#14-总结)
-  - [2. 双指针技巧秒杀七道链表题（一）](#2-双指针技巧秒杀七道链表题一)
-      - [前言](#前言)
-    - [2.1 合并两个有序链表](#21-合并两个有序链表)
-      - [2.1.1 题目链接](#211-题目链接)
-      - [2.1.2 实现](#212-实现)
-    - [2.2 单链表分解](#22-单链表分解)
-      - [2.2.1 题目链接](#221-题目链接)
-      - [2.2.2 实现](#222-实现)
-    - [2.3 合并k个有序链表](#23-合并k个有序链表)
-      - [2.3.1 题目链接](#231-题目链接)
-      - [2.3.2 实现一：归并合并](#232-实现一归并合并)
-      - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
-    - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
-      - [2.4.1 题目链接](#241-题目链接)
-      - [2.4.2 题解思路（重要）](#242-题解思路重要)
-      - [2.4.3 代码实现](#243-代码实现)
-      - [2.4.4 相关衍生](#244-相关衍生)
-    - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
-      - [2.5.1 题目链接](#251-题目链接)
-      - [2.5.2 代码实现](#252-代码实现)
-  - [3. 双指针秒杀七道数组题目（二）](#3-双指针秒杀七道数组题目二)
-    - [前言](#前言-1)
-    - [3.1 快慢指针技巧](#31-快慢指针技巧)
-      - [3.1.1 为什么](#311-为什么)
-      - [3.1.2 例题（一）删除有序数组中的重复项](#312-例题一删除有序数组中的重复项)
-        - [3.1.2.1 题目链接](#3121-题目链接)
-        - [3.1.2.2 代码实现](#3122-代码实现)
-      - [3.1.3 例题（二）删除排序链表中的重复元素](#313-例题二删除排序链表中的重复元素)
-        - [3.1.3.1 题目链接](#3131-题目链接)
-        - [3.1.3.2 代码实现](#3132-代码实现)
-      - [3.1.4 例题（三）移除元素](#314-例题三移除元素)
-        - [3.1.4.1 题目链接](#3141-题目链接)
-        - [3.1.4.2 代码实现](#3142-代码实现)
-      - [3.1.5 移动零](#315-移动零)
-        - [3.1.5.1 题目链接](#3151-题目链接)
-        - [3.1.5.2 代码实现](#3152-代码实现)
-    - [3.2 滑动窗口算法](#32-滑动窗口算法)
-      - [3.2.1 滑动窗口代码框架](#321-滑动窗口代码框架)
-      - [3.2.2 题目一：无重复最长子字符串](#322-题目一无重复最长子字符串)
-        - [3.2.2.1 题目链接](#3221-题目链接)
-        - [3.2.2.2 代码实现](#3222-代码实现)
-      - [3.2.3 题目二：最小覆盖子串](#323-题目二最小覆盖子串)
-        - [3.2.3.1 题目链接](#3231-题目链接)
-        - [3.2.3.2 代码实现](#3232-代码实现)
-    - [3.3 左右指针算法](#33-左右指针算法)
-      - [3.3.1 例题（一）二分查找](#331-例题一二分查找)
-        - [3.3.1.1 二分查找使用条件](#3311-二分查找使用条件)
-        - [3.3.1.2 代码实现](#3312-代码实现)
-      - [3.3.2 例题（二）两数之和](#332-例题二两数之和)
-        - [3.3.2.1 题目链接](#3321-题目链接)
-        - [3.3.2.2 代码实现](#3322-代码实现)
-      - [3.3.3 例题（三）反转字符串](#333-例题三反转字符串)
-        - [3.3.3.1题目链接](#3331题目链接)
-        - [3.3.3.2 代码实现](#3332-代码实现)
-    - [3.4 中心向两侧扩展双指针](#34-中心向两侧扩展双指针)
-      - [3.4.1 例题（一）最长回文子串](#341-例题一最长回文子串)
-        - [3.4.1.1 题目链接](#3411-题目链接)
-        - [3.4.1.2 代码实现](#3412-代码实现)
-  - [4. 二叉树（纲领篇）](#4-二叉树纲领篇)
-    - [4.1 前言](#41-前言)
-      - [4.1.1二叉树基础思路](#411二叉树基础思路)
-      - [4.1.2 二叉树生成的简单实现](#412-二叉树生成的简单实现)
-      - [4.1.2 二叉树的遍历](#412-二叉树的遍历)
-        - [4.1.2.1 遍历顺序](#4121-遍历顺序)
-        - [4.1.2.2 代码实现](#4122-代码实现)
-    - [4.2 深入理解前中后序](#42-深入理解前中后序)
-        - [4.2.1 如何从后往前输出一个链表](#421-如何从后往前输出一个链表)
-        - [4.2.2 二叉树解决问题的思路](#422-二叉树解决问题的思路)
-    - [4.3 两种解题思路](#43-两种解题思路)
-      - [4.3.1 解题思路](#431-解题思路)
-      - [4.3.2 例题（一）二叉树的最大深度](#432-例题一二叉树的最大深度)
-        - [4.3.2.1 题目链接](#4321-题目链接)
-        - [4.3.2.2 代码实现](#4322-代码实现)
-      - [4.3.3 遇到二叉树问题的思考过程](#433-遇到二叉树问题的思考过程)
-      - [4.3.4 例题（二）二叉树的直径](#434-例题二二叉树的直径)
-        - [4.3.4.1 题目链接](#4341-题目链接)
-        - [4.3.4.2 代码实现](#4342-代码实现)
-      - [4.3.5 例题（三）层序遍历](#435-例题三层序遍历)
-        - [4.3.5.1 代码实现](#4351-代码实现)
-  - [5. 动态规划题解套路框架](#5-动态规划题解套路框架)
-    - [5.1 前言](#51-前言)
-      - [5.1.1 什么时候用动态规划](#511-什么时候用动态规划)
-      - [5.1.2 动态规划的核心](#512-动态规划的核心)
-      - [5.1.3 找到状态转移方程的方式](#513-找到状态转移方程的方式)
-      - [5.1.4 动态规划的格式](#514-动态规划的格式)
-    - [5.2 例题（一）斐波那契数列](#52-例题一斐波那契数列)
-      - [5.2.1 题目链接](#521-题目链接)
-      - [5.2.2 自下而上解决](#522-自下而上解决)
-      - [5.2.3 自上而下解决](#523-自上而下解决)
-    - [5.3 例题（二）凑零钱问题](#53-例题二凑零钱问题)
-      - [5.3.1 题目链接](#531-题目链接)
-      - [5.3.2 代码实现](#532-代码实现)
-  - [6. BFS算法解体套路框架](#6-bfs算法解体套路框架)
-    - [6.1 BFS遍历算法框架](#61-bfs遍历算法框架)
-    - [6.2 例题（一）二叉树的最小高度](#62-例题一二叉树的最小高度)
-      - [6.2.1 题目链接](#621-题目链接)
-      - [6.2.2 代码实现](#622-代码实现)
-    - [6.3 BFS的几个说明](#63-bfs的几个说明)
-      - [6.3.1 为什么BFS可以找到最短距离](#631-为什么bfs可以找到最短距离)
-      - [6.3.2 DFS和BFS分别的优点](#632-dfs和bfs分别的优点)
-    - [6.4 例题（二）解开密码锁的最小次数](#64-例题二解开密码锁的最小次数)
-      - [6.4.1 题目链接](#641-题目链接)
-      - [6.4.2 代码实现](#642-代码实现)
-    - [6.5 双向BFS优化](#65-双向bfs优化)
-      - [6.5.1 为何要双向奔赴](#651-为何要双向奔赴)
-      - [6.5.2 解开密码锁的最小次数的双向BFS实现](#652-解开密码锁的最小次数的双向bfs实现)
-  - [7. 二分搜索](#7-二分搜索)
-    - [7.1 二分查找的坑](#71-二分查找的坑)
-      - [7.2 二分查找框架](#72-二分查找框架)
-    - [7.3 例题（一）寻找有序列表中的一个数](#73-例题一寻找有序列表中的一个数)
-      - [7.3.1 题目链接](#731-题目链接)
-      - [7.3.2 代码实现](#732-代码实现)
-    - [7.4 在排序数组中查找元素的第一个和最后一个位置](#74-在排序数组中查找元素的第一个和最后一个位置)
-      - [7.4.1 题目链接](#741-题目链接)
-      - [7.4.2 方法（一）一次遍历找到后，左右扩展找节点](#742-方法一一次遍历找到后左右扩展找节点)
-      - [7.4.3 使用边界二分搜索方法](#743-使用边界二分搜索方法)
-  - [8. 滑动窗口纲领篇](#8-滑动窗口纲领篇)
-    - [8.1 算法框架](#81-算法框架)
-    - [8.2 例题（一）最小覆盖子串](#82-例题一最小覆盖子串)
-    - [8.2 例题（二）字符串排列](#82-例题二字符串排列)
-    - [8.3 例题（三）找到所有字母异位词](#83-例题三找到所有字母异位词)
-    - [8.4 例题（四）无重复字符的最长子串](#84-例题四无重复字符的最长子串)
-  - [9. 一个方法团灭LeetCode股票买卖问题](#9-一个方法团灭leetcode股票买卖问题)
-    - [9.1 穷举框架](#91-穷举框架)
-    - [9.2 动态规划方法](#92-动态规划方法)
-      - [9.2.1 买卖股票的最佳时机](#921-买卖股票的最佳时机)
-      - [9.2.2 买卖股票的最佳时机Ⅱ](#922-买卖股票的最佳时机ⅱ)
-      - [9.2.3 买卖股票的最佳时机含冷冻期](#923-买卖股票的最佳时机含冷冻期)
-      - [9.2.4 买卖股票的最佳时机含有手续费](#924-买卖股票的最佳时机含有手续费)
-      - [9.2.5 只能交易K次](#925-只能交易k次)
-
+    - [1. 刷题心得](#1-刷题心得)
+        - [1.1 算法的本质](#11-算法的本质)
+            - [1.1.1穷举的难点](#111穷举的难点)
+        - [1.2 数组/单链表算法](#12-数组单链表算法)
+        - [1.3 二叉树系列算法](#13-二叉树系列算法)
+            - [1.3.1 二叉树递归解法的思路](#131-二叉树递归解法的思路)
+            - [1.3.2 遍历二叉树得到结果](#132-遍历二叉树得到结果)
+            - [1.3.3 通过分解问题得到答案](#133-通过分解问题得到答案)
+        - [1.4 总结](#14-总结)
+    - [2. 双指针技巧秒杀七道链表题（一）](#2-双指针技巧秒杀七道链表题一)
+        - [前言](#前言)
+            - [2.1 合并两个有序链表](#21-合并两个有序链表)
+        - [2.1.1 题目链接](#211-题目链接)
+        - [2.1.2 实现](#212-实现)
+            - [2.2 单链表分解](#22-单链表分解)
+        - [2.2.1 题目链接](#221-题目链接)
+        - [2.2.2 实现](#222-实现)
+            - [2.3 合并k个有序链表](#23-合并k个有序链表)
+        - [2.3.1 题目链接](#231-题目链接)
+        - [2.3.2 实现一：归并合并](#232-实现一归并合并)
+        - [2.3.3 实现二：最小堆合并](#233-实现二最小堆合并)
+            - [2.4 删除链表的倒数第n个节点](#24-删除链表的倒数第n个节点)
+        - [2.4.1 题目链接](#241-题目链接)
+        - [2.4.2 题解思路（重要）](#242-题解思路重要)
+        - [2.4.3 代码实现](#243-代码实现)
+        - [2.4.4 相关衍生](#244-相关衍生)
+            - [2.5 判断两个链表是否相交](#25判断两个链表是否相交)
+        - [2.5.1 题目链接](#251-题目链接)
+        - [2.5.2 代码实现](#252-代码实现)
+    - [3. 双指针秒杀七道数组题目（二）](#3-双指针秒杀七道数组题目二)
+        - [前言](#前言-1)
+        - [3.1 快慢指针技巧](#31-快慢指针技巧)
+            - [3.1.1 为什么](#311-为什么)
+            - [3.1.2 例题（一）删除有序数组中的重复项](#312-例题一删除有序数组中的重复项)
+                - [3.1.2.1 题目链接](#3121-题目链接)
+                - [3.1.2.2 代码实现](#3122-代码实现)
+            - [3.1.3 例题（二）删除排序链表中的重复元素](#313-例题二删除排序链表中的重复元素)
+                - [3.1.3.1 题目链接](#3131-题目链接)
+                - [3.1.3.2 代码实现](#3132-代码实现)
+            - [3.1.4 例题（三）移除元素](#314-例题三移除元素)
+                - [3.1.4.1 题目链接](#3141-题目链接)
+                - [3.1.4.2 代码实现](#3142-代码实现)
+            - [3.1.5 移动零](#315-移动零)
+                - [3.1.5.1 题目链接](#3151-题目链接)
+                - [3.1.5.2 代码实现](#3152-代码实现)
+        - [3.2 滑动窗口算法](#32-滑动窗口算法)
+            - [3.2.1 滑动窗口代码框架](#321-滑动窗口代码框架)
+            - [3.2.2 题目一：无重复最长子字符串](#322-题目一无重复最长子字符串)
+                - [3.2.2.1 题目链接](#3221-题目链接)
+                - [3.2.2.2 代码实现](#3222-代码实现)
+            - [3.2.3 题目二：最小覆盖子串](#323-题目二最小覆盖子串)
+                - [3.2.3.1 题目链接](#3231-题目链接)
+                - [3.2.3.2 代码实现](#3232-代码实现)
+        - [3.3 左右指针算法](#33-左右指针算法)
+            - [3.3.1 例题（一）二分查找](#331-例题一二分查找)
+                - [3.3.1.1 二分查找使用条件](#3311-二分查找使用条件)
+                - [3.3.1.2 代码实现](#3312-代码实现)
+            - [3.3.2 例题（二）两数之和](#332-例题二两数之和)
+                - [3.3.2.1 题目链接](#3321-题目链接)
+                - [3.3.2.2 代码实现](#3322-代码实现)
+            - [3.3.3 例题（三）反转字符串](#333-例题三反转字符串)
+                - [3.3.3.1题目链接](#3331题目链接)
+                - [3.3.3.2 代码实现](#3332-代码实现)
+        - [3.4 中心向两侧扩展双指针](#34-中心向两侧扩展双指针)
+            - [3.4.1 例题（一）最长回文子串](#341-例题一最长回文子串)
+                - [3.4.1.1 题目链接](#3411-题目链接)
+                - [3.4.1.2 代码实现](#3412-代码实现)
+    - [4. 二叉树（纲领篇）](#4-二叉树纲领篇)
+        - [4.1 前言](#41-前言)
+            - [4.1.1二叉树基础思路](#411二叉树基础思路)
+            - [4.1.2 二叉树生成的简单实现](#412-二叉树生成的简单实现)
+            - [4.1.2 二叉树的遍历](#412-二叉树的遍历)
+                - [4.1.2.1 遍历顺序](#4121-遍历顺序)
+                - [4.1.2.2 代码实现](#4122-代码实现)
+        - [4.2 深入理解前中后序](#42-深入理解前中后序)
+            - [4.2.1 如何从后往前输出一个链表](#421-如何从后往前输出一个链表)
+            - [4.2.2 二叉树解决问题的思路](#422-二叉树解决问题的思路)
+        - [4.3 两种解题思路](#43-两种解题思路)
+            - [4.3.1 解题思路](#431-解题思路)
+            - [4.3.2 例题（一）二叉树的最大深度](#432-例题一二叉树的最大深度)
+                - [4.3.2.1 题目链接](#4321-题目链接)
+                - [4.3.2.2 代码实现](#4322-代码实现)
+            - [4.3.3 遇到二叉树问题的思考过程](#433-遇到二叉树问题的思考过程)
+            - [4.3.4 例题（二）二叉树的直径](#434-例题二二叉树的直径)
+                - [4.3.4.1 题目链接](#4341-题目链接)
+                - [4.3.4.2 代码实现](#4342-代码实现)
+            - [4.3.5 例题（三）层序遍历](#435-例题三层序遍历)
+                - [4.3.5.1 代码实现](#4351-代码实现)
+    - [5. 动态规划题解套路框架](#5-动态规划题解套路框架)
+        - [5.1 前言](#51-前言)
+            - [5.1.1 什么时候用动态规划](#511-什么时候用动态规划)
+            - [5.1.2 动态规划的核心](#512-动态规划的核心)
+            - [5.1.3 找到状态转移方程的方式](#513-找到状态转移方程的方式)
+            - [5.1.4 动态规划的格式](#514-动态规划的格式)
+        - [5.2 例题（一）斐波那契数列](#52-例题一斐波那契数列)
+            - [5.2.1 题目链接](#521-题目链接)
+            - [5.2.2 自下而上解决](#522-自下而上解决)
+            - [5.2.3 自上而下解决](#523-自上而下解决)
+        - [5.3 例题（二）凑零钱问题](#53-例题二凑零钱问题)
+            - [5.3.1 题目链接](#531-题目链接)
+            - [5.3.2 代码实现](#532-代码实现)
+    - [6. BFS算法解体套路框架](#6-bfs算法解体套路框架)
+        - [6.1 BFS遍历算法框架](#61-bfs遍历算法框架)
+        - [6.2 例题（一）二叉树的最小高度](#62-例题一二叉树的最小高度)
+            - [6.2.1 题目链接](#621-题目链接)
+            - [6.2.2 代码实现](#622-代码实现)
+        - [6.3 BFS的几个说明](#63-bfs的几个说明)
+            - [6.3.1 为什么BFS可以找到最短距离](#631-为什么bfs可以找到最短距离)
+            - [6.3.2 DFS和BFS分别的优点](#632-dfs和bfs分别的优点)
+        - [6.4 例题（二）解开密码锁的最小次数](#64-例题二解开密码锁的最小次数)
+            - [6.4.1 题目链接](#641-题目链接)
+            - [6.4.2 代码实现](#642-代码实现)
+        - [6.5 双向BFS优化](#65-双向bfs优化)
+            - [6.5.1 为何要双向奔赴](#651-为何要双向奔赴)
+            - [6.5.2 解开密码锁的最小次数的双向BFS实现](#652-解开密码锁的最小次数的双向bfs实现)
+    - [7. 二分搜索](#7-二分搜索)
+        - [7.1 二分查找的坑](#71-二分查找的坑)
+            - [7.2 二分查找框架](#72-二分查找框架)
+        - [7.3 例题（一）寻找有序列表中的一个数](#73-例题一寻找有序列表中的一个数)
+            - [7.3.1 题目链接](#731-题目链接)
+            - [7.3.2 代码实现](#732-代码实现)
+        - [7.4 在排序数组中查找元素的第一个和最后一个位置](#74-在排序数组中查找元素的第一个和最后一个位置)
+            - [7.4.1 题目链接](#741-题目链接)
+            - [7.4.2 方法（一）一次遍历找到后，左右扩展找节点](#742-方法一一次遍历找到后左右扩展找节点)
+            - [7.4.3 使用边界二分搜索方法](#743-使用边界二分搜索方法)
+    - [8. 滑动窗口纲领篇](#8-滑动窗口纲领篇)
+        - [8.1 算法框架](#81-算法框架)
+        - [8.2 例题（一）最小覆盖子串](#82-例题一最小覆盖子串)
+        - [8.2 例题（二）字符串排列](#82-例题二字符串排列)
+        - [8.3 例题（三）找到所有字母异位词](#83-例题三找到所有字母异位词)
+        - [8.4 例题（四）无重复字符的最长子串](#84-例题四无重复字符的最长子串)
+    - [9. 一个方法团灭LeetCode股票买卖问题](#9-一个方法团灭leetcode股票买卖问题)
+        - [9.1 穷举框架](#91-穷举框架)
+        - [9.2 动态规划方法](#92-动态规划方法)
+            - [9.2.1 买卖股票的最佳时机](#921-买卖股票的最佳时机)
+            - [9.2.2 买卖股票的最佳时机Ⅱ](#922-买卖股票的最佳时机ⅱ)
+            - [9.2.3 买卖股票的最佳时机含冷冻期](#923-买卖股票的最佳时机含冷冻期)
+            - [9.2.4 买卖股票的最佳时机含有手续费](#924-买卖股票的最佳时机含有手续费)
+            - [9.2.5 只能交易K次](#925-只能交易k次)
 
 ## 1. 刷题心得
 
@@ -183,10 +182,10 @@
 **二叉树的先序遍历**
 
 ```javascript
-function preorder (tree) {
+function preorder(tree) {
     let res = []
 
-    function traverse (root) {
+    function traverse(root) {
         if (root === null) {
             return
         }
@@ -205,10 +204,10 @@ function preorder (tree) {
 **二叉树深度**
 
 ```javascript
-function maxLength (tree) {
+function maxLength(tree) {
     let maxDepth = 0, depth = 0
 
-    function traverse (root) {
+    function traverse(root) {
         if (root === null) {
             maxDepth = Math.max(maxDepth, depth)
             return
@@ -233,7 +232,7 @@ function maxLength (tree) {
 **求解二叉树深度**
 
 ```javascript
-function maxLength2 (tree) {
+function maxLength2(tree) {
     if (tree === null) {
         return 0
     }
@@ -263,11 +262,11 @@ class ListNode {
     }
 
     /**
-     * 
-     * @param {number[]} nums 
+     *
+     * @param {number[]} nums
      * @returns {ListNode}
      */
-    static getSingleListNodeFromArray (nums) {
+    static getSingleListNodeFromArray(nums) {
         if (!nums.length) return null;
 
         const start = new ListNode(0)
@@ -275,17 +274,17 @@ class ListNode {
 
         for (let i = 0; i < nums.length; i++) {
             curr.next = new ListNode(nums[i])
-            curr = curr.next            
+            curr = curr.next
         }
 
         return start.next
     }
 
     /**
-     * 
+     *
      * @returns {number[]}
      */
-    getNodes () {
+    getNodes() {
         let arr = [];
         let curr = this;
 
@@ -310,7 +309,7 @@ class ListNode {
 使用双指针，分别对需要合并的两个数组进行跟踪即可
 
 ```javascript
-var mergeTwoLists = function(list1, list2) {
+var mergeTwoLists = function (list1, list2) {
     var newList = new ListNode()
     curr = newList
 
@@ -354,32 +353,32 @@ var mergeTwoLists = function(list1, list2) {
 
 ```javascript
 var partition = function (head, x) {
-  let min = new ListNode();
-  let max = new ListNode();
-  let curr = head,
-    minHead = min,
-    maxHead = max;
+    let min = new ListNode();
+    let max = new ListNode();
+    let curr = head,
+        minHead = min,
+        maxHead = max;
 
-  if (head === null) {
-    return null;
-  }
-
-  while (curr !== null) {
-    if (curr.val >= x) {
-      maxHead.next = curr;
-      maxHead = maxHead.next;
-    } else {
-      minHead.next = curr;
-      minHead = minHead.next;
+    if (head === null) {
+        return null;
     }
-    curr = curr.next;
-    maxHead.next = null;
-    minHead.next = null
-  }
 
-  minHead.next = max.next
+    while (curr !== null) {
+        if (curr.val >= x) {
+            maxHead.next = curr;
+            maxHead = maxHead.next;
+        } else {
+            minHead.next = curr;
+            minHead = minHead.next;
+        }
+        curr = curr.next;
+        maxHead.next = null;
+        minHead.next = null
+    }
 
-  return min.next;
+    minHead.next = max.next
+
+    return min.next;
 };
 ```
 
@@ -402,13 +401,13 @@ function mergeKLists(lists) {
     if (!lists.length) return null
 
     /**
-     * 
-     * @param {ListNode[]} lists 
-     * @param {number} start 
+     *
+     * @param {ListNode[]} lists
+     * @param {number} start
      * @param {number} end
      * @returns {ListNode}
      */
-    function _merge (lists, start, end) {
+    function _merge(lists, start, end) {
         if (end - start <= 1) {
             return lists[start]
         }
@@ -435,13 +434,13 @@ function mergeKLists(lists) {
 
 ```javascript
 class MinHeap {
-    constructor (list, fn) {
+    constructor(list, fn) {
         this.heap = list
         this.fn = fn
         this.#buildHeap(this.heap)
     }
 
-    getFormatValue (index) {
+    getFormatValue(index) {
         if (!this.fn) return this.heap[index]
 
         return this.fn(this.heap[index])
@@ -455,14 +454,14 @@ class MinHeap {
         return this.heap.slice(1)
     }
 
-    #buildHeap () {
+    #buildHeap() {
         this.heap.unshift(0)
 
         for (let i = 1; i < this.heap.length; i++) {
             let curr = i
             let parent = Math.floor(i / 2)
 
-            while(curr > 0 && this.getFormatValue(parent) > this.getFormatValue(curr)) {
+            while (curr > 0 && this.getFormatValue(parent) > this.getFormatValue(curr)) {
                 this.swap(parent, curr)
                 curr = parent
                 parent = Math.floor(parent / 2)
@@ -483,7 +482,9 @@ class MinHeap {
     }
 
     pop() {
-        if (this.heap.length <= 1) {return null;}
+        if (this.heap.length <= 1) {
+            return null;
+        }
         this.swap(1, this.heap.length - 1)
 
         const minVal = this.heap.pop()
@@ -514,11 +515,13 @@ class MinHeap {
 
         return minVal
     }
-}       right = curr * 2 + 1
-        }
+}
 
-        return minVal
-    }
+right = curr * 2 + 1
+}
+
+return minVal
+}
 }
 ```
 
@@ -535,7 +538,7 @@ function mergeKListsWithHeap(lists) {
     let dummy = p
     if (!lists.length) return null
 
-    while(heap.value.length > 0) {
+    while (heap.value.length > 0) {
         let p = heap.pop()
         if (p === null) {
             continue;
@@ -566,12 +569,12 @@ function mergeKListsWithHeap(lists) {
 1. 方法一：遍历两次，第一次获得链表长度，第二次找到n-k+1个节点
 
 2. 方法二：
-   
-   1. 使用快慢指针，p1先走k步，然后p2和p1之后同时开始走n-k步（注意：此时p1到了k+1，p2才走出第一步）
-   
-   2. 当快指针走到null时
-   
-   3. 慢指针刚好走到n-k+1也就是倒数第n个节点上
+
+    1. 使用快慢指针，p1先走k步，然后p2和p1之后同时开始走n-k步（注意：此时p1到了k+1，p2才走出第一步）
+
+    2. 当快指针走到null时
+
+    3. 慢指针刚好走到n-k+1也就是倒数第n个节点上
 
 ![](https://labuladong.github.io/algo/images/%e9%93%be%e8%a1%a8%e6%8a%80%e5%b7%a7/2.jpeg)
 
@@ -610,24 +613,24 @@ var removeNthFromEnd = function (head, n) {
 #### 2.4.4 相关衍生
 
 - 如何获取一个链表的中点
-  
-  - 快指针走2n，慢指针走n
 
-- 如何判断有环 
-  
-  - 快指针2n去走，慢指针n的方式去走
-  - 当快慢指针相等即使有环，快指针能走到null就无环
+    - 快指针走2n，慢指针走n
+
+- 如何判断有环
+
+    - 快指针2n去走，慢指针n的方式去走
+    - 当快慢指针相等即使有环，快指针能走到null就无环
 
 - 如何判断有环的链表的起点
-  
-  - 快指针2n去走，慢指针n取走
-  
-  - 碰到时，将慢指针指向head
-  
-  - 再次相遇的点就是有环链表的起点
-  
+
+    - 快指针2n去走，慢指针n取走
+
+    - 碰到时，将慢指针指向head
+
+    - 再次相遇的点就是有环链表的起点
+
   ![](https://labuladong.github.io/algo/images/%e5%8f%8c%e6%8c%87%e9%92%88/2.jpeg)
-  
+
   因为两边离起点的距离都是`k-m`，所以也是利用了快慢指针的插值
 
 ### 2.5 判断两个链表是否相交
@@ -641,7 +644,7 @@ var removeNthFromEnd = function (head, n) {
 题解思路，因为两个链表长度不一样导致双指针无法同步，因此，我们只需要将双指针进行同步就行，如何同步？就是双指针的都完A/B两个链表。
 
 ```javascript
- var getIntersectionNode = function(headA, headB) {
+ var getIntersectionNode = function (headA, headB) {
     let p1 = headA, p2 = headB;
 
     let flag1 = false, flag2 = false
@@ -703,7 +706,7 @@ var removeNthFromEnd = function (head, n) {
 ![](https://labuladong.github.io/algo/images/%e6%95%b0%e7%bb%84%e5%8e%bb%e9%87%8d/1.gif)
 
 ```javascript
-var removeDuplicates = function(nums) {
+var removeDuplicates = function (nums) {
     if (nums.length <= 1) {
         return nums.length
     }
@@ -734,7 +737,7 @@ var removeDuplicates = function(nums) {
 和3.1.2相同思路，快慢指针
 
 ```javascript
- var deleteDuplicates = function(head) {
+ var deleteDuplicates = function (head) {
     let slow = head, fast = head;
 
     if (head === null) {
@@ -767,7 +770,7 @@ var removeDuplicates = function(nums) {
 实现方式一样，不再赘述
 
 ```javascript
-var removeElement = function(nums, val) {
+var removeElement = function (nums, val) {
     let slow = 0;
 
     for (let fast = 0; fast < nums.length; fast++) {
@@ -792,7 +795,7 @@ var removeElement = function(nums, val) {
 一样的实现思路使用快慢指针并做交换
 
 ```javascript
- var moveZeroes = function(nums) {
+ var moveZeroes = function (nums) {
     let slow = 0;
 
     for (let fast = 0; fast < nums.length; fast++) {
@@ -811,23 +814,23 @@ var removeElement = function(nums, val) {
 滑动窗口的原理也是快慢指针，其算法的大致框架如下：
 
 ```javascript
-function(s) {
-  let left = 0, right = 0
-  let need = {}
+function (s) {
+    let left = 0, right = 0
+    let need = {}
 
-  while(right < s.length) {
-    const c1 = s[right]
-    if (!need[c1]) {
-      // 窗口内是否符合题目要求判断
+    while (right < s.length) {
+        const c1 = s[right]
+        if (!need[c1]) {
+            // 窗口内是否符合题目要求判断
+        }
+
+        while (窗口内判断条件用于收缩左指针) {
+            left++
+        }
+
+        // 右边指针扩展
+        right++
     }
-
-    while (窗口内判断条件用于收缩左指针) {
-      left++
-    }
-
-    // 右边指针扩展
-    right++
-  }
 };
 ```
 
@@ -851,34 +854,34 @@ function(s) {
 
 ```javascript
 var lengthOfLongestSubstring = function (s) {
-  let left = 0,
-    right = 0,
-    len = 0;
-  let need = {};
+    let left = 0,
+        right = 0,
+        len = 0;
+    let need = {};
 
-  while (right < s.length) {
-    const c1 = s[right];
+    while (right < s.length) {
+        const c1 = s[right];
 
-    if (!need[c1]) {
-      need[c1] = 1;
-    } else {
-      need[c1] = need[c1] + 1;
+        if (!need[c1]) {
+            need[c1] = 1;
+        } else {
+            need[c1] = need[c1] + 1;
+        }
+
+        while (left <= right && need[c1] && need[c1] > 1) {
+            if (need[s[left]]) {
+                need[s[left]]--;
+            }
+
+            left++;
+        }
+
+        if (right - left + 1 > len) {
+            len = right - left + 1;
+        }
+
+        right++;
     }
-
-    while (left <= right && need[c1] && need[c1] > 1) {
-      if (need[s[left]]) {
-        need[s[left]]--;
-      }
-
-      left++;
-    }
-
-    if (right - left + 1 > len) {
-      len = right - left + 1;
-    }
-
-    right++;
-  }
 };
 ```
 
@@ -906,78 +909,78 @@ var lengthOfLongestSubstring = function (s) {
  * @param {string} t
  * @return {string}
  */
-var minWindow = function(s, t) {
-  let left = 0, right = 0, minStr = s
-  let need = {}, slideWindow = {}
+var minWindow = function (s, t) {
+        let left = 0, right = 0, minStr = s
+        let need = {}, slideWindow = {}
 
-  // 初始化条件
-  for (let i = 0; i < t.length; i++) {
-    const char = t[i];
-    if (!need[char]) {
-      need[char] = 1
-    } else {
-      need[char] = need[char] + 1
-    }
-  }
+        // 初始化条件
+        for (let i = 0; i < t.length; i++) {
+            const char = t[i];
+            if (!need[char]) {
+                need[char] = 1
+            } else {
+                need[char] = need[char] + 1
+            }
+        }
 
-  if (!isValidStr(getWindowCharMap(s))) {
-    return ''
-  }
+        if (!isValidStr(getWindowCharMap(s))) {
+            return ''
+        }
 
-  slideWindow = {}
+        slideWindow = {}
 
-  function isValidStr (slideWindow) {
-    return Object.keys(need).reduce((match, key) => {
-      return need[key] <= slideWindow[key] && match
-    }, true)
-  }
+        function isValidStr(slideWindow) {
+            return Object.keys(need).reduce((match, key) => {
+                return need[key] <= slideWindow[key] && match
+            }, true)
+        }
 
-  /**
-   * 
-   * @param {string} str 
-   * @return {boolean}
-   */
-  function getWindowCharMap (str) {
-    const slideWindow = {}
-    // @todo 这个地方可以做优化
-    for (let i = 0; i < str.length; i++) {
-      const char = str[i];
-      if (!slideWindow[char]) {
-        slideWindow[char] = 1
-      } else {
-        slideWindow[char] = slideWindow[char] + 1
-      }
-    }
+        /**
+         *
+         * @param {string} str
+         * @return {boolean}
+         */
+        function getWindowCharMap(str) {
+            const slideWindow = {}
+            // @todo 这个地方可以做优化
+            for (let i = 0; i < str.length; i++) {
+                const char = str[i];
+                if (!slideWindow[char]) {
+                    slideWindow[char] = 1
+                } else {
+                    slideWindow[char] = slideWindow[char] + 1
+                }
+            }
 
-    return slideWindow
-  }
+            return slideWindow
+        }
 
-  while (right < s.length) {
-    var c1 = s[right]
+        while (right < s.length) {
+            var c1 = s[right]
 
-    if (slideWindow[c1]) {
-      slideWindow[c1] = slideWindow[c1] + 1
-    } else {
-      slideWindow[c1] = 1
-    }
+            if (slideWindow[c1]) {
+                slideWindow[c1] = slideWindow[c1] + 1
+            } else {
+                slideWindow[c1] = 1
+            }
 
-    right++
-    while(isValidStr(slideWindow) && left < right) {
-      if (right - left < minStr.length) {
-        minStr = s.slice(left, right)
-      }
+            right++
+            while (isValidStr(slideWindow) && left < right) {
+                if (right - left < minStr.length) {
+                    minStr = s.slice(left, right)
+                }
 
-      c2 = s[left]
-      if (slideWindow[c2] > 0) {
-        slideWindow[c2] = slideWindow[c2] - 1
-      }
+                c2 = s[left]
+                if (slideWindow[c2] > 0) {
+                    slideWindow[c2] = slideWindow[c2] - 1
+                }
 
-      left++
-    }
-  }
+                left++
+            }
+        }
 
-  return minStr
-};
+        return minStr
+    };
 ```
 
 ### 3.3 左右指针算法
@@ -1002,22 +1005,22 @@ var minWindow = function(s, t) {
 
 ```javascript
 function binarySearch(nums, target) {
-  let left = 0,
-    right = nums.length - 1;
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
+    let left = 0,
+        right = nums.length - 1;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    if (nums[mid] === target) return mid;
+        if (nums[mid] === target) return mid;
 
-    if (nums[mid] > target) {
-      right = mid - 1;
-      continue;
+        if (nums[mid] > target) {
+            right = mid - 1;
+            continue;
+        }
+
+        left = mid + 1;
     }
 
-    left = mid + 1;
-  }
-
-  return -1;
+    return -1;
 }
 ```
 
@@ -1039,22 +1042,22 @@ function binarySearch(nums, target) {
 
 ```javascript
 var twoSum = function (numbers, target) {
-  let left = 0,
-    right = numbers.length - 1;
+    let left = 0,
+        right = numbers.length - 1;
 
-  while (left <= right) {
-    const result = numbers[left] + numbers[right];
-    if (result === target) {
-      return [left + 1, right + 1];
+    while (left <= right) {
+        const result = numbers[left] + numbers[right];
+        if (result === target) {
+            return [left + 1, right + 1];
+        }
+
+        if (result > target) {
+            right--;
+            continue;
+        }
+
+        left++;
     }
-
-    if (result > target) {
-      right--;
-      continue;
-    }
-
-    left++;
-  }
 };
 ```
 
@@ -1067,7 +1070,7 @@ var twoSum = function (numbers, target) {
 ##### 3.3.3.2 代码实现
 
 ```javascript
-var reverseString = function(s) {
+var reverseString = function (s) {
     let left = 0, right = s.length - 1
 
     if (s.length <= 1) return
@@ -1100,10 +1103,10 @@ var reverseString = function(s) {
 
 3. 回文串为奇数串，左指针起始位置和右指针相同
 
-4. 回文串为偶数，右指针起始位置 = 左指针起始位置 + 1 
+4. 回文串为偶数，右指针起始位置 = 左指针起始位置 + 1
 
 ```javascript
-var longestPalindrome = function(s) {
+var longestPalindrome = function (s) {
     let res = s[0]
     for (let i = 0; i < s.length - 1; i++) {
         const odd = expand(s, i);
@@ -1124,7 +1127,7 @@ var longestPalindrome = function(s) {
 };
 
 
-function expand (s, l, r = l) {
+function expand(s, l, r = l) {
     let left = l, right = r, str = s[left];
     while (left >= 0) {
         if (s[left] === s[right]) {
@@ -1158,46 +1161,46 @@ function expand (s, l, r = l) {
 
 ```javascript
 class Node {
-  constructor (val = 0, left = null, right = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+    constructor(val = 0, left = null, right = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
 class BinarySearchTree {
-  /**
-   * 
-   * @param {number[]} nums
-   * @returns {Node}
-   */
-  static getTreeFromArray (nums) {
-    const len = nums.length;
-    nums.unshift(0)
-    if (len === 0) return null
-
-    const root = insertRoot(1)
-
     /**
-     * 
-     * @param {Node} node 
-     * @param {number} idx 
-     * @returns 
+     *
+     * @param {number[]} nums
+     * @returns {Node}
      */
-    function insertRoot (idx) {
-      while (idx > len) {
-        return null
-      }
+    static getTreeFromArray(nums) {
+        const len = nums.length;
+        nums.unshift(0)
+        if (len === 0) return null
 
-      const node = new Node(nums[idx])
-      node.left = insertRoot(2*idx)
-      node.right = insertRoot(2 * idx+1)
+        const root = insertRoot(1)
 
-      return node
+        /**
+         *
+         * @param {Node} node
+         * @param {number} idx
+         * @returns
+         */
+        function insertRoot(idx) {
+            while (idx > len) {
+                return null
+            }
+
+            const node = new Node(nums[idx])
+            node.left = insertRoot(2 * idx)
+            node.right = insertRoot(2 * idx + 1)
+
+            return node
+        }
+
+        return root
     }
-
-    return root
-  }
 }
 ```
 
@@ -1218,10 +1221,10 @@ class BinarySearchTree {
 **先序遍历**
 
 ```javascript
-function preorder (tree) {
+function preorder(tree) {
     let res = []
 
-    function traverse (root) {
+    function traverse(root) {
         if (root === null) {
             return
         }
@@ -1240,12 +1243,12 @@ function preorder (tree) {
 **中序遍历**
 
 ```javascript
-function midorder (tree) {
+function midorder(tree) {
     let res = [];
 
     /**
-     * 
-     * @param {BinarySearchTree} node 
+     *
+     * @param {BinarySearchTree} node
      */
     function traverse(node) {
         if (node === null) {
@@ -1266,14 +1269,14 @@ function midorder (tree) {
 **后序遍历**
 
 ```javascript
-function postorder (tree) {
+function postorder(tree) {
     let res = []
 
     /**
-     * 
-     * @param {BinarySearchTree} subtree 
+     *
+     * @param {BinarySearchTree} subtree
      */
-    function traverse (subtree) {
+    function traverse(subtree) {
         if (subtree === null) {
             return;
         }
@@ -1291,7 +1294,8 @@ function postorder (tree) {
 
 ### 4.2 深入理解前中后序
 
-【重要】上述算法中的`traverse`其实就是一个比递归遍历的方法，是二叉链表的遍历方式，要把<mark>前序中序后序分别理解成遍历时候的三个位置</mark>。
+【重要】上述算法中的`traverse`其实就是一个比递归遍历的方法，是二叉链表的遍历方式，要把<mark>
+前序中序后序分别理解成遍历时候的三个位置</mark>。
 
 **前序遍历**：代表记录刚进入节点时候的位置，在traverse下一个节点之前
 
@@ -1303,22 +1307,22 @@ function postorder (tree) {
 
 ```javascript
 function reverse(node) {
-  const res = [];
+    const res = [];
 
-  /**
-   *
-   * @param {ListNode} node
-   */
-  function traverse(node) {
-    if (node === null) return;
+    /**
+     *
+     * @param {ListNode} node
+     */
+    function traverse(node) {
+        if (node === null) return;
 
-    traverse(node.next);
-    res.push(node.val)
-  }
+        traverse(node.next);
+        res.push(node.val)
+    }
 
-  traverse(node)
+    traverse(node)
 
-  return res
+    return res
 }
 ```
 
@@ -1347,22 +1351,22 @@ function reverse(node) {
 **使用回溯的方式**
 
 ```javascript
-var maxDepth = function(root) {
+var maxDepth = function (root) {
     let max = 0, curr = 0
     if (root === null) {
         return 0
     }
 
-    function traverse (node) {
+    function traverse(node) {
         if (node === null) {
             return
         }
 
-       curr++
-       traverse(node.left)
-       traverse(node.right)
-       max = Math.max(curr, max)
-       curr--
+        curr++
+        traverse(node.left)
+        traverse(node.right)
+        max = Math.max(curr, max)
+        curr--
     }
 
     traverse(root)
@@ -1374,17 +1378,17 @@ var maxDepth = function(root) {
 **使用分解的方式**
 
 ```javascript
-var maxDepth = function(root) {
+var maxDepth = function (root) {
     if (root === null) {
         return 0
     }
 
-    function traverse (node, depth) {
+    function traverse(node, depth) {
         if (node === null) {
             return depth
         }
 
-       return Math.max(traverse(node.left, depth + 1), traverse(node.right, depth + 1))
+        return Math.max(traverse(node.left, depth + 1), traverse(node.right, depth + 1))
     }
 
     return traverse(root, 0)
@@ -1410,7 +1414,7 @@ var maxDepth = function(root) {
 ```javascript
   function traverse(node) {
     if (node === null) {
-      return 0
+        return 0
     }
 
     const left = traverse(node.left)
@@ -1421,16 +1425,21 @@ var maxDepth = function(root) {
 
     // 对于上一级子树来说，希望拿到这个分支最大的节点数
     return Math.max(left, right)
-  }
+}
 
-  traverse(root);
+traverse(root);
 
-  return max;
-};;
-};;
+return max;
+}
+;
+;
+}
+;
+;
 
-  return max;
-};
+return max;
+}
+;
 ```
 
 #### 4.3.5 例题（三）层序遍历
@@ -1440,14 +1449,14 @@ var maxDepth = function(root) {
 ##### 4.3.5.1 代码实现
 
 ```javascript
-function levelTraverse (node) {
+function levelTraverse(node) {
     let res = [], stack = []
 
     /**
-     * 
-     * @param {Node} root 
+     *
+     * @param {Node} root
      */
-    function traverse (root) {
+    function traverse(root) {
         if (root !== null) {
             res.push(root.val);
             stack.push(root.left)
@@ -1498,6 +1507,7 @@ function levelTraverse (node) {
 
 ```javascript
 let cache = {}
+
 function dp(状态1, 状态2, ...) {
     if (cache[状态xx]) return cache[状态xxx]
     let result;
@@ -1516,9 +1526,12 @@ function dp(状态1, 状态2, ...) {
 dp[0][0] = base
 
 for 状态1 of 状态1取值:
-    for 状态2 of 状态2取值:
-        for ....
-            dp[状态1][状态2][...] = 求最值(选择1, 选择2,...)
+for 状态2 of 状态2取值:
+for ...
+.
+dp[状态1][状态2][
+...]
+= 求最值(选择1, 选择2, ...)
 ```
 
 ### 5.2 例题（一）斐波那契数列
@@ -1533,7 +1546,7 @@ for 状态1 of 状态1取值:
 
 ```javascript
 let dp = [0, 1]
-var fib = function(n) {
+var fib = function (n) {
     if (n <= 0) return dp[n]
     for (let i = 2; i <= n; i++) {
         dp[i] = dp[i - 2] + dp[i - 1]
@@ -1548,7 +1561,7 @@ var fib = function(n) {
 根据题目给的状态方程从上而下分解成子问题求解，并做好缓存
 
 ```javascript
-var fib = function(n) {
+var fib = function (n) {
     if (cache[n] !== undefined) return cache[n]
     cache[n] = fib(n - 2) + fib(n - 1)
     return cache[n]
@@ -1570,35 +1583,36 @@ var fib = function(n) {
 2. 找到放弃子问题的边界，就是amount = 0
 
 3. 找到状态转移方程
-   
+
    ![](https://labuladong.github.io/algo/images/%e5%8a%a8%e6%80%81%e8%a7%84%e5%88%92%e8%af%a6%e8%a7%a3%e8%bf%9b%e9%98%b6/coin.png)
 
 ```javascript
 var coinChange = function (coins, amount) {
-  const dp = [];
+    const dp = [];
 
-  function t(coins, amount) {
-    if (amount === 0) return 0;
-    if (amount < 0) return -1;
-    if (dp[amount]) return dp[amount];
+    function t(coins, amount) {
+        if (amount === 0) return 0;
+        if (amount < 0) return -1;
+        if (dp[amount]) return dp[amount];
 
-    let min = Number.MAX_SAFE_INTEGER;
+        let min = Number.MAX_SAFE_INTEGER;
 
-    for (const coin of coins) {
-      let count = t(coins, amount - coin);
-      if (count === -1) continue
-      min = Math.min(min, count + 1);
+        for (const coin of coins) {
+            let count = t(coins, amount - coin);
+            if (count === -1) continue
+            min = Math.min(min, count + 1);
+        }
+
+        dp[amount] = min === Number.MAX_SAFE_INTEGER ? -1 : min;
+
+        return dp[amount];
     }
 
-    dp[amount] = min === Number.MAX_SAFE_INTEGER ? -1 : min;
-
-    return dp[amount];
-  }
-
-  return t(coins, amount)
+    return t(coins, amount)
 };
-  return t(coins, amount)
-};
+return t(coins, amount)
+}
+;
 ```
 
 ## 6. BFS算法解体套路框架
@@ -1616,7 +1630,7 @@ var coinChange = function (coins, amount) {
 4. 同层遍历完成后深度+1
 
 ```javascript
-function bfs (root, target) {
+function bfs(root, target) {
     const queue = []
     const visited = new Set();
 
@@ -1678,7 +1692,7 @@ var minDepth = function (root) {
 
     queue.push(root);
 
-    while(queue.length) {
+    while (queue.length) {
         const len = queue.length;
 
         for (let i = 0; i < len; i++) {
@@ -1738,47 +1752,47 @@ var minDepth = function (root) {
 
 ```javascript
 function openLock(deadends, target) {
-  const queue = [];
-  const visited = new Set([...deadends]);
-  const start = "0000";
-  let step = 0;
-  let min = Number.MAX_SAFE_INTEGER;
+    const queue = [];
+    const visited = new Set([...deadends]);
+    const start = "0000";
+    let step = 0;
+    let min = Number.MAX_SAFE_INTEGER;
 
-  if (visited.has("0000")) return -1;
+    if (visited.has("0000")) return -1;
 
-  queue.push(start);
-  visited.add(start);
+    queue.push(start);
+    visited.add(start);
 
-  while (queue.length) {
-    const len = queue.length;
+    while (queue.length) {
+        const len = queue.length;
 
-    for (let i = 0; i < len; i++) {
-      const element = queue.shift();
+        for (let i = 0; i < len; i++) {
+            const element = queue.shift();
 
-      // 找到目标退出当前位置
-      if (element === target) {
-        return step;
-      }
+            // 找到目标退出当前位置
+            if (element === target) {
+                return step;
+            }
 
-      for (let j = 0; j < element.length; j++) {
-        const [prev, next] = getSiblings(element, j);
+            for (let j = 0; j < element.length; j++) {
+                const [prev, next] = getSiblings(element, j);
 
-        if (!visited.has(prev) && !deadends.includes(prev)) {
-          visited.add(prev);
-          queue.push(prev);
+                if (!visited.has(prev) && !deadends.includes(prev)) {
+                    visited.add(prev);
+                    queue.push(prev);
+                }
+
+                if (!visited.has(next) && !deadends.includes(next)) {
+                    visited.add(next);
+                    queue.push(next);
+                }
+            }
         }
 
-        if (!visited.has(next) && !deadends.includes(next)) {
-          visited.add(next);
-          queue.push(next);
-        }
-      }
+        step++;
     }
 
-    step++;
-  }
-
-  return min === Number.MAX_SAFE_INTEGER ? -1 : step;
+    return min === Number.MAX_SAFE_INTEGER ? -1 : step;
 }
 
 /**
@@ -1788,17 +1802,17 @@ function openLock(deadends, target) {
  * @return {string[]}
  */
 function getSiblings(str, idx) {
-  let prev = getSiblingValue(+str[idx] - 1);
-  let next = getSiblingValue(+str[idx] + 1);
+    let prev = getSiblingValue(+str[idx] - 1);
+    let next = getSiblingValue(+str[idx] + 1);
 
-  return [replaceStrByIdx(str, idx, prev), replaceStrByIdx(str, idx, next)];
+    return [replaceStrByIdx(str, idx, prev), replaceStrByIdx(str, idx, next)];
 }
 
 function getSiblingValue(value) {
-  if (value < 0) return 9;
-  if (value > 9) return 0;
+    if (value < 0) return 9;
+    if (value > 9) return 0;
 
-  return value;
+    return value;
 }
 
 /**
@@ -1809,8 +1823,8 @@ function getSiblingValue(value) {
  * @return {string}
  */
 function replaceStrByIdx(str, idx, value) {
-  if (idx === 0) return `${value}${str.slice(1)}`;
-  return `${str.slice(0, idx)}${value}${str.slice(idx + 1)}`;
+    if (idx === 0) return `${value}${str.slice(1)}`;
+    return `${str.slice(0, idx)}${value}${str.slice(idx + 1)}`;
 }
 ```
 
@@ -1818,7 +1832,8 @@ function replaceStrByIdx(str, idx, value) {
 
 #### 6.5.1 为何要双向奔赴
 
-从算法复杂度来看，BFS需要遍历同层的所有节点，所以如果答案在最底部，需要遍历整棵树，但是如果双向BFS，只需要遍历半棵树，就能找到交集，所以空间复杂度会更低O(log n)，但时间复杂度都是O(n)
+从算法复杂度来看，BFS需要遍历同层的所有节点，所以如果答案在最底部，需要遍历整棵树，但是如果双向BFS，只需要遍历半棵树，就能找到交集，所以空间复杂度会更低O(
+log n)，但时间复杂度都是O(n)
 
 #### 6.5.2 解开密码锁的最小次数的双向BFS实现
 
@@ -1838,25 +1853,29 @@ function replaceStrByIdx(str, idx, value) {
 
 ```javascript
 function binarySearch(nums, target) {
-  let left = 0,
-    right = nums.length;
+    let left = 0,
+        right = nums.length;
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    if (nums[mid] === target) {
-      // 找到目标做的操作
-      ...
-    } else if (nums[mid] < target) {
-      // 左指针移动
-      left = ...;
-    } else if (nums[mid] > target) {
-      // 右指针移动
-      right = ...;
+        if (nums[mid] === target) {
+            // 找到目标做的操作
+        ...
+        } else if (nums[mid] < target) {
+            // 左指针移动
+            left =
+        ...
+            ;
+        } else if (nums[mid] > target) {
+            // 右指针移动
+            right =
+        ...
+            ;
+        }
     }
-  }
 
-  return -1;
+    return -1;
 }
 ```
 
@@ -1872,29 +1891,29 @@ function binarySearch(nums, target) {
 
 1. 搜索区间为[left, right]这个闭区间所以right是`nums.length - 1`，避免越界
 
-2. 
+2.
 
 ```javascript
 function binarySearch(nums, target) {
-  let left = 0,
-    right = nums.length - 1;
+    let left = 0,
+        right = nums.length - 1;
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    if (nums[mid] === target) {
-      // 找到目标做的操作
-      return mid;
-    } else if (nums[mid] < target) {
-      // 左指针移动
-      left = mid + 1;
-    } else if (nums[mid] > target) {
-      // 右指针移动
-      right = mid - 1;
+        if (nums[mid] === target) {
+            // 找到目标做的操作
+            return mid;
+        } else if (nums[mid] < target) {
+            // 左指针移动
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            // 右指针移动
+            right = mid - 1;
+        }
     }
-  }
 
-  return -1;
+    return -1;
 }
 ```
 
@@ -1909,7 +1928,7 @@ function binarySearch(nums, target) {
 这种方式虽然能做出来，但是复杂度就不是`log(n)`
 
 ```javascript
-var searchRange = function(nums, target) {
+var searchRange = function (nums, target) {
     if (!nums.length) return [-1, -1]
     const idx = binarySearch(nums, target)
     if (idx === -1) return [-1, -1];
@@ -1936,25 +1955,25 @@ var searchRange = function(nums, target) {
 };
 
 function binarySearch(nums, target) {
-  let left = 0,
-    right = nums.length - 1;
+    let left = 0,
+        right = nums.length - 1;
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    if (nums[mid] === target) {
-      // 找到目标做的操作
-      return mid;
-    } else if (nums[mid] < target) {
-      // 左指针移动
-      left = mid + 1;
-    } else if (nums[mid] > target) {
-      // 右指针移动
-      right = mid - 1;
+        if (nums[mid] === target) {
+            // 找到目标做的操作
+            return mid;
+        } else if (nums[mid] < target) {
+            // 左指针移动
+            left = mid + 1;
+        } else if (nums[mid] > target) {
+            // 右指针移动
+            right = mid - 1;
+        }
     }
-  }
 
-  return -1;
+    return -1;
 }
 ```
 
@@ -1969,7 +1988,7 @@ function binarySearch(nums, target) {
 3. 之后返回的边界中`right + 1`就是左边界，`left - 1`就是右边界
 
 ```javascript
-var searchRange = function(nums, target) {
+var searchRange = function (nums, target) {
     if (!nums.length) return [-1, -1]
 
     const left = searchBoundLeft(nums, target);
@@ -1984,7 +2003,7 @@ var searchRange = function(nums, target) {
  * @param {boolean} isLeft
  * @return {number[]}
  */
-function searchBoundLeft (nums, target) {
+function searchBoundLeft(nums, target) {
     let left = 0, right = nums.length - 1;
 
     while (left <= right) {
@@ -2007,7 +2026,7 @@ function searchBoundLeft (nums, target) {
  * @param {boolean} isLeft
  * @return {number[]}
  */
- function searchBoundRight (nums, target) {
+function searchBoundRight(nums, target) {
     let left = 0, right = nums.length - 1;
     while (left <= right) {
         const mid = Math.floor((left + right) / 2)
@@ -2022,7 +2041,7 @@ function searchBoundLeft (nums, target) {
     }
 
     return nums[left - 1] === target ? left - 1 : -1
- }
+}
 ```
 
 ## 8. 滑动窗口纲领篇
@@ -2032,7 +2051,7 @@ function searchBoundLeft (nums, target) {
 双指针的第三种技巧，**滑动窗口的代码模板如下：**
 
 ```javascript
-function slideWindow (arr) {
+function slideWindow(arr) {
     let left = 0, right = 0, window = []
 
     while (right < arr.length) {
@@ -2063,68 +2082,68 @@ function slideWindow (arr) {
 
 ```javascript
 /**
-* @param {string} s
-* @param {string} t
-* @return {string}
-*/
-var minWindow = function(s, t) {
-    // build need
-    let need = {}
-    let curr = {}
-    let maxStr = "";
+ * @param {string} s
+ * @param {string} t
+ * @return {string}
+ */
+var minWindow = function (s, t) {
+        // build need
+        let need = {}
+        let curr = {}
+        let maxStr = "";
 
-    for (let i = 0; i < t.length; i++) {
-        const key = t[i];
-        if (!need[key]) {
-            need[key] = 1
-        } else {
-            need[key] += 1
-        }
-    }
-
-    let left = 0;
-
-    for (let right = 0; right < s.length; right++) {
-        const ch = s[right];
-        need[ch] && (!curr[ch] ? (curr[ch] = 1) : (curr[ch]++));
-
-        if (!need[ch]) {
-            continue;
-        }
-
-        if (need[ch] && need[ch] > curr[ch]) {
-            continue
-        }
-
-        if (isSame(need, curr)) {
-            // 相同场景左指针收缩
-            while (true) {
-                if (!maxStr || right - left + 1 < maxStr.length) {
-                    maxStr = s.slice(left, right+1)
-                } 
-
-                const leftChar = s[left];
-                curr[leftChar]--;
-                left++;
-
-                if (need[leftChar] && curr[leftChar] < need[leftChar]) {
-                    break
-                }
+        for (let i = 0; i < t.length; i++) {
+            const key = t[i];
+            if (!need[key]) {
+                need[key] = 1
+            } else {
+                need[key] += 1
             }
         }
 
+        let left = 0;
+
+        for (let right = 0; right < s.length; right++) {
+            const ch = s[right];
+            need[ch] && (!curr[ch] ? (curr[ch] = 1) : (curr[ch]++));
+
+            if (!need[ch]) {
+                continue;
+            }
+
+            if (need[ch] && need[ch] > curr[ch]) {
+                continue
+            }
+
+            if (isSame(need, curr)) {
+                // 相同场景左指针收缩
+                while (true) {
+                    if (!maxStr || right - left + 1 < maxStr.length) {
+                        maxStr = s.slice(left, right + 1)
+                    }
+
+                    const leftChar = s[left];
+                    curr[leftChar]--;
+                    left++;
+
+                    if (need[leftChar] && curr[leftChar] < need[leftChar]) {
+                        break
+                    }
+                }
+            }
+
+        }
+
+        return maxStr
     }
 
-    return maxStr
-}
-
 /**
- * 
- * @param {object} need 
- * @param {object} win 
+ *
+ * @param {object} need
+ * @param {object} win
  * @return {boolean}
  */
-function isSame (need, win) {
+function isSame(need, win) {
     const keys = Object.keys(need);
 
     for (let i = 0; i < keys.length; i++) {
@@ -2158,42 +2177,42 @@ function isSame (need, win) {
  * @return {boolean}
  */
 var checkInclusion = function (s1, s2) {
-  const need = buildNeed(s1);
-  let curr = {};
-  let left = 0;
+        const need = buildNeed(s1);
+        let curr = {};
+        let left = 0;
 
-  for (let right = 0; right < s2.length; right++) {
-    const ch = s2[right];
-    if (need[ch]) {
-        curr[ch] ? (curr[ch]++)  : (curr[ch] = 1);
-    }
+        for (let right = 0; right < s2.length; right++) {
+            const ch = s2[right];
+            if (need[ch]) {
+                curr[ch] ? (curr[ch]++) : (curr[ch] = 1);
+            }
 
-    if (right - left + 1 === s1.length) {
-      if (isSame(need, curr)) {
-        return true
-      }
+            if (right - left + 1 === s1.length) {
+                if (isSame(need, curr)) {
+                    return true
+                }
 
-      do {
-        curr[s2[left]]--;
-        left++;
+                do {
+                    curr[s2[left]]--;
+                    left++;
 
-        if (need[s2[left]]) {
-          // 在其中说明后面的可能会是s2的排列组合
-          break
+                    if (need[s2[left]]) {
+                        // 在其中说明后面的可能会是s2的排列组合
+                        break
+                    }
+                } while (left < right);
+            }
         }
-      } while (left < right);
-    }
-  }
-  return false;
-};
+        return false;
+    };
 
 /**
- * 
- * @param {object} need 
- * @param {object} win 
+ *
+ * @param {object} need
+ * @param {object} win
  * @return {boolean}
  */
-function isSame (need, win) {
+function isSame(need, win) {
     const keys = Object.keys(need);
 
     for (let i = 0; i < keys.length; i++) {
@@ -2212,15 +2231,15 @@ function isSame (need, win) {
  * @param {string} s
  */
 function buildNeed(s) {
-  let need = {};
+    let need = {};
 
-  for (let i = 0; i < s.length; i++) {
-    const ch = s[i];
+    for (let i = 0; i < s.length; i++) {
+        const ch = s[i];
 
-    need[ch] ? need[ch]++ : (need[ch] = 1);
-  }
+        need[ch] ? need[ch]++ : (need[ch] = 1);
+    }
 
-  return need;
+    return need;
 }
 ```
 
@@ -2238,53 +2257,53 @@ function buildNeed(s) {
  * @param {string} p
  * @return {number[]}
  */
-var findAnagrams = function(s, p) {
-    const need = buidMap(p)
-    const curr = {}
-    let left = 0;
-    let len = p.length;
-    let res = []
+var findAnagrams = function (s, p) {
+        const need = buidMap(p)
+        const curr = {}
+        let left = 0;
+        let len = p.length;
+        let res = []
 
-    for (let right = 0; right < s.length; right++) {
-        const ch = s[right];
+        for (let right = 0; right < s.length; right++) {
+            const ch = s[right];
 
-        if (curr[ch]) {
-            curr[ch]++
-        } else {
-            curr[ch] = 1
-        }
+            if (curr[ch]) {
+                curr[ch]++
+            } else {
+                curr[ch] = 1
+            }
 
-       if (right - left + 1 === len) {
-            while(left <= right) {
-                // 初次匹配
-                if (right - left + 1 === len) {
-                    if (isSame(need, curr)) {
-                        res.push(left)
+            if (right - left + 1 === len) {
+                while (left <= right) {
+                    // 初次匹配
+                    if (right - left + 1 === len) {
+                        if (isSame(need, curr)) {
+                            res.push(left)
+                        }
+                    } else {
+                        // 开始收缩
+                        // 如果收缩值仍在value中，指针右移
+                        if (need[s[left]]) {
+                            break
+                        }
                     }
-                } else {
-                    // 开始收缩
-                    // 如果收缩值仍在value中，指针右移
-                    if (need[s[left]]) {
-                        break
-                    }
+
+                    curr[s[left]]--
+                    left++
                 }
-
-                curr[s[left]]--
-                left++
             }
         }
-    }
 
-    return res
-};
+        return res
+    };
 
 /**
- * 
- * @param {object} need 
- * @param {object} win 
+ *
+ * @param {object} need
+ * @param {object} win
  * @return {boolean}
  */
-function isSame (need, win) {
+function isSame(need, win) {
     const keys = Object.keys(need);
 
     for (let i = 0; i < keys.length; i++) {
@@ -2299,11 +2318,11 @@ function isSame (need, win) {
 }
 
 /**
- * 
- * @param {string} s 
+ *
+ * @param {string} s
  * @returns {object}
  */
-function buidMap (s) {
+function buidMap(s) {
     const m = {};
 
     for (let i = 0; i < s.length; i++) {
@@ -2331,31 +2350,31 @@ function buidMap (s) {
 
 ```javascript
 var lengthOfLongestSubstring = function (s) {
-  let left = 0;
-  let max = 0, map = new Map();
+    let left = 0;
+    let max = 0, map = new Map();
 
-  for (let right = 0; right < s.length; right++) {
-    const ch = s[right];
-    if (!map.get(ch)) {
-      map.set(ch, 1);
-      if (right - left + 1 > max) {
-        max = right - left + 1
-      }
-    } else {
-      // 左边收缩
-      while(left <= right) {
-        if (ch === s[left]) {
-          left++;
-          break;
+    for (let right = 0; right < s.length; right++) {
+        const ch = s[right];
+        if (!map.get(ch)) {
+            map.set(ch, 1);
+            if (right - left + 1 > max) {
+                max = right - left + 1
+            }
         } else {
-          map.delete(s[left])
-          left++;
+            // 左边收缩
+            while (left <= right) {
+                if (ch === s[left]) {
+                    left++;
+                    break;
+                } else {
+                    map.delete(s[left])
+                    left++;
+                }
+            }
         }
-      }
     }
-  }
 
-  return max
+    return max
 };
 ```
 
@@ -2371,37 +2390,35 @@ var lengthOfLongestSubstring = function (s) {
  * @param {number[]} prices
  * @return {number}
  */
-var maxProfit = function(k, prices) {
-    let res = 0;
-    k = k * 2
+var maxProfit = function (k, prices) {
+        let res = 0;
+        k = k * 2
 
-    function cb (buyNums, start, totalMoney, lastBy = undefined) {
-        if (buyNums === k || start >= prices.length) {
-            if (totalMoney > res) {
-                res = totalMoney
+        function cb(buyNums, start, totalMoney, lastBy = undefined) {
+            if (buyNums === k || start >= prices.length) {
+                if (totalMoney > res) {
+                    res = totalMoney
+                }
+                return;
             }
-            return;
+
+            const price = prices[start];
+            // 不买
+            cb(buyNums, start + 1, totalMoney, lastBuy);
+            if (lastBuy === undefined) {
+                if (start === prices.length - 1) return;
+                // 可以买
+                cb(buyNums + 1, start + 1, totalMoney - price, price)
+            } else {
+                // 可以卖
+                cb(buyNums + 1, start + 1, totalMoney + price, undefined)
+            }
         }
 
-        const price = prices[start];
-        // 不买
-        cb(buyNums, start + 1, totalMoney, lastBuy);
-        if (lastBuy === undefined) {
-            if (start === prices.length - 1) return;
-            // 可以买
-            cb(buyNums + 1, start + 1, totalMoney - price, price)
-        } else {
-            // 可以卖
-            cb(buyNums + 1, start + 1, totalMoney + price, undefined)
-        }
-    }
-
-    cb(0, 0, 0, undefined)
-    return res
-};
+        cb(0, 0, 0, undefined)
+        return res
+    };
 ```
-
-
 
 ### 9.2 动态规划方法
 
@@ -2412,12 +2429,10 @@ var maxProfit = function(k, prices) {
 2. 所以我们求得最后的方程就是`dp[n-1][K][0]`，即不管最后一天可以进行几次操作，一定手上没有持有股票的最大值
 
 3. 所以状态转移方程为：
-   
-   `dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + price[i])` 
-   
+
+   `dp[i][k][0] = max(dp[i-1][k][0], dp[i-1][k][1] + price[i])`
+
    `dp[i][k][1] = max(dp[i-1][k-1][0] - price[i], dp[i-1][k][1])`
-
-
 
 #### 9.2.1 买卖股票的最佳时机
 
@@ -2426,30 +2441,34 @@ var maxProfit = function(k, prices) {
 [力扣121](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/)
 
 **题解**
+
 1. 仍然使用上面的状态转移方程
 2. 这里的k因为只能交易一次，所以k直接可以省略
-3. **这里的关键是因为只能交易一次，所以，dp[i][1]中代表当前持有仓位，那么要么这个持有的仓位就是之前买的，如果是当次买的，之前不可能有仓位，所以一定是-price[i]，说明之前没有过任何一次买卖**
+3. **这里的关键是因为只能交易一次，所以，dp[i][1]
+   中代表当前持有仓位，那么要么这个持有的仓位就是之前买的，如果是当次买的，之前不可能有仓位，所以一定是-price[i]
+   ，说明之前没有过任何一次买卖**
 
 ```javascript
 var maxProfit2 = function (prices) {
-  const dp = [], n = prices.length;
+    const dp = [], n = prices.length;
 
-  for (let i = 0; i < n; i++) {
-    if (!dp[i]) {
-      dp[i] = []
-    };
+    for (let i = 0; i < n; i++) {
+        if (!dp[i]) {
+            dp[i] = []
+        }
+        ;
 
-    if (i === 0) {
-      dp[0][0] = 0;
-      dp[0][1] = -prices[0];
-      continue
+        if (i === 0) {
+            dp[0][0] = 0;
+            dp[0][1] = -prices[0];
+            continue
+        }
+
+        dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+        dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
     }
 
-    dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-    dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
-  }
-
-  return dp[n - 1][0]
+    return dp[n - 1][0]
 }
 ```
 
@@ -2484,7 +2503,7 @@ var maxProfit = function (prices) {
 2. 关键点在于，可以无限制进行交易，所以直接用上述的状态转移方程既可
 
 ```javascript
-var maxProfit2 = function(prices) {
+var maxProfit2 = function (prices) {
     const dp = [];
 
 
@@ -2498,7 +2517,7 @@ var maxProfit2 = function(prices) {
             dp[i][1] = -1 * prices[0];
             continue
         }
-        
+
         dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
         dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
     }
@@ -2510,7 +2529,7 @@ var maxProfit2 = function(prices) {
 **空间复杂度优化**
 
 ```javascript
-var maxProfit = function(prices) {
+var maxProfit = function (prices) {
     let prev_0 = 0;
     let prev_1 = -1 * prices[0];
 
@@ -2533,7 +2552,7 @@ var maxProfit = function(prices) {
 
 1. 关键在于有冷冻期，冷冻期即卖后一段时间内不能买
 2. 所以需要更改状态转移方程，即
-  + `dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - price[i])`，需要判断在第 `i - 2`天的临界情况
+    + `dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - price[i])`，需要判断在第 `i - 2`天的临界情况
 
 ```javascript
 var maxProfit = function (prices) {
@@ -2572,20 +2591,20 @@ var maxProfit = function (prices) {
  * @param {number} fee
  * @return {number}
  */
-var maxProfit = function(prices, fee) {
-    let dp = [];
-    let prev_0 = 0, prev_1 = -1 * prices[0]
+var maxProfit = function (prices, fee) {
+        let dp = [];
+        let prev_0 = 0, prev_1 = -1 * prices[0]
 
-    for (let i = 1; i < prices.length; i++) {
-        const price = prices[i];
-        dp[i] = [];
+        for (let i = 1; i < prices.length; i++) {
+            const price = prices[i];
+            dp[i] = [];
 
-        prev_0 = Math.max(prev_0, prev_1 + price - fee);
-        prev_1 = Math.max(prev_1, prev_0 - price);
-    }
+            prev_0 = Math.max(prev_0, prev_1 + price - fee);
+            prev_1 = Math.max(prev_1, prev_0 - price);
+        }
 
-    return prev_0
-};
+        return prev_0
+    };
 ```
 
 #### 9.2.5 只能交易K次
@@ -2594,7 +2613,6 @@ var maxProfit = function(prices, fee) {
 
 [力扣123](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iii/submissions/)
 [力扣188](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-iv/)
-
 
 **题解**
 
@@ -2629,5 +2647,169 @@ var maxProfit = function (k, prices) {
     }
 
     return Math.max(...dp[prices.length - 1].map(prices => prices[0]));
+};
+```
+
+## 10. 一个方法团灭LeetCode打家劫舍问题
+
+### 10.1 问题分析
+
+#### 10.1.1 方式
+
+**问题分析**
+
+1. 使用动态规划
+2. 和股票问题中的存在冷静期类似，就是不能够连续抢两家
+3. 得到状态转移方程 `dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i])`
+
+### 10.2 例题（一）打家劫舍I
+
+#### 10.2.1 原题链接
+
+[力扣198](https://leetcode.cn/problems/house-robber/)
+
+#### 10.2.2 题解
+
+使用状态转移方程：`dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i])`
+
+#### 10.2.3 原始写法
+
+```javascript
+var rob = function (nums) {
+    let dp = [];
+    const n = nums.length;
+    dp[0] = nums[0];
+    dp[1] = Math.max(...nums.slice(0, 2));
+
+    if (n < 1) {
+        return dp[0]
+    }
+
+    if (n < 2) {
+        return dp[1]
+    }
+
+    for (let i = 2; i < n; i++) {
+        dp[i] = Math.max(dp[i - 1], dp[i - 2] + nums[i])
+    }
+
+    return dp[n - 1]
+};
+```
+
+#### 10.2.4 空间复杂度优化方式
+
+```javascript
+var rob = function (nums) {
+    const n = nums.length;
+
+    let prev_0 = nums[0];
+    let prev_1 = Math.max(...nums.slice(0, 2));
+
+    if (n < 2) {
+        return prev_1
+    }
+
+    for (let i = 2; i < n; i++) {
+        const curr = Math.max(prev_1, prev_0 + nums[i]);
+        prev_0 = prev_1;
+        prev_1 = curr
+    }
+
+    return prev_1
+};
+```
+
+### 10.3 例题（二）打家劫舍II
+
+#### 10.3.1 原题链接
+
+[力扣213](https://leetcode.cn/problems/house-robber-ii)
+
+#### 10.3.2 题解
+
+1. 问题在于偷头不能偷尾，偷尾不能偷头
+2. 将问题转换成[0, nums.length - 1] 和[1, nums.length]这两个问题进行解决
+
+#### 10.3.3 代码实现
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var rob = function (nums) {
+    if (nums.length <= 1) {
+        // 临界值的判断
+        return nums[0]
+    }
+
+    // 简化成两个子问题
+    return Math.max(fn(nums.slice(0, nums.length - 1)), fn(nums.slice(1, nums.length)))
+};
+
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+function fn(nums) {
+    const n = nums.length;
+
+    let prev_0 = nums[0];
+    let prev_1 =  Math.max(...nums.slice(0, 2));
+
+    if (n < 2) {
+        return prev_1
+    }
+
+    for (let i = 2; i < n; i++) {
+        const curr = Math.max(prev_1, prev_0 + nums[i]);
+        prev_0 = prev_1;
+        prev_1 = curr
+    }
+
+    return prev_1
+};
+```
+
+### 10.4 例题（三）打家劫舍III
+
+#### 10.4.1 原题链接
+
+[力扣337](https://leetcode.cn/problems/house-robber-iii/)
+
+#### 10.4.2 题解
+
+1. 需要对树进行遍历
+2. 分析两种场景
+   1. 买根节点
+   2. 不买根节点
+
+#### 10.4.3 代码实现
+
+```javascript
+var rob = function (root) {
+    const map = new Map();
+    const value = fn(root)
+
+    /**
+     * @param {TreeNode} root
+     * @return {number}
+     */
+    function fn(root) {
+        if (root === null) return 0;
+        if (map.has(root)) {
+            return map.get(root)
+        }
+
+        const noBuy = fn(root.left) + fn(root.right);
+        const buy = root.val + (root.left !== null ? (fn(root.left.left) + fn(root.left.right)) : 0)
+            + (root.right !== null ? (fn(root.right.left) + fn(root.right.right)) : 0)
+
+        map.set(root, Math.max(noBuy, buy))
+
+        return map.get(root)
+    }
+    return value
 };
 ```
