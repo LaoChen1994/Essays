@@ -2813,3 +2813,277 @@ var rob = function (root) {
     return value
 };
 ```
+
+## 11. nSum 问题
+
+### 11.1 nSum 问题核心
+
+1. 使用双指针
+2. 关键是左右指针的收缩:
+    + 目标值大于双指针之和，左指针右移
+    + 目标值小于双指针之和，右指针左移
+    + 目标值等于双指针之和，找到目标值
+3. n > 3的情况
+   + 排序
+   + 不断枚举 n > 3的情况
+   + 逐步分解为3 Sum问题的解法
+
+### 11.2 例题（一）两数之和
+
+#### 11.2.1 原题链接
+
+![力扣第一题](https://leetcode.cn/problems/two-sum/)
+
+#### 11.2.2 题解
+
+1. 我们假设现在先不关心输出的为index, 我们只想获得对应的可以达到target的值
+2. 直接使用双指针即可
+
+#### 11.2.3 代码实现
+
+**获取对应的value解法**
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[]}
+ */
+var twoSum = function (nums, target) {
+    let left = 0, right = nums.length - 1;
+    const result = []
+
+    nums.sort((x, y) => x - y)
+
+    while (left < right) {
+        const sum = nums[left] + nums[right]
+        if (sum === target) {
+            result.push([nums[left], nums[right]])
+            // 左指针相同的直接跳过，进行收缩
+            while (nums[left] === nums[++left]) {};
+            // 右指针相同的直接跳过，进行收缩
+            while (nums[right] === nums[--right]) {};
+        } else if (sum < target) {
+            left++
+        } else {
+            right--
+        }
+    }
+
+    return result
+}
+```
+
+**使用map获取index解法**
+
+```javascript
+var twoSum = function (nums, target) {
+    const map  = {};
+    const n = nums.length
+
+    for (let i = 0; i < n; i++) {
+        if (map[nums[i]] !== undefined) {
+            return [i, map[nums[i]]]
+        }
+
+        map[target - nums[i]] = i
+    }
+
+    return []
+};
+```
+
+### 11.3 例题（二）三数之和
+
+#### 原题链接
+
+![力扣15](https://leetcode.cn/problems/3sum/)
+
+#### 题解
+
+**三数之和是nSum的关键**，其解决思路是：
++ 排序
++ 枚举第一个数
++ 在剩下的数中，使用两数之和找到对应的目标值
+
+#### 代码实现
+
+```javascript
+var threeSum = function(nums) {
+    let n = nums.length
+    nums = nums.sort((x, y) => x - y);
+    let result = []
+    for (let i = 0; i < n; i++) {
+        // 对第三个数进行枚举
+        let num = nums[i];
+        let target = 0 - num;
+        if (i > 0 && nums[i - 1] === num) {
+            continue
+        }
+
+        // 这部分就是两数之和代码
+        let left = i + 1, right = nums.length;
+
+        while(left < right) {
+            const sum = nums[left] + nums[right]
+            if (sum === target) {
+                result.push([num, nums[left], nums[right]])
+
+                // 收缩左右窗口
+                while (nums[left] === nums[++left]) {}
+                while (nums[right] === nums[--right]) {}
+            } else if (sum < target) {
+                left++;
+            } else {
+                right--
+            }
+        }
+    }
+
+    return result
+};
+```
+
+### 11.4 四数之和
+
+#### 原题链接
+
+[力扣第18题](https://leetcode.cn/problems/4sum/)
+
+#### 题解
+
++ 不断枚举第四个数
++ 剩下的使用两数之和解决问题
+
+#### 代码实现
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number[][]}
+ */
+var fourSum = function (nums, target) {
+    nums.sort((x, y) => x - y);
+    const result = []
+    for (let i = 0; i < nums.length; i++) {
+        const num = nums[i];
+        if (i > 0 && nums[i] === nums[i - 1]) continue
+
+        const res = threeSum(nums, target - num, i + 1)
+        result.push(...res.map(item => [num, ...item]))
+    }
+
+    return result
+};
+
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @param {number} startX
+ * @return {number[][]}
+ */
+var threeSum = function (nums, target, startX) {
+    let n = nums.length
+    const result = [];
+
+    for (let i = startX; i < n; i++) {
+        const x = nums[i];
+        let left = i + 1, right = n - 1;
+
+        if (i > startX && nums[i] === nums[i - 1]) {
+            continue
+        }
+
+        while (left < right) {
+            const sum = nums[left] + nums[right] + x;
+
+            if (sum === target) {
+                result.push([x, nums[left], nums[right]]);
+
+                while (nums[left] === nums[++left]) {}
+                while (nums[right] === nums[--right]) {}
+            } else if (sum < target) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+    }
+
+    return result
+}
+```
+
+### 11.5 nSum解决办法
+
+#### 题解
+
+nSum和4Sum解决思路类似，就是不断使用递归，将n降到3，然后使用3数之和解决问题（其实这里可以降到2）
+
+#### 代码实现
+
+```javascript
+/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @param {number} n
+ * @return {number[][]}
+ */
+var nSum = function (nums, target, n, startX = 0) {
+    nums.sort((x, y) => x - y);
+    const result = []
+    if (n < 2) return [];
+    if (n < 3) {
+        return twoSum(nums, target, 0)
+    }
+    for (let i = startX; i < nums.length; i++) {
+        const num = nums[i]
+        let res = []
+        if (i > startX && num === nums[i - 1]) {
+            continue
+        }
+
+        if (n - 1 === 2) {
+            res = twoSum(nums, target - num, i + 1)
+        } else {
+            res = nSum(nums, target - num, n - 1, i + 1);
+        }
+
+        if (res.length) {
+            result.push(res.map(res => [num, ...res]))
+        }
+    }
+
+    return result.flat()
+};
+
+/**
+ *
+ * @param {number[]} nums
+ * @param {number} target
+ * @param {number} startX
+ * @return {number[][]}
+ */
+function twoSum (nums, target, startX) {
+    let left = startX, right = nums.length - 1;
+    let result = [];
+
+    while (left < right) {
+        const sum = nums[left] + nums[right];
+
+        if (sum === target) {
+            result.push([nums[left], nums[right]])
+
+            while (nums[left] === nums[++left]) {};
+            while (nums[right] === nums[--right]) {};
+        } else if (sum < target) {
+            left++
+        } else {
+            right--
+        }
+    }
+
+    return result
+}
+```
