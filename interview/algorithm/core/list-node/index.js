@@ -29,7 +29,7 @@ class ListNode {
      */
     getNodes () {
         let arr = [];
-        let curr = this;
+        let curr = this
 
         while (curr !== null) {
             arr.push(curr.val)
