@@ -8,42 +8,45 @@ const { ListNode } = require('../../core/list-node')
  */
 var reverseBetween = function(head, left, right) {
     let start = head;
+    let prev = null;
     let i = 1;
-    const isReverseFirst = left === 1 && left !== right
 
     if (head === null || head.next === null) {
         return head
     }
 
-    while (i < left - 1) {
+    while (i < left) {
+        prev = start;
         start = start.next;
         i++;
     }
 
-    let _curr = start.next
-    let _next = start.next.next;
+    let _curr = start;
+    let _next = _curr.next;
 
-    while (i < right - 1) {
-        if (_curr === start.next) {
-            // p1 => p2 => p3
-            _curr.next = null
-        }
-
-        const nextNode = _next.next;
-        _next.next = _curr;
-        _curr = _next;
-        _next = nextNode
+    while (i < right) {
+        // p1 => p2 => p3 => p4
+        let next = _next;
+        _next = _next.next
+        next.next = _curr;
+        _curr = next
         i++
     }
 
-    start.next.next = isReverseFirst ? head : _next;
-    start.next = isReverseFirst ? null : _curr
+    if (prev === null) {
+        head.next = null;
+        start.next = _next
+        return _curr
+    } else {
+        prev.next = _curr;
+        start.next = _next;
+    }
 
-    return isReverseFirst ? _curr : head
+    return head
 };
 
-const list = ListNode.getSingleListNodeFromArray([1, 2, 3])
+const list = ListNode.getSingleListNodeFromArray([1, 2, 3, 4, 5])
 
-const reverse = reverseBetween(list, 1, 2)
+const reverse = reverseBetween(list, 1, 4)
 
 console.log(reverse.getNodes())

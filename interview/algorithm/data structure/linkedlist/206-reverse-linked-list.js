@@ -26,6 +26,8 @@ var reverseList = function(head) {
     return _head
 }
 
+
+
 const list = ListNode.getSingleListNodeFromArray( [1])
 
 const reverse = reverseList(list)
