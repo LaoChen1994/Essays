@@ -320,6 +320,23 @@ var reverseList = function(head) {
 }
 ```
 
+#### 解法二、递归方法
+
+```javascript
+var reverseList = function(head) {
+    if (head == null || head.next == null) {
+        return head;
+    }
+
+    const reverse = reverseList(head.next);
+
+    head.next.next = head
+    head.next = null
+
+    return reverse
+}
+```
+
 ### 例题二、反转链表Ⅱ
 
 #### 原题链接
@@ -367,5 +384,54 @@ var reverseBetween = function(head, left, right) {
 
     return head
 };
+```
 
+#### 解法二、递归解法
+
+```javascript
+var reverseBetween = function(head, left, right) {
+    let i = 0;
+    let start = head, prev = head;
+    while(i < left - 1) {
+        prev = start;
+        start = start.next;
+        i++;
+    }
+
+    let end = start;
+    while (i < right - 1) {
+        end = end.next;
+        i++
+    }
+
+    const next = end.next;
+    end.next = null;
+
+    const re = reverse(start);
+
+    if (left === 1) {
+        start.next = next
+        return re
+    }
+
+    prev.next = re
+    start.next = next;
+
+    return head
+}
+
+/**
+ * @param {ListNode} head
+ */
+function reverse (head) {
+    if (head === null || head.next === null) {
+        return head
+    }
+
+    const re = reverse(head.next);
+    head.next.next = head;
+    head.next = null
+
+    return re
+}
 ```
